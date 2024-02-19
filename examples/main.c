@@ -32,7 +32,7 @@ int main () {
     int idxlist[npoints_local];
     struct t_idxlist *p_idxlist;
     struct t_idxlist *p_idxlist_empty;
-    struct t_map p_map;
+    struct t_map *p_map;
 
     if (world_size != 4) return 1;
 
@@ -93,6 +93,7 @@ int main () {
 
     delete_idxlist(p_idxlist);
     delete_idxlist(p_idxlist_empty);
+    delete_map(p_map);
 
     MPI_Finalize();
     return 0;

@@ -13,15 +13,17 @@ struct t_map_exch_per_rank {
 
 struct t_map_exch {
     int count;
-    struct t_map_exch_per_rank *exch;
+    struct t_map_exch_per_rank **exch;
 };
 
 struct t_map {
 	MPI_Comm comm;
-    struct t_map_exch exch_send;
-    struct t_map_exch exch_recv;
+    struct t_map_exch *exch_send;
+    struct t_map_exch *exch_recv;
 };
 
-struct t_map new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxlist, MPI_Comm comm);
+struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxlist, MPI_Comm comm);
+
+void delete_map(struct t_map *map);
 
 #endif
