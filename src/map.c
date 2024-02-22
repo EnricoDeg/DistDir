@@ -66,22 +66,16 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
                             0, src_idxlist->count - 1);
     }
 
+    // bucket ID (rank) to send info to
     int src_comm_ranks[world_size];
     for (int rank = 0; rank < world_size; rank++)
         src_comm_ranks[rank] = 0;
     if (src_idxlist->count > 0) {
         for (int i = 0; i < src_idxlist->count; i++)
             src_comm_ranks[src_bucket_idxlist[i]] = 1;
-
-/*
-        printf("%d -- src_comm_ranks: ", world_rank);
-        for (int rank = 0; rank < world_size; rank++)
-            printf("%d ", src_comm_ranks[rank]);
-        printf("\n");
-*/
-
     }
 
+    // number of indices to be sent to each bucket
     int src_size_ranks[world_size];
     for (int rank = 0; rank < world_size; rank++)
         src_size_ranks[rank] = 0;
@@ -93,12 +87,6 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
             }
             src_size_ranks[src_bucket_idxlist[offset]] = count;
         }       
-/*
-        printf("%d -- src_size_ranks: ", world_rank);
-        for (int rank = 0; rank < world_size; rank++)
-            printf("%d ", src_size_ranks[rank]);
-        printf("\n");
-*/
     }
 
     // number of processes each bucket receive data from
@@ -108,35 +96,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         for (int i=0; i<world_size; i++)
             recv_count[i] = 1;
         MPI_Reduce_scatter(src_comm_ranks, &src_count_recv, recv_count, MPI_INT, MPI_SUM, comm);
-//        printf("%d -- src_count_recv: ", world_rank);
-//        printf("%d\n", src_count_recv);
     }
-
-    // size of each message that each bucket receive
-    int src_msg_size_recv[src_count_recv];
-    {
-        MPI_Request req[src_idxlist->count+bucket_size];
-        MPI_Status stat[src_idxlist->count+bucket_size];
-        int nreq = 0;
-
-        for (int i=0; i<world_size; i++)
-            if (src_size_ranks[i] > 0) {
-                MPI_Isend(&src_size_ranks[i], 1, MPI_INT, i, world_rank+bucket_size*i, comm, &req[nreq]);
-                nreq++;
-            }
-
-        for (int i=0; i<src_count_recv; i++) {
-            MPI_Irecv(&src_msg_size_recv[i], 1, MPI_INT, MPI_ANY_SOURCE, i+bucket_size*world_rank, comm, &req[nreq]);
-            nreq++;
-        }
-        MPI_Waitall(nreq, req, stat);
-    }
-/*
-    printf("%d -- src_msg_size_recv: ", world_rank);
-    for (int i = 0; i < src_count_recv; i++)
-        printf("%d ", src_msg_size_recv[i]);
-    printf("\n");
-*/
 
     // source of each message
     int src_src_recv[src_count_recv];
@@ -156,13 +116,30 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
             nreq++;
         }
         MPI_Waitall(nreq, req, stat);
+
+        // sort by process number
+        mergeSort(src_src_recv, 0, src_count_recv-1);
     }
-/*
-    printf("%d -- src_src_recv: ", world_rank);
-    for (int i = 0; i < src_count_recv; i++)
-        printf("%d ", src_src_recv[i]);
-    printf("\n");
-*/
+
+    // size of each message that each bucket receive
+    int src_msg_size_recv[src_count_recv];
+    {
+        MPI_Request req[src_idxlist->count+bucket_size];
+        MPI_Status stat[src_idxlist->count+bucket_size];
+        int nreq = 0;
+
+        for (int i=0; i<world_size; i++)
+            if (src_size_ranks[i] > 0) {
+                MPI_Isend(&src_size_ranks[i], 1, MPI_INT, i, world_rank+bucket_size*i, comm, &req[nreq]);
+                nreq++;
+            }
+
+        for (int i=0; i<src_count_recv; i++) {
+            MPI_Irecv(&src_msg_size_recv[i], 1, MPI_INT, src_src_recv[i], src_src_recv[i]+bucket_size*world_rank, comm, &req[nreq]);
+            nreq++;
+        }
+        MPI_Waitall(nreq, req, stat);
+    }
 
     // gather src_bucket info
     int src_bucket_sort[bucket_size];
@@ -174,7 +151,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         // recv src for each bucket
         int offset = 0;
         for (int i = 0; i < src_count_recv; i++) {
-            MPI_Irecv(&src_bucket_sort[offset], src_msg_size_recv[i], MPI_INT, src_src_recv[i], i+bucket_size*(world_rank), comm, &req[nreq]);
+            MPI_Irecv(&src_bucket_sort[offset], src_msg_size_recv[i], MPI_INT, src_src_recv[i], i+bucket_size*(world_rank+1), comm, &req[nreq]);
             offset +=  src_msg_size_recv[i];
             nreq++;
         }
@@ -185,7 +162,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
                 int myrank_arr[src_size_ranks[i]];
                 for (int j=0; j<src_size_ranks[i]; j++)
                     myrank_arr[j] = world_rank;
-                MPI_Send(myrank_arr, src_size_ranks[i], MPI_INT, i, world_rank+bucket_size*i, comm);
+                MPI_Send(myrank_arr, src_size_ranks[i], MPI_INT, i, world_rank+bucket_size*(i+1), comm);
                 // nreq++;
             }
         }
