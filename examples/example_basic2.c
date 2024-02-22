@@ -37,19 +37,30 @@ int main () {
     if (world_size != 4) return 1;
 
     // index list with global indices
+
+
     if (world_rank < 2) {
         world_role = I_SRC;
         int ncols_local = NCOLS / (world_size / 2);
-        for (int i=0; i < NROWS; i++)
-            for (int j=0; j < ncols_local; j++)
-                idxlist[j+i*ncols_local] = j + i * NCOLS + world_rank * (NCOLS - ncols_local);
+        for (int i=0; i<npoints_local; i++)
+            idxlist[i] = world_rank + i*2;
+
+//        for (int i=0; i < NROWS; i++)
+//            for (int j=0; j < ncols_local; j++)
+//                idxlist[j+i*ncols_local] = j + i * NCOLS + world_rank * (NCOLS - ncols_local);
     } else {
         world_role = I_DST;
+//        int ncols_local = NCOLS / (world_size / 2);
+//        for (int i=0; i < NROWS; i++)
+//            for (int j=0; j < ncols_local; j++)
+//                idxlist[j+i*ncols_local] = j + i * NCOLS + (world_rank - 2) * (NCOLS - ncols_local);
+
         int nrows_local = NROWS / (world_size / 2);
         for (int i=0; i < nrows_local; i++)
             for (int j=0; j < NCOLS; j++)
                 idxlist[j+i*NCOLS] = j + i * NCOLS + (world_rank - (world_size / 2)) * (NROWS - nrows_local) * NCOLS;
     }
+
 
     p_idxlist = new_idxlist(idxlist, npoints_local);
     p_idxlist_empty = new_idxlist_empty();
@@ -61,6 +72,7 @@ int main () {
     }
 
     // test exchange
+
     {
         int data[npoints_local];
         // src MPI ranks fill data array
