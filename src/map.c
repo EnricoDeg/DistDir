@@ -54,46 +54,16 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         if (src_bucket_idxlist[i] >= world_size) src_bucket_idxlist[i] = world_size - 1;
     }
 
-/*
-    if (src_idxlist->count > 0) {
-        printf("%d -- src_bucket_idxlist: ", world_rank);
-        for (int i=0; i < src_idxlist->count; i++)
-            printf("%d ", src_bucket_idxlist[i]);
-        printf("\n");
-    }
-*/
-
-    // qsort src_bucket_idxlist
-    // local copy (to be deleted)
-    int src_bucket_idxlist_sort[src_idxlist->count];
+    // sort src_bucket_idxlist -> src_idxlist and src_idxlist_local accordingly
     int src_idxlist_sort[src_idxlist->count];
     int src_idxlist_local[src_idxlist->count];
     if (src_idxlist->count > 0) {
         for (int i=0; i < src_idxlist->count; i++) {
-            src_bucket_idxlist_sort[i] = src_bucket_idxlist[i];
             src_idxlist_sort[i] = src_idxlist->list[i];
             src_idxlist_local[i] = i;
         }
-        quickSort(src_bucket_idxlist_sort, src_idxlist_sort, 0, src_idxlist->count - 1);
-        quickSort(src_bucket_idxlist, src_idxlist_local, 0, src_idxlist->count - 1);
-
-/*
-        printf("%d -- src_bucket_idxlist_sort: ", world_rank);
-        for (int i=0; i < src_idxlist->count; i++)
-            printf("%d ", src_bucket_idxlist_sort[i]);
-        printf("\n");
-
-        printf("%d -- src_idxlist_sort: ", world_rank);
-        for (int i=0; i < src_idxlist->count; i++)
-            printf("%d ", src_idxlist_sort[i]);
-        printf("\n");
-
-        printf("%d -- src_idxlist_local: ", world_rank);
-        for (int i=0; i < src_idxlist->count; i++)
-            printf("%d ", src_idxlist_local[i]);
-        printf("\n");
-*/
-
+        mergeSort_with_idx2(src_bucket_idxlist, src_idxlist_sort, src_idxlist_local,
+                            0, src_idxlist->count - 1);
     }
 
     int src_comm_ranks[world_size];
@@ -101,7 +71,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         src_comm_ranks[rank] = 0;
     if (src_idxlist->count > 0) {
         for (int i = 0; i < src_idxlist->count; i++)
-            src_comm_ranks[src_bucket_idxlist_sort[i]] = 1;
+            src_comm_ranks[src_bucket_idxlist[i]] = 1;
 
 /*
         printf("%d -- src_comm_ranks: ", world_rank);
@@ -117,11 +87,11 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         src_size_ranks[rank] = 0;
     if (src_idxlist->count > 0) {
         for (int i = 0, offset=0, count = 1; i < src_idxlist->count; i++, count++) {
-            if (src_bucket_idxlist_sort[i] != src_bucket_idxlist_sort[offset]) {
+            if (src_bucket_idxlist[i] != src_bucket_idxlist[offset]) {
                 count = 1;
                 offset = i;
             }
-            src_size_ranks[src_bucket_idxlist_sort[offset]] = count;
+            src_size_ranks[src_bucket_idxlist[offset]] = count;
         }       
 /*
         printf("%d -- src_size_ranks: ", world_rank);
@@ -548,7 +518,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     printf("\n");
 */
 
-    if (src_idxlist->count > 0) mergeSort(rank_exch_dst_sort, src_idxlist_local, 0, src_idxlist->count - 1);
+    if (src_idxlist->count > 0) mergeSort_with_idx(rank_exch_dst_sort, src_idxlist_local, 0, src_idxlist->count - 1);
 
 /*
     printf("%d after sort-- rank_exch_dst_sort: ", world_rank);
@@ -609,7 +579,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     printf("\n");
 */
 
-    if (dst_idxlist->count > 0) mergeSort(rank_exch_src_sort, dst_idxlist_local, 0, dst_idxlist->count - 1);
+    if (dst_idxlist->count > 0) mergeSort_with_idx(rank_exch_src_sort, dst_idxlist_local, 0, dst_idxlist->count - 1);
     
 /*
     printf("%d after sort-- rank_exch_src_sort: ", world_rank);
