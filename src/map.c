@@ -210,38 +210,6 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     printf("\n");
 */
 
-// ---------------------------------------------------------------
-
-    // send src_idxlist bucket info to the RD decomposition
-    int src_bucket[bucket_size];
-    {
-        MPI_Request req[src_idxlist->count+bucket_size];
-        MPI_Status stat[src_idxlist->count+bucket_size];
-        int nreq = 0;
-
-        //  MPI ranks send info to src bucket
-        for (int i = 0; i < src_idxlist->count; i++) {
-            MPI_Isend(&world_rank, 1, MPI_INT, src_bucket_idxlist[i], src_idxlist->list[i], comm, &req[nreq]);
-            nreq++;
-        }
-
-        // recv src for each bucket
-        for (int i = 0; i < bucket_size; i++) {
-            MPI_Irecv(&src_bucket[i], 1, MPI_INT, MPI_ANY_SOURCE, i+bucket_size*(world_rank), comm, &req[nreq]);
-            nreq++;
-        }
-
-        MPI_Waitall(nreq, req, stat);
-    }
-
-/*
-    printf("%d: ", world_rank);
-    for (int i = 0; i < bucket_size; i++)
-        printf("%d ", src_bucket[i]);
-    printf("\n");
-*/
-    // ------------------------------------------------------
-
     int dst_bucket_idxlist[dst_idxlist->count];
     for (int i=0; i < dst_idxlist->count; i++) {
         dst_bucket_idxlist[i] = dst_idxlist->list[i] / world_size;
