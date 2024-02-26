@@ -163,18 +163,11 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
                 for (int j=0; j<src_size_ranks[i]; j++)
                     myrank_arr[j] = world_rank;
                 MPI_Send(myrank_arr, src_size_ranks[i], MPI_INT, i, world_rank+bucket_size*(i+1), comm);
-                // nreq++;
             }
         }
 
         MPI_Waitall(nreq, req, stat);
     }
-/*
-    printf("%d -- src_bucket_sort: ", world_rank);
-    for (int i = 0; i < bucket_size; i++)
-        printf("%d ", src_bucket_sort[i]);
-    printf("\n");
-*/
 
     int src_rank_bucket_idxlist_sort[bucket_size];
     {
@@ -203,12 +196,6 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
 
         MPI_Waitall(nreq, req, stat);
     }
-/*
-    printf("%d -- src_rank_bucket_idxlist_sort: ", world_rank);
-    for (int i = 0; i < bucket_size; i++)
-        printf("%d ", src_rank_bucket_idxlist_sort[i]);
-    printf("\n");
-*/
 
     int dst_bucket_idxlist[dst_idxlist->count];
     for (int i=0; i < dst_idxlist->count; i++) {
