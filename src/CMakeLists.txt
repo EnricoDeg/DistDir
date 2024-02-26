@@ -4,6 +4,7 @@ find_package(MPI REQUIRED COMPONENTS C)
 set(SOURCE_EXE  quicksort.c
                 mergesort.c
                 idxlist.c
+                bucket.c
                 map.c
                 exchange.c)
 

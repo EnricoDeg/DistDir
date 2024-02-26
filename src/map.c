@@ -1,6 +1,7 @@
 #include "map.h"
 #include "quicksort.h"
 #include "mergesort.h"
+#include "bucket.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -49,10 +50,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
 
     // each element of the idxlist is assigned to a bucket
     int src_bucket_idxlist[src_idxlist->count];
-    for (int i=0; i < src_idxlist->count; i++) {
-        src_bucket_idxlist[i] = src_idxlist->list[i] / world_size;
-        if (src_bucket_idxlist[i] >= world_size) src_bucket_idxlist[i] = world_size - 1;
-    }
+    assign_idxlist_elements_to_buckets(src_bucket_idxlist, src_idxlist->list, src_idxlist->count, world_size);
 
     // sort src_bucket_idxlist -> src_idxlist and src_idxlist_local accordingly
     int src_idxlist_sort[src_idxlist->count];
@@ -198,10 +196,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     }
 
     int dst_bucket_idxlist[dst_idxlist->count];
-    for (int i=0; i < dst_idxlist->count; i++) {
-        dst_bucket_idxlist[i] = dst_idxlist->list[i] / world_size;
-        if (dst_bucket_idxlist[i] >= world_size) dst_bucket_idxlist[i] = world_size - 1;
-    }
+    assign_idxlist_elements_to_buckets(dst_bucket_idxlist, dst_idxlist->list, dst_idxlist->count, world_size);
 
     // qsort dst_bucket_idxlist
     // local copy (to be deleted)
