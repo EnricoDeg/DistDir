@@ -64,14 +64,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
                             0, src_idxlist->count - 1);
     }
 
-    // bucket ID (rank) to send info to
-    int src_comm_ranks[world_size];
-    for (int rank = 0; rank < world_size; rank++)
-        src_comm_ranks[rank] = 0;
-    if (src_idxlist->count > 0) {
-        for (int i = 0; i < src_idxlist->count; i++)
-            src_comm_ranks[src_bucket_idxlist[i]] = 1;
-    }
+    int src_count_recv = get_n_receiver_bucket(src_bucket_idxlist, world_size, src_idxlist->count, comm);
 
     // number of indices to be sent to each bucket
     int src_size_ranks[world_size];
@@ -85,15 +78,6 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
             }
             src_size_ranks[src_bucket_idxlist[offset]] = count;
         }       
-    }
-
-    // number of processes each bucket receive data from
-    int src_count_recv;
-    {
-        int recv_count[world_size];
-        for (int i=0; i<world_size; i++)
-            recv_count[i] = 1;
-        MPI_Reduce_scatter(src_comm_ranks, &src_count_recv, recv_count, MPI_INT, MPI_SUM, comm);
     }
 
     // source of each message
