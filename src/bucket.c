@@ -33,3 +33,17 @@ int get_n_receiver_bucket(int *bucket_idxlist, int nbuckets, int idxlist_size, M
     return count_recv;
 
 }
+
+void get_n_indices_for_each_bucket(int *size_ranks, int *bucket_idxlist, int idxlist_size, int nranks) {
+    for (int rank = 0; rank < nranks; rank++)
+        size_ranks[rank] = 0;
+    if (idxlist_size > 0) {
+        for (int i = 0, offset=0, count = 1; i < idxlist_size; i++, count++) {
+            if (bucket_idxlist[i] != bucket_idxlist[offset]) {
+                count = 1;
+                offset = i;
+            }
+            size_ranks[bucket_idxlist[offset]] = count;
+        }
+    }
+}

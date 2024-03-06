@@ -68,17 +68,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
 
     // number of indices to be sent to each bucket
     int src_size_ranks[world_size];
-    for (int rank = 0; rank < world_size; rank++)
-        src_size_ranks[rank] = 0;
-    if (src_idxlist->count > 0) {
-        for (int i = 0, offset=0, count = 1; i < src_idxlist->count; i++, count++) {
-            if (src_bucket_idxlist[i] != src_bucket_idxlist[offset]) {
-                count = 1;
-                offset = i;
-            }
-            src_size_ranks[src_bucket_idxlist[offset]] = count;
-        }       
-    }
+    get_n_indices_for_each_bucket(src_size_ranks, src_bucket_idxlist, src_idxlist->count, world_size);
 
     // source of each message
     int src_src_recv[src_count_recv];
