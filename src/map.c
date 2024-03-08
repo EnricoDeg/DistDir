@@ -70,7 +70,8 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     // ==========================================================================================
     // At this point each bucket contains info about src and dst for each point within the bucket
     // ==========================================================================================
-    int dst_rank_bucket_idxlist_sort_src[bucket_size];
+
+    // src part
     int dst_bucket_sort_src[bucket_size];
     for (int i=0; i<bucket_size; i++) {
         for (int j=0; j<bucket_size; j++) {
@@ -79,13 +80,6 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
             }
         }
     }
-
-/*
-    printf("%d  --  dst_bucket_sort_src: ", world_rank);
-    for (int i = 0; i < bucket_size; i++)
-        printf("%d ", dst_bucket_sort_src[i]);
-    printf("\n");
-*/
 
     int rank_exch_dst_sort[src_idxlist->count];
     {
@@ -111,28 +105,9 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         MPI_Waitall(nreq, req, stat);
     }
 
-/*
-    printf("%d before sort-- rank_exch_dst_sort: ", world_rank);
-    for (int i=0; i<src_idxlist->count; i++)
-        printf("%d ", rank_exch_dst_sort[i]);
-    printf("\n");
-*/
-
     if (src_idxlist->count > 0) mergeSort_with_idx(rank_exch_dst_sort, src_idxlist_local, 0, src_idxlist->count - 1);
 
-/*
-    printf("%d after sort-- rank_exch_dst_sort: ", world_rank);
-    for (int i=0; i<src_idxlist->count; i++)
-        printf("%d ", rank_exch_dst_sort[i]);
-    printf("\n");
-
-    printf("%d after sort-- src_idxlist_local: ", world_rank);
-    for (int i=0; i<src_idxlist->count; i++)
-        printf("%d ", src_idxlist_local[i]);
-    printf("\n");
-*/
-
-    int src_rank_bucket_idxlist_sort_dst[bucket_size];
+    // dst part
     int src_bucket_sort_dst[bucket_size];
     for (int i=0; i<bucket_size; i++) {
         for (int j=0; j<bucket_size; j++) {
@@ -141,13 +116,6 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
             }
         }
     }
-
-/*
-    printf("%d  --  src_bucket_sort_dst: ", world_rank);
-    for (int i = 0; i < bucket_size; i++)
-        printf("%d ", src_bucket_sort_dst[i]);
-    printf("\n");
-*/
 
     int rank_exch_src_sort[dst_idxlist->count];
     {
@@ -173,26 +141,11 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         MPI_Waitall(nreq, req, stat);
     }
 
-/*
-    printf("%d before sort-- rank_exch_src_sort: ", world_rank);
-    for (int i=0; i<dst_idxlist->count; i++)
-        printf("%d ", rank_exch_src_sort[i]);
-    printf("\n");
-*/
-
     if (dst_idxlist->count > 0) mergeSort_with_idx(rank_exch_src_sort, dst_idxlist_local, 0, dst_idxlist->count - 1);
     
-/*
-    printf("%d after sort-- rank_exch_src_sort: ", world_rank);
-    for (int i=0; i<dst_idxlist->count; i++)
-        printf("%d ", rank_exch_src_sort[i]);
-    printf("\n");
-
-    printf("%d after sort-- dst_idxlist_local: ", world_rank);
-    for (int i=0; i<dst_idxlist->count; i++)
-        printf("%d ", dst_idxlist_local[i]);
-    printf("\n");
-*/
+    // ========================================
+    // Create and fill the t_map data structure
+    // ========================================
 
     // group all info into data structure
     struct t_map *map;
