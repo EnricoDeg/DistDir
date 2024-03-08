@@ -181,3 +181,48 @@ void map_idxlist_to_RD_decomp(struct t_bucket *bucket, struct t_idxlist *idxlist
     }
 
 }
+
+void map_RD_decomp_to_idxlist(struct t_bucket *src_bucket, struct t_bucket *dst_bucket, int *idxlist_local,
+                              int idxlist_size, int nbuckets, MPI_Comm comm) {
+    int world_size;
+    MPI_Comm_size(comm, &world_size);
+    int world_rank;
+    MPI_Comm_rank(comm, &world_rank);
+
+    int dst_bucket_sort_src[src_bucket->size];
+    for (int i=0; i<src_bucket->size; i++) {
+        for (int j=0; j<src_bucket->size; j++) {
+            if (dst_bucket->idxlist[i] == src_bucket->idxlist[j]) {
+                dst_bucket_sort_src[i] = dst_bucket->ranks[j];
+            }
+        }
+    }
+
+    src_bucket->rank_exch = (int *)malloc(idxlist_size*sizeof(int));
+    {
+        MPI_Request req[nbuckets*nbuckets];
+        MPI_Status stat[nbuckets*nbuckets];
+        int nreq = 0;
+        // send dst info to MPI ranks
+        for (int i = 0, offset=0; i < src_bucket->count_recv; i++) {
+            MPI_Isend(&dst_bucket_sort_src[offset], src_bucket->msg_size_recv[i], MPI_INT, src_bucket->src_recv[i],
+                      world_rank+nbuckets*(1+src_bucket->src_recv[i]), comm, &req[nreq]);
+            offset += src_bucket->msg_size_recv[i];
+            nreq++;
+        }
+
+        // MPI ranks receive the dst MPI proc for each idxlist point
+        for (int i = 0, offset = 0; i < nbuckets; i++) {
+            if (src_bucket->size_ranks[i] > 0) {
+                MPI_Irecv(&src_bucket->rank_exch[offset], src_bucket->size_ranks[i], MPI_INT, i,
+                          i+nbuckets*(1+world_rank), comm, &req[nreq]);
+                offset += src_bucket->size_ranks[i];
+                nreq++;
+            }
+        }
+        MPI_Waitall(nreq, req, stat);
+    }
+
+    if (idxlist_size > 0) mergeSort_with_idx(src_bucket->rank_exch, idxlist_local, 0, idxlist_size - 1);
+
+}

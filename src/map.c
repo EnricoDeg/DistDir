@@ -48,6 +48,10 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         }
     }
 
+    // ========================================================================================
+    // At this point each process provide information to the buckets about its idxlist elements
+    // ========================================================================================
+
     struct t_bucket *src_bucket;
     src_bucket = (struct t_bucket *)malloc(sizeof(struct t_bucket));
     src_bucket->idxlist = (int *)malloc(bucket_size*sizeof(int));
@@ -71,78 +75,10 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     // At this point each bucket contains info about src and dst for each point within the bucket
     // ==========================================================================================
 
-    // src part
-    int dst_bucket_sort_src[bucket_size];
-    for (int i=0; i<bucket_size; i++) {
-        for (int j=0; j<bucket_size; j++) {
-            if (dst_bucket->idxlist[i] == src_bucket->idxlist[j]) {
-                dst_bucket_sort_src[i] = dst_bucket->ranks[j];
-            }
-        }
-    }
+    map_RD_decomp_to_idxlist(src_bucket, dst_bucket, src_idxlist_local, src_idxlist->count, world_size, comm);
 
-    int rank_exch_dst_sort[src_idxlist->count];
-    {
-        MPI_Request req[world_size*world_size];
-        MPI_Status stat[world_size*world_size];
-        int nreq = 0;
-        // send dst info to MPI ranks
-        for (int i = 0, offset=0; i < src_bucket->count_recv; i++) {
-            MPI_Isend(&dst_bucket_sort_src[offset], src_bucket->msg_size_recv[i], MPI_INT, src_bucket->src_recv[i],
-                      world_rank+world_size*(1+src_bucket->src_recv[i]), comm, &req[nreq]);
-            offset += src_bucket->msg_size_recv[i];
-            nreq++;
-        }
+    map_RD_decomp_to_idxlist(dst_bucket, src_bucket, dst_idxlist_local, dst_idxlist->count, world_size, comm);
 
-        // MPI ranks receive the dst MPI proc for each idxlist point
-        for (int i = 0, offset = 0; i < world_size; i++) {
-            if (src_bucket->size_ranks[i] > 0) {
-                MPI_Irecv(&rank_exch_dst_sort[offset], src_bucket->size_ranks[i], MPI_INT, i, i+world_size*(1+world_rank), comm, &req[nreq]);
-                offset += src_bucket->size_ranks[i];
-                nreq++;
-            }
-        }
-        MPI_Waitall(nreq, req, stat);
-    }
-
-    if (src_idxlist->count > 0) mergeSort_with_idx(rank_exch_dst_sort, src_idxlist_local, 0, src_idxlist->count - 1);
-
-    // dst part
-    int src_bucket_sort_dst[bucket_size];
-    for (int i=0; i<bucket_size; i++) {
-        for (int j=0; j<bucket_size; j++) {
-            if (src_bucket->idxlist[i] == dst_bucket->idxlist[j]) {
-                src_bucket_sort_dst[i] = src_bucket->ranks[j];
-            }
-        }
-    }
-
-    int rank_exch_src_sort[dst_idxlist->count];
-    {
-        MPI_Request req[world_size*world_size];
-        MPI_Status stat[world_size*world_size];
-        int nreq = 0;
-        // send dst info to MPI ranks
-        for (int i = 0, offset=0; i < dst_bucket->count_recv; i++) {
-            MPI_Isend(&src_bucket_sort_dst[offset], dst_bucket->msg_size_recv[i], MPI_INT, dst_bucket->src_recv[i],
-                      world_rank+world_size*(1+dst_bucket->src_recv[i]), comm, &req[nreq]);
-            offset += dst_bucket->msg_size_recv[i];
-            nreq++;
-        }
-
-        // MPI ranks receive the dst MPI proc for each idxlist point
-        for (int i = 0, offset = 0; i < world_size; i++) {
-            if (dst_bucket->size_ranks[i] > 0) {
-                MPI_Irecv(&rank_exch_src_sort[offset], dst_bucket->size_ranks[i], MPI_INT, i, i+world_size*(1+world_rank), comm, &req[nreq]);
-                offset += dst_bucket->size_ranks[i];
-                nreq++;
-            }
-        }
-        MPI_Waitall(nreq, req, stat);
-    }
-
-    if (dst_idxlist->count > 0) mergeSort_with_idx(rank_exch_src_sort, dst_idxlist_local, 0, dst_idxlist->count - 1);
-    
     // ========================================
     // Create and fill the t_map data structure
     // ========================================
@@ -159,7 +95,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     if (src_idxlist->count > 0) {
         map->exch_send->count = 1;
         for (int i = 0, offset=0; i < src_idxlist->count; i++)
-            if (rank_exch_dst_sort[i] != rank_exch_dst_sort[offset]) {
+            if (src_bucket->rank_exch[i] != src_bucket->rank_exch[offset]) {
                 map->exch_send->count++;
                 offset = i;
             }
@@ -175,10 +111,10 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         int offset = 0;
         int buffer_size = 0;
         for (int i = 0; i < src_idxlist->count; i++) {
-            if (rank_exch_dst_sort[i] != rank_exch_dst_sort[offset]) {
+            if (src_bucket->rank_exch[i] != src_bucket->rank_exch[offset]) {
                 if (buffer_size > 0)
                     map->exch_send->exch[count] = (struct t_map_exch_per_rank *)malloc(sizeof(struct t_map_exch_per_rank));
-                map->exch_send->exch[count]->exch_rank = rank_exch_dst_sort[offset];
+                map->exch_send->exch[count]->exch_rank = src_bucket->rank_exch[offset];
                 map->exch_send->exch[count]->buffer_size = buffer_size;
                 map->exch_send->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
                 for (int j=offset; j<i; j++)
@@ -191,7 +127,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         }
         if (buffer_size > 0)
             map->exch_send->exch[count] = (struct t_map_exch_per_rank *)malloc(sizeof(struct t_map_exch_per_rank));
-        map->exch_send->exch[count]->exch_rank = rank_exch_dst_sort[offset];
+        map->exch_send->exch[count]->exch_rank = src_bucket->rank_exch[offset];
         map->exch_send->exch[count]->buffer_size = buffer_size;
         map->exch_send->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
         for (int j=offset; j<src_idxlist->count; j++)
@@ -202,7 +138,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     if (dst_idxlist->count > 0) {
         map->exch_recv->count = 1;
         for (int i = 0, offset=0; i < dst_idxlist->count; i++)
-            if (rank_exch_src_sort[i] != rank_exch_src_sort[offset]) {
+            if (dst_bucket->rank_exch[i] != dst_bucket->rank_exch[offset]) {
                 map->exch_recv->count++;
                 offset = i;
             }
@@ -218,10 +154,10 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         int offset = 0;
         int buffer_size = 0;
         for (int i = 0; i < dst_idxlist->count; i++) {
-            if (rank_exch_src_sort[i] != rank_exch_src_sort[offset]) {
+            if (dst_bucket->rank_exch[i] != dst_bucket->rank_exch[offset]) {
                 if (buffer_size > 0)
                     map->exch_recv->exch[count] = (struct t_map_exch_per_rank *)malloc(sizeof(struct t_map_exch_per_rank));
-                map->exch_recv->exch[count]->exch_rank = rank_exch_src_sort[offset];
+                map->exch_recv->exch[count]->exch_rank = dst_bucket->rank_exch[offset];
                 map->exch_recv->exch[count]->buffer_size = buffer_size;
                 map->exch_recv->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
                 for (int j=offset; j<i; j++)
@@ -234,7 +170,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         }
         if (buffer_size > 0)
             map->exch_recv->exch[count] = (struct t_map_exch_per_rank *)malloc(sizeof(struct t_map_exch_per_rank));
-        map->exch_recv->exch[count]->exch_rank = rank_exch_src_sort[offset];
+        map->exch_recv->exch[count]->exch_rank = dst_bucket->rank_exch[offset];
         map->exch_recv->exch[count]->buffer_size = buffer_size;
         map->exch_recv->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
         for (int j=offset; j<dst_idxlist->count; j++)
