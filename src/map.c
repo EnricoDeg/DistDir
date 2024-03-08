@@ -177,6 +177,23 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
             map->exch_recv->exch[count]->buffer_idxlist[j-offset] = dst_idxlist_local[j];
     }
 
+    // free buckets memory
+    free(src_bucket->idxlist);
+    free(src_bucket->ranks);
+    free(src_bucket->src_recv);
+    free(src_bucket->msg_size_recv);
+    free(src_bucket->size_ranks);
+    free(src_bucket->rank_exch);
+    free(src_bucket);
+
+    free(dst_bucket->idxlist);
+    free(dst_bucket->ranks);
+    free(dst_bucket->src_recv);
+    free(dst_bucket->msg_size_recv);
+    free(dst_bucket->size_ranks);
+    free(dst_bucket->rank_exch);
+    free(dst_bucket);
+
     return map;
 
 }
