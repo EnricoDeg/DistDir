@@ -11,6 +11,10 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     int world_rank;
     MPI_Comm_rank(comm, &world_rank);
 
+    // ==============================================
+    // Initial checks and computation of buckets size
+    // ==============================================
+
     // add a check that src_idxlist do not overlap over the processes in comm
 
     // add a check that dst_idxlist do not overlap over the processes in comm
@@ -180,16 +184,20 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     // free buckets memory
     free(src_bucket->idxlist);
     free(src_bucket->ranks);
-    free(src_bucket->src_recv);
-    free(src_bucket->msg_size_recv);
+    if (src_bucket->count_recv > 0)
+        free(src_bucket->src_recv);
+    if (src_bucket->count_recv > 0)
+        free(src_bucket->msg_size_recv);
     free(src_bucket->size_ranks);
     free(src_bucket->rank_exch);
     free(src_bucket);
 
     free(dst_bucket->idxlist);
     free(dst_bucket->ranks);
-    free(dst_bucket->src_recv);
-    free(dst_bucket->msg_size_recv);
+    if (dst_bucket->count_recv > 0)
+        free(dst_bucket->src_recv);
+    if (dst_bucket->count_recv > 0)
+        free(dst_bucket->msg_size_recv);
     free(dst_bucket->size_ranks);
     free(dst_bucket->rank_exch);
     free(dst_bucket);
