@@ -3,4 +3,5 @@
 #include "idxlist.h"
 #include "map.h"
 #include "exchange.h"
+#include "group.h"
 #endif
