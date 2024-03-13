@@ -1,0 +1,6 @@
+build/*
+lib/*
+include/*
+examples/example_basic1
+examples/example_basic2
+examples/example_multi_grid1
