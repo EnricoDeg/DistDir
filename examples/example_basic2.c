@@ -8,18 +8,6 @@
 #define NCOLS 4
 #define NROWS 4
 
-struct t_exch_per_rank {
-    int exch_rank;
-    int buffer_size;
-    int *buffer_idxlist;
-    int *buffer;
-};
-
-struct t_exch {
-    int count;
-    struct t_exch_per_rank *exch;
-};
-
 int main () {
 
     MPI_Init(NULL,NULL);
