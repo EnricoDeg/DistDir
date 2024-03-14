@@ -23,6 +23,7 @@ struct t_map {
 };
 
 struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxlist, MPI_Comm comm);
+struct t_map * extend_map_3d(struct t_map *map2d, int nlevels);
 
 void delete_map(struct t_map *map);
 
