@@ -1,7 +1,8 @@
 # Find MPI library
 find_package(MPI REQUIRED COMPONENTS C)
 
-set(SOURCE_EXE  quicksort.c
+set(SOURCE_EXE  check.c
+	        quicksort.c
                 mergesort.c
                 group.c
                 idxlist.c
