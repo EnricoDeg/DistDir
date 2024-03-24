@@ -4,6 +4,8 @@
 #include <cmocka.h>
 #include <stdlib.h>
 
+
+
 static void test(void **state)
 {
     int err = system("mpirun -n 2 ./hello_world");
