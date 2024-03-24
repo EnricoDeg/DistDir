@@ -51,7 +51,7 @@ void get_n_indices_for_each_bucket(int *size_ranks, int *bucket_idxlist, int idx
     }
 }
 
-void map_idxlist_to_RD_decomp(struct t_bucket *bucket, struct t_idxlist *idxlist, int *idxlist_local, int nbuckets, MPI_Comm comm) {
+void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist_local, int nbuckets, MPI_Comm comm) {
     int world_size;
     MPI_Comm_size(comm, &world_size);
     int world_rank;
@@ -182,7 +182,7 @@ void map_idxlist_to_RD_decomp(struct t_bucket *bucket, struct t_idxlist *idxlist
 
 }
 
-void map_RD_decomp_to_idxlist(struct t_bucket *src_bucket, struct t_bucket *dst_bucket, int *idxlist_local,
+void map_RD_decomp_to_idxlist(t_bucket *src_bucket, t_bucket *dst_bucket, int *idxlist_local,
                               int idxlist_size, int nbuckets, MPI_Comm comm) {
     int world_size;
     MPI_Comm_size(comm, &world_size);

@@ -5,9 +5,10 @@ struct t_idxlist {
     int count;
     int *list;
 };
+typedef struct t_idxlist t_idxlist;
 
-struct t_idxlist * new_idxlist(int *idx_array, int num_indices);
-struct t_idxlist * new_idxlist_empty();
-void delete_idxlist(struct t_idxlist *idxlist);
+t_idxlist * new_idxlist(int *idx_array, int num_indices);
+t_idxlist * new_idxlist_empty();
+void delete_idxlist(t_idxlist *idxlist);
 
 #endif

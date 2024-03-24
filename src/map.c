@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxlist, MPI_Comm comm) {
+t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, MPI_Comm comm) {
     int world_size;
     MPI_Comm_size(comm, &world_size);
     int world_rank;
@@ -56,8 +56,8 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     // At this point each process provide information to the buckets about its idxlist elements
     // ========================================================================================
 
-    struct t_bucket *src_bucket;
-    src_bucket = (struct t_bucket *)malloc(sizeof(struct t_bucket));
+    t_bucket *src_bucket;
+    src_bucket = (t_bucket *)malloc(sizeof(t_bucket));
     src_bucket->idxlist = (int *)malloc(bucket_size*sizeof(int));
     src_bucket->ranks = (int *)malloc(bucket_size*sizeof(int));
     src_bucket->size = bucket_size;
@@ -66,8 +66,8 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     map_idxlist_to_RD_decomp(src_bucket, src_idxlist, src_idxlist_local, world_size, comm);
 
     // -----> dst_idxlist
-    struct t_bucket *dst_bucket;
-    dst_bucket = (struct t_bucket *)malloc(sizeof(struct t_bucket));
+    t_bucket *dst_bucket;
+    dst_bucket = (t_bucket *)malloc(sizeof(t_bucket));
     dst_bucket->idxlist = (int *)malloc(bucket_size*sizeof(int));
     dst_bucket->ranks = (int *)malloc(bucket_size*sizeof(int));
     dst_bucket->size = bucket_size;
@@ -88,12 +88,12 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     // ========================================
 
     // group all info into data structure
-    struct t_map *map;
+    t_map *map;
 
-    map = (struct t_map *)malloc(sizeof(struct t_map));
+    map = (t_map *)malloc(sizeof(t_map));
     map->comm = comm;
-    map->exch_send = (struct t_map_exch *)malloc(sizeof(struct t_map_exch));
-    map->exch_recv = (struct t_map_exch *)malloc(sizeof(struct t_map_exch));
+    map->exch_send = (t_map_exch *)malloc(sizeof(t_map_exch));
+    map->exch_recv = (t_map_exch *)malloc(sizeof(t_map_exch));
 
     // number of procs the current rank has to send data to
     if (src_idxlist->count > 0) {
@@ -108,7 +108,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     }
 
     // fill info about each send message
-    map->exch_send->exch = (struct t_map_exch_per_rank**)malloc(map->exch_send->count * sizeof(struct t_map_exch_per_rank*));
+    map->exch_send->exch = (t_map_exch_per_rank**)malloc(map->exch_send->count * sizeof(t_map_exch_per_rank*));
 
     if (src_idxlist->count > 0) {
         int count = 0;
@@ -117,7 +117,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         for (int i = 0; i < src_idxlist->count; i++) {
             if (src_bucket->rank_exch[i] != src_bucket->rank_exch[offset]) {
                 if (buffer_size > 0)
-                    map->exch_send->exch[count] = (struct t_map_exch_per_rank *)malloc(sizeof(struct t_map_exch_per_rank));
+                    map->exch_send->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
                 map->exch_send->exch[count]->exch_rank = src_bucket->rank_exch[offset];
                 map->exch_send->exch[count]->buffer_size = buffer_size;
                 map->exch_send->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
@@ -130,7 +130,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
             buffer_size++;
         }
         if (buffer_size > 0)
-            map->exch_send->exch[count] = (struct t_map_exch_per_rank *)malloc(sizeof(struct t_map_exch_per_rank));
+            map->exch_send->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
         map->exch_send->exch[count]->exch_rank = src_bucket->rank_exch[offset];
         map->exch_send->exch[count]->buffer_size = buffer_size;
         map->exch_send->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
@@ -151,7 +151,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
     }
 
     // fill info about each recv message
-    map->exch_recv->exch = (struct t_map_exch_per_rank**)malloc(map->exch_recv->count * sizeof(struct t_map_exch_per_rank*));
+    map->exch_recv->exch = (t_map_exch_per_rank**)malloc(map->exch_recv->count * sizeof(t_map_exch_per_rank*));
 
     if (dst_idxlist->count > 0) {
         int count = 0;
@@ -160,7 +160,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
         for (int i = 0; i < dst_idxlist->count; i++) {
             if (dst_bucket->rank_exch[i] != dst_bucket->rank_exch[offset]) {
                 if (buffer_size > 0)
-                    map->exch_recv->exch[count] = (struct t_map_exch_per_rank *)malloc(sizeof(struct t_map_exch_per_rank));
+                    map->exch_recv->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
                 map->exch_recv->exch[count]->exch_rank = dst_bucket->rank_exch[offset];
                 map->exch_recv->exch[count]->buffer_size = buffer_size;
                 map->exch_recv->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
@@ -173,7 +173,7 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
             buffer_size++;
         }
         if (buffer_size > 0)
-            map->exch_recv->exch[count] = (struct t_map_exch_per_rank *)malloc(sizeof(struct t_map_exch_per_rank));
+            map->exch_recv->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
         map->exch_recv->exch[count]->exch_rank = dst_bucket->rank_exch[offset];
         map->exch_recv->exch[count]->buffer_size = buffer_size;
         map->exch_recv->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
@@ -206,25 +206,25 @@ struct t_map * new_map(struct t_idxlist *src_idxlist, struct t_idxlist *dst_idxl
 
 }
 
-struct t_map * extend_map_3d(struct t_map *map2d, int nlevels) {
+t_map * extend_map_3d(t_map *map2d, int nlevels) {
     // group all info into data structure
-    struct t_map *map;
+    t_map *map;
 
-    map = (struct t_map *)malloc(sizeof(struct t_map));
+    map = (t_map *)malloc(sizeof(t_map));
     map->comm = map2d->comm;
-    map->exch_send = (struct t_map_exch *)malloc(sizeof(struct t_map_exch));
-    map->exch_recv = (struct t_map_exch *)malloc(sizeof(struct t_map_exch));
+    map->exch_send = (t_map_exch *)malloc(sizeof(t_map_exch));
+    map->exch_recv = (t_map_exch *)malloc(sizeof(t_map_exch));
 
     // number of procs the current rank has to send data to
     map->exch_send->count = map2d->exch_send->count;
 
     // fill info about each send message
     if (map->exch_send->count > 0) {
-        map->exch_send->exch = (struct t_map_exch_per_rank**)malloc(map->exch_send->count * sizeof(struct t_map_exch_per_rank*));
+        map->exch_send->exch = (t_map_exch_per_rank**)malloc(map->exch_send->count * sizeof(t_map_exch_per_rank*));
         for (int count = 0; count < map->exch_send->count; count++) {
             int buffer_size2d = map2d->exch_send->exch[count]->buffer_size;
             if (buffer_size2d > 0)
-                    map->exch_send->exch[count] = (struct t_map_exch_per_rank *)malloc(sizeof(struct t_map_exch_per_rank));
+                    map->exch_send->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
             map->exch_send->exch[count]->exch_rank = map2d->exch_send->exch[count]->exch_rank;
             map->exch_send->exch[count]->buffer_size = buffer_size2d * nlevels;
             map->exch_send->exch[count]->buffer_idxlist = (int *)malloc(map->exch_send->exch[count]->buffer_size * sizeof(int));
@@ -240,11 +240,11 @@ struct t_map * extend_map_3d(struct t_map *map2d, int nlevels) {
 
     // fill info about each recv message
     if (map->exch_recv->count > 0) {
-        map->exch_recv->exch = (struct t_map_exch_per_rank**)malloc(map->exch_recv->count * sizeof(struct t_map_exch_per_rank*));
+        map->exch_recv->exch = (t_map_exch_per_rank**)malloc(map->exch_recv->count * sizeof(t_map_exch_per_rank*));
         for (int count = 0; count < map->exch_recv->count; count++) {
             int buffer_size2d = map2d->exch_recv->exch[count]->buffer_size;
             if (buffer_size2d > 0)
-                    map->exch_recv->exch[count] = (struct t_map_exch_per_rank *)malloc(sizeof(struct t_map_exch_per_rank));
+                    map->exch_recv->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
             map->exch_recv->exch[count]->exch_rank = map2d->exch_recv->exch[count]->exch_rank;
             map->exch_recv->exch[count]->buffer_size = buffer_size2d * nlevels;
             map->exch_recv->exch[count]->buffer_idxlist = (int *)malloc(map->exch_recv->exch[count]->buffer_size * sizeof(int));
@@ -259,7 +259,7 @@ struct t_map * extend_map_3d(struct t_map *map2d, int nlevels) {
 
 }
 
-void delete_map(struct t_map *map) {
+void delete_map(t_map *map) {
 	// map send info
     for (int count = 0; count < map->exch_send->count; count++) {
         if (map->exch_send->exch[count]->buffer_size > 0) {

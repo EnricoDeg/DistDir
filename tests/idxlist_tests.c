@@ -11,7 +11,7 @@ static void new_idxlist_test(void **state) {
     int *idx_array = (int *)malloc(num_indices*sizeof(int));
     for (int i=0; i<10; i++)
         idx_array[i] = i;
-    struct t_idxlist *idxlist = new_idxlist(idx_array, num_indices);
+    t_idxlist *idxlist = new_idxlist(idx_array, num_indices);
     assert_int_equal(num_indices, idxlist->count);
     for (int i=0; i<10; i++)
         assert_int_equal(idx_array[i], idxlist->list[i]);

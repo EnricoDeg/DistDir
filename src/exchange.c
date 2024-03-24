@@ -7,6 +7,7 @@ struct xt_un_pack_kernels {;
     kernel_func pack;
     kernel_func unpack;
 };
+typedef struct xt_un_pack_kernels xt_un_pack_kernels;
 
 static inline void pack_int(int *buffer, int i, int *data, int idx) {
     buffer[i] = data[idx];
@@ -32,7 +33,7 @@ static inline void unpack_double(double *data, int idx, double *buffer, int i) {
     data[idx] = buffer[i];
 }
 
-static void select_un_pack_kernels(struct xt_un_pack_kernels *table_kernels, MPI_Datatype type) {
+static void select_un_pack_kernels(xt_un_pack_kernels *table_kernels, MPI_Datatype type) {
     if (type == MPI_INT) {
         table_kernels->pack = (kernel_func)pack_int;
         table_kernels->unpack = (kernel_func)unpack_int;
@@ -45,13 +46,13 @@ static void select_un_pack_kernels(struct xt_un_pack_kernels *table_kernels, MPI
     }
 }
 
-void exchange_go(struct t_map *map, MPI_Datatype type, void *src_data, void* dst_data) {
+void exchange_go(t_map *map, MPI_Datatype type, void *src_data, void* dst_data) {
     int world_size;
     MPI_Comm_size(map->comm, &world_size);
     int world_rank;
     MPI_Comm_rank(map->comm, &world_rank);
 
-    struct xt_un_pack_kernels vtable_kernels;
+    xt_un_pack_kernels vtable_kernels;
     select_un_pack_kernels(&vtable_kernels, type);
 
     // exchange data array

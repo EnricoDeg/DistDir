@@ -18,9 +18,9 @@ int main () {
     int world_role;
     int npoints_local = NCOLS * NROWS / (world_size / 2);
     int idxlist[npoints_local];
-    struct t_idxlist *p_idxlist;
-    struct t_idxlist *p_idxlist_empty;
-    struct t_map *p_map;
+    t_idxlist *p_idxlist;
+    t_idxlist *p_idxlist_empty;
+    t_map *p_map;
 
     if (world_size != 4) return 1;
 

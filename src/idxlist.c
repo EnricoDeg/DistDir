@@ -1,9 +1,9 @@
 #include "idxlist.h"
 #include <stdlib.h>
 
-struct t_idxlist * new_idxlist(int *idx_array, int num_indices) {
-    struct t_idxlist *idxlist;
-    idxlist = (struct t_idxlist *)malloc(sizeof(struct t_idxlist));
+t_idxlist * new_idxlist(int *idx_array, int num_indices) {
+    t_idxlist *idxlist;
+    idxlist = (t_idxlist *)malloc(sizeof(t_idxlist));
     idxlist->count = num_indices;
     if (idxlist->count > 0)
         idxlist->list = (int *)malloc(idxlist->count * sizeof(int));
@@ -12,15 +12,15 @@ struct t_idxlist * new_idxlist(int *idx_array, int num_indices) {
     return idxlist;
 }
 
-struct t_idxlist * new_idxlist_empty() {
-    struct t_idxlist *idxlist;
-    idxlist = (struct t_idxlist *)malloc(sizeof(struct t_idxlist));
+t_idxlist * new_idxlist_empty() {
+    t_idxlist *idxlist;
+    idxlist = (t_idxlist *)malloc(sizeof(t_idxlist));
     idxlist->count = 0;
     idxlist->list = NULL;
     return idxlist;
 }
 
-void delete_idxlist(struct t_idxlist *idxlist) {
+void delete_idxlist(t_idxlist *idxlist) {
     if (idxlist->count > 0)
         free(idxlist->list);
     free(idxlist);
