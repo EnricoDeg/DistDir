@@ -1,8 +1,10 @@
-#include "bucket.h"
-#include "mpi.h"
-#include "mergesort.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "mpi.h"
+
+#include "bucket.h"
+#include "mergesort.h"
+#include "check.h"
 
 void assign_idxlist_elements_to_buckets(int *bucket_idxlist, int *idxlist, int idxlist_size, int nbuckets) {
 
@@ -30,7 +32,7 @@ int get_n_receiver_bucket(int *bucket_idxlist, int nbuckets, int idxlist_size, M
         int recv_count[nbuckets];
         for (int i=0; i<nbuckets; i++)
             recv_count[i] = 1;
-        MPI_Reduce_scatter(src_comm_ranks, &count_recv, recv_count, MPI_INT, MPI_SUM, comm);
+        check_mpi( MPI_Reduce_scatter(src_comm_ranks, &count_recv, recv_count, MPI_INT, MPI_SUM, comm) );
     }
 
     return count_recv;
@@ -53,9 +55,9 @@ void get_n_indices_for_each_bucket(int *size_ranks, int *bucket_idxlist, int idx
 
 void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist_local, int nbuckets, MPI_Comm comm) {
     int world_size;
-    MPI_Comm_size(comm, &world_size);
+    check_mpi( MPI_Comm_size(comm, &world_size) );
     int world_rank;
-    MPI_Comm_rank(comm, &world_rank);
+    check_mpi( MPI_Comm_rank(comm, &world_rank) );
 
     // each element of the idxlist is assigned to a bucket
     int bucket_idxlist[idxlist->count];
@@ -88,15 +90,16 @@ void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist
 
         for (int i=0; i<world_size; i++)
             if (bucket->size_ranks[i] > 0) {
-                MPI_Isend(&world_rank, 1, MPI_INT, i, i+bucket->size*(i+1), comm, &req[nreq]);
+                check_mpi( MPI_Isend(&world_rank, 1, MPI_INT, i, i+bucket->size*(i+1), comm, &req[nreq]) );
                 nreq++;
             }
 
         for (int i=0; i<bucket->count_recv; i++) {
-            MPI_Irecv(&bucket->src_recv[i], 1, MPI_INT, MPI_ANY_SOURCE, world_rank+bucket->size*(world_rank+1), comm, &req[nreq]);
+            check_mpi( MPI_Irecv(&bucket->src_recv[i], 1, MPI_INT, MPI_ANY_SOURCE,
+                                  world_rank+bucket->size*(world_rank+1), comm, &req[nreq]) );
             nreq++;
         }
-        MPI_Waitall(nreq, req, stat);
+        check_mpi( MPI_Waitall(nreq, req, stat) );
 
         // sort by process number
         mergeSort(bucket->src_recv, 0, bucket->count_recv-1);
@@ -113,15 +116,17 @@ void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist
 
         for (int i=0; i<world_size; i++)
             if (bucket->size_ranks[i] > 0) {
-                MPI_Isend(&bucket->size_ranks[i], 1, MPI_INT, i, world_rank+bucket->size*i, comm, &req[nreq]);
+                check_mpi( MPI_Isend(&bucket->size_ranks[i], 1, MPI_INT, i,
+                                      world_rank+bucket->size*i, comm, &req[nreq]) );
                 nreq++;
             }
 
         for (int i=0; i<bucket->count_recv; i++) {
-            MPI_Irecv(&bucket->msg_size_recv[i], 1, MPI_INT, bucket->src_recv[i], bucket->src_recv[i]+bucket->size*world_rank, comm, &req[nreq]);
+            check_mpi( MPI_Irecv(&bucket->msg_size_recv[i], 1, MPI_INT, bucket->src_recv[i],
+                                  bucket->src_recv[i]+bucket->size*world_rank, comm, &req[nreq]) );
             nreq++;
         }
-        MPI_Waitall(nreq, req, stat);
+        check_mpi( MPI_Waitall(nreq, req, stat) );
     }
 
     // gather src_bucket info
@@ -133,8 +138,8 @@ void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist
         // recv src for each bucket
         int offset = 0;
         for (int i = 0; i < bucket->count_recv; i++) {
-            MPI_Irecv(&bucket->ranks[offset], bucket->msg_size_recv[i], MPI_INT, bucket->src_recv[i],
-                      world_rank+bucket->size*(world_rank+1), comm, &req[nreq]);
+            check_mpi( MPI_Irecv(&bucket->ranks[offset], bucket->msg_size_recv[i], MPI_INT, bucket->src_recv[i],
+                      world_rank+bucket->size*(world_rank+1), comm, &req[nreq]) );
             offset +=  bucket->msg_size_recv[i];
             nreq++;
         }
@@ -145,11 +150,11 @@ void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist
                 int myrank_arr[bucket->size_ranks[i]];
                 for (int j=0; j<bucket->size_ranks[i]; j++)
                     myrank_arr[j] = world_rank;
-                MPI_Send(myrank_arr, bucket->size_ranks[i], MPI_INT, i, i+bucket->size*(i+1), comm);
+                check_mpi( MPI_Send(myrank_arr, bucket->size_ranks[i], MPI_INT, i, i+bucket->size*(i+1), comm) );
             }
         }
 
-        MPI_Waitall(nreq, req, stat);
+        check_mpi( MPI_Waitall(nreq, req, stat) );
     }
 
 
@@ -161,8 +166,8 @@ void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist
         //  MPI ranks send info to src bucket
         for (int i = 0, offset = 0; i < world_size; i++) {
             if (bucket->size_ranks[i] > 0) {
-                MPI_Isend(&src_idxlist_sort[offset], bucket->size_ranks[i], MPI_INT,
-                           i, i+bucket->size*(i+1), comm, &req[nreq]);
+                check_mpi( MPI_Isend(&src_idxlist_sort[offset], bucket->size_ranks[i], MPI_INT,
+                           i, i+bucket->size*(i+1), comm, &req[nreq]) );
                 offset += bucket->size_ranks[i];
                 nreq++;
             }
@@ -171,13 +176,13 @@ void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist
         // recv src for each bucket
         int offset = 0;
         for (int i = 0; i < bucket->count_recv; i++) {
-            MPI_Irecv(&bucket->idxlist[offset], bucket->msg_size_recv[i], MPI_INT,
-                       bucket->src_recv[i], world_rank+bucket->size*(world_rank+1), comm, &req[nreq]);
+            check_mpi( MPI_Irecv(&bucket->idxlist[offset], bucket->msg_size_recv[i], MPI_INT,
+                       bucket->src_recv[i], world_rank+bucket->size*(world_rank+1), comm, &req[nreq]) );
             offset +=  bucket->msg_size_recv[i];
             nreq++;
         }
 
-        MPI_Waitall(nreq, req, stat);
+        check_mpi( MPI_Waitall(nreq, req, stat) );
     }
 
 }
@@ -185,9 +190,9 @@ void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist
 void map_RD_decomp_to_idxlist(t_bucket *src_bucket, t_bucket *dst_bucket, int *idxlist_local,
                               int idxlist_size, int nbuckets, MPI_Comm comm) {
     int world_size;
-    MPI_Comm_size(comm, &world_size);
+    check_mpi( MPI_Comm_size(comm, &world_size) );
     int world_rank;
-    MPI_Comm_rank(comm, &world_rank);
+    check_mpi( MPI_Comm_rank(comm, &world_rank) );
 
     int dst_bucket_sort_src[src_bucket->size];
     for (int i=0; i<src_bucket->size; i++) {
@@ -205,8 +210,9 @@ void map_RD_decomp_to_idxlist(t_bucket *src_bucket, t_bucket *dst_bucket, int *i
         int nreq = 0;
         // send dst info to MPI ranks
         for (int i = 0, offset=0; i < src_bucket->count_recv; i++) {
-            MPI_Isend(&dst_bucket_sort_src[offset], src_bucket->msg_size_recv[i], MPI_INT, src_bucket->src_recv[i],
-                      world_rank+nbuckets*(1+src_bucket->src_recv[i]), comm, &req[nreq]);
+            check_mpi( MPI_Isend(&dst_bucket_sort_src[offset], src_bucket->msg_size_recv[i], MPI_INT,
+                                  src_bucket->src_recv[i], world_rank+nbuckets*(1+src_bucket->src_recv[i]),
+                                  comm, &req[nreq]) );
             offset += src_bucket->msg_size_recv[i];
             nreq++;
         }
@@ -214,13 +220,13 @@ void map_RD_decomp_to_idxlist(t_bucket *src_bucket, t_bucket *dst_bucket, int *i
         // MPI ranks receive the dst MPI proc for each idxlist point
         for (int i = 0, offset = 0; i < nbuckets; i++) {
             if (src_bucket->size_ranks[i] > 0) {
-                MPI_Irecv(&src_bucket->rank_exch[offset], src_bucket->size_ranks[i], MPI_INT, i,
-                          i+nbuckets*(1+world_rank), comm, &req[nreq]);
+                check_mpi( MPI_Irecv(&src_bucket->rank_exch[offset], src_bucket->size_ranks[i], MPI_INT, i,
+                                      i+nbuckets*(1+world_rank), comm, &req[nreq]) );
                 offset += src_bucket->size_ranks[i];
                 nreq++;
             }
         }
-        MPI_Waitall(nreq, req, stat);
+        check_mpi( MPI_Waitall(nreq, req, stat) );
     }
 
     if (idxlist_size > 0) mergeSort_with_idx(src_bucket->rank_exch, idxlist_local, 0, idxlist_size - 1);

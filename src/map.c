@@ -1,15 +1,16 @@
-#include "map.h"
-#include "quicksort.h"
-#include "mergesort.h"
-#include "bucket.h"
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "map.h"
+#include "mergesort.h"
+#include "bucket.h"
+#include "check.h"
+
 t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, MPI_Comm comm) {
     int world_size;
-    MPI_Comm_size(comm, &world_size);
+    check_mpi( MPI_Comm_size(comm, &world_size) );
     int world_rank;
-    MPI_Comm_rank(comm, &world_rank);
+    check_mpi( MPI_Comm_rank(comm, &world_rank) );
 
     // ==============================================
     // Initial checks and computation of buckets size
@@ -28,7 +29,7 @@ t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, MPI_Comm comm) {
             for (int i = 0; i < src_idxlist->count; i++)
                 if (src_idxlist->list[i] > max_idx_value)
                     max_idx_value = src_idxlist->list[i];
-            MPI_Allreduce(&max_idx_value, &src_bucket_size, 1, MPI_INT, MPI_MAX, comm);
+            check_mpi( MPI_Allreduce(&max_idx_value, &src_bucket_size, 1, MPI_INT, MPI_MAX, comm) );
         }
         src_bucket_size++;
         src_bucket_size /= world_size;
@@ -40,7 +41,7 @@ t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, MPI_Comm comm) {
             for (int i = 0; i < src_idxlist->count; i++)
                 if (src_idxlist->list[i] > max_idx_value)
                     max_idx_value = src_idxlist->list[i];
-            MPI_Allreduce(&max_idx_value, &dst_bucket_size, 1, MPI_INT, MPI_MAX, comm);
+            check_mpi( MPI_Allreduce(&max_idx_value, &dst_bucket_size, 1, MPI_INT, MPI_MAX, comm) );
         }
         dst_bucket_size++;
         dst_bucket_size /= world_size;
