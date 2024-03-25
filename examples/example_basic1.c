@@ -8,6 +8,28 @@
 #define NCOLS 4
 #define NROWS 4
 
+/**********************************************************************************************************************
+ * The example uses a total of 4 MPI processes over a 4x4 global 2D domain.
+ * Processes 0,1 have the following domain decomposition:
+ * 
+ * Rank: 0
+ * Indices: 0, 1, 2, 3, 4, 5, 6, 7
+ * Rank: 1
+ * Indices: 8, 9, 10, 11, 12, 13, 14
+ * 
+ * Processes 2,3 have the following domain decomposition:
+ * 
+ * Rank: 2
+ * Indices: 0, 1, 8, 9, 2, 3, 10, 11
+ * Rank: 3
+ * Indices: 4, 5, 12, 13, 7, 7, 14, 15
+ * 
+ * Ranks 0,1 send data to ranks 2,3
+ * 
+ * Exchange of integers and doubles are tested.
+ *
+ *********************************************************************************************************************/
+
 int main () {
 
     MPI_Init(NULL,NULL);
@@ -25,8 +47,6 @@ int main () {
     if (world_size != 4) return 1;
 
     // index list with global indices
-
-
     if (world_rank < 2) {
         world_role = I_SRC;
         int ncols_local = NCOLS / (world_size / 2);
@@ -52,7 +72,6 @@ int main () {
     }
 
     // test exchange
-
     {
         int data[npoints_local];
         // src MPI ranks fill data array
