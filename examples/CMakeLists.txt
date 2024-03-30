@@ -1,3 +1,5 @@
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DERROR_CHECK")
+
 add_executable(example_basic1 example_basic1.c)
 target_link_libraries (example_basic1 distdir)
 target_include_directories(example_basic1 PRIVATE ${PROJECT_SOURCE_DIR})

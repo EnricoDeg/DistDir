@@ -1,3 +1,5 @@
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DERROR_CHECK")
+
 add_executable(hello_world hello_world.c)
 target_link_libraries (hello_world distdir)
 target_include_directories(hello_world PRIVATE ${PROJECT_SOURCE_DIR})

@@ -33,17 +33,37 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include "mpi.h"
 
 #include "bucket.h"
 #include "mergesort.h"
 #include "check.h"
 
-void assign_idxlist_elements_to_buckets(int *bucket_idxlist, int *idxlist, int idxlist_size, int nbuckets) {
+/**
+ * @brief Assign each element of a given index list to a bucket.
+ * 
+ * @details The assignment of the index list elements to a bucket is straightforward.
+ *          Given N total global indices and M total buckets, bucket 0 owns elements 0 - N/M-1,
+ *          bucket 1 owns elements N/M - 2*N/M-1, etc.
+ *  
+ * @param[out] bucket_idxlist    integer array with the bucket location for each element of the index list
+ * @param[in]  idxlist           integer array with the values of the index list (global indices)
+ * @param[in]  idxlist_size      size of the idxlist array
+ * @param[in]  nbuckets          number of buckets
+ * 
+ * @ingroup bucket
+ */
+static void assign_idxlist_elements_to_buckets(int *bucket_idxlist, const int *idxlist, int idxlist_size, int nbuckets) {
 
-	for (int i=0; i < idxlist_size; i++) {
+#ifdef ERROR_CHECK
+	assert(bucket_idxlist != NULL);
+#endif
+
+	for (int i = 0; i < idxlist_size; i++) {
 		bucket_idxlist[i] = idxlist[i] / nbuckets;
-		if (bucket_idxlist[i] >= nbuckets) bucket_idxlist[i] = nbuckets - 1;
+		if (bucket_idxlist[i] >= nbuckets)
+			bucket_idxlist[i] = nbuckets - 1;
 	}
 }
 

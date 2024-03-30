@@ -1,6 +1,8 @@
 # Find MPI library
 find_package(MPI REQUIRED COMPONENTS C)
 
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DERROR_CHECK")
+
 set(SOURCE_EXE  check.c
 	        quicksort.c
                 mergesort.c
