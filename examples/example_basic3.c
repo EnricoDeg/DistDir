@@ -62,7 +62,6 @@ int main () {
 	// index list with global indices
 	if (world_rank < 2) {
 		world_role = I_SRC;
-		int ncols_local = NCOLS / (world_size / 2);
 		for (int i=0; i<npoints_local; i++)
 			idxlist[i] = world_rank + i*2;
 	} else {

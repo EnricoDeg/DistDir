@@ -38,7 +38,7 @@
 
 typedef void (*kernel_func) (void*, int, void*, int);
 
-struct xt_un_pack_kernels {;
+struct xt_un_pack_kernels {
 	kernel_func pack;
 	kernel_func unpack;
 };

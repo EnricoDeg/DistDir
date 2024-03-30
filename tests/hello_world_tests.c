@@ -37,7 +37,7 @@
 #include <cmocka.h>
 #include <stdlib.h>
 
-static void test(void **state) {
+static void test(void **state __attribute__((unused))) {
 
 	int err = system("mpirun -n 2 ./hello_world");
 	assert_int_equal(err, 0);

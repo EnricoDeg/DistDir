@@ -39,7 +39,7 @@
 
 #include "src/distdir.h"
 
-static void new_idxlist_test(void **state) {
+static void new_idxlist_test(void **state __attribute__((unused))) {
 
 	int num_indices = 10;
 	int *idx_array = (int *)malloc(num_indices*sizeof(int));
