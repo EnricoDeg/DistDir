@@ -90,6 +90,35 @@ int get_n_receiver_bucket(int *bucket_idxlist, int nbuckets, int idxlist_size, M
 	return count_recv;
 }
 
+static void get_receivers_bucket(int *bucket_src_recv, const int *bucket_size_ranks, 
+                                 int  bucket_count_recv, int bucket_size, int idxlist_count, MPI_Comm comm) {
+
+	int world_size;
+	check_mpi( MPI_Comm_size(comm, &world_size) );
+	int world_rank;
+	check_mpi( MPI_Comm_rank(comm, &world_rank) );
+
+	MPI_Request req[idxlist_count+bucket_size];
+	MPI_Status stat[idxlist_count+bucket_size];
+	int nreq = 0;
+
+	for (int i=0; i<world_size; i++)
+		if (bucket_size_ranks[i] > 0) {
+			check_mpi( MPI_Isend(&world_rank, 1, MPI_INT, i, i+bucket_size*(i+1), comm, &req[nreq]) );
+			nreq++;
+		}
+
+	for (int i=0; i<bucket_count_recv; i++) {
+		check_mpi( MPI_Irecv(&bucket_src_recv[i], 1, MPI_INT, MPI_ANY_SOURCE,
+		                      world_rank+bucket_size*(world_rank+1), comm, &req[nreq]) );
+		nreq++;
+	}
+	check_mpi( MPI_Waitall(nreq, req, stat) );
+
+	// sort by process number
+	mergeSort(bucket_src_recv, 0, bucket_count_recv-1);
+}
+
 void get_n_indices_for_each_bucket(int *size_ranks, int *bucket_idxlist, int idxlist_size, int nranks) {
 
 	for (int rank = 0; rank < nranks; rank++)
@@ -136,28 +165,8 @@ void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist
 	// source of each message
 	if (bucket->count_recv > 0)
 		bucket->src_recv = (int *)malloc(bucket->count_recv*sizeof(int));
-	{
-		MPI_Request req[idxlist->count+bucket->size];
-		MPI_Status stat[idxlist->count+bucket->size];
-		int nreq = 0;
-
-		for (int i=0; i<world_size; i++)
-			if (bucket->size_ranks[i] > 0) {
-				check_mpi( MPI_Isend(&world_rank, 1, MPI_INT, i, i+bucket->size*(i+1), comm, &req[nreq]) );
-				nreq++;
-			}
-
-		for (int i=0; i<bucket->count_recv; i++) {
-			check_mpi( MPI_Irecv(&bucket->src_recv[i], 1, MPI_INT, MPI_ANY_SOURCE,
-			                      world_rank+bucket->size*(world_rank+1), comm, &req[nreq]) );
-			nreq++;
-		}
-		check_mpi( MPI_Waitall(nreq, req, stat) );
-
-		// sort by process number
-		mergeSort(bucket->src_recv, 0, bucket->count_recv-1);
-	}
-
+	get_receivers_bucket(bucket->src_recv, bucket->size_ranks, 
+                         bucket->count_recv, bucket->size, idxlist->count, comm);
 
 	// size of each message that each bucket receive
 	if (bucket->count_recv > 0)
