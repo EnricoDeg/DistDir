@@ -37,6 +37,30 @@
 #include "mpi.h"
 #include "idxlist.h"
 
+/** @struct t_bucket
+ * 
+ *  @brief The structure contains information about each bucket.
+ * 
+ *  @var size          Number of global indices in the bucket
+ *  @var idxlist       Array of indices inside the bucket sorted in ascending order of the MPI processes owning them.
+ *                     Size is size.
+ *  @var ranks         Array of MPI ranks owning the indices in the idxlist array
+ *                     Size is size.
+ *  @var count_recv    Number of MPI processes that the bucket receives data from.
+ *  @var src_recv      Array of MPI processes sending data to the bucket.
+ *                     Size is count_recv.
+ *  @var msg_size_recv Array of number of indices that each MPI ranks in src_recv send to the bucket.
+ *                     Size is count_recv.
+ *  @var size_ranks    Array of number of indices that the MPI process send to each bucket.
+ *                     Size is the number of MPI processes in the communicator.
+ *  @var rank_exch     Array of MPI ranks to send / recv data to / from.
+ *                     This is the result of the distributed directory algorithm.
+ *                     Each element of the array is associated with an element of the idxlist in the same order
+ *                     that the list was given to new_idxlist function.
+ *                     Size is the same of the idxlist->count.
+ * 
+ *  @ingroup data_structure
+ */
 struct t_bucket {
 	int size;
 	int *idxlist;
