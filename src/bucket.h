@@ -62,7 +62,9 @@
  *  @ingroup data_structure
  */
 struct t_bucket {
+	int min_size;
 	int size;
+	int max_size;
 	int *idxlist;
 	int *ranks;
 	int count_recv;
