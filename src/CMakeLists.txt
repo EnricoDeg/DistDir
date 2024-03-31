@@ -8,6 +8,7 @@ set(SOURCE_EXE  check.c
                 mergesort.c
                 group.c
                 idxlist.c
+		backend.c
                 bucket.c
                 map.c
                 exchange.c)
