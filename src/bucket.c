@@ -62,7 +62,7 @@ void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist
 		                    0, idxlist->count - 1);
 	}
 
-	bucket->count_recv = get_n_procs_send_to_bucket(bucket_idxlist, world_size, idxlist->count, comm);
+	bucket->count_recv = num_procs_send_to_each_bucket(bucket_idxlist, world_size, idxlist->count, comm);
 
 	// number of indices to be sent to each bucket
 	bucket->size_ranks = (int *)malloc(nbuckets*sizeof(int));
@@ -71,13 +71,13 @@ void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist
 	// source of each message
 	if (bucket->count_recv > 0)
 		bucket->src_recv = (int *)malloc(bucket->count_recv*sizeof(int));
-	get_receivers_bucket(bucket->src_recv, bucket->size_ranks, 
+	senders_to_bucket(bucket->src_recv, bucket->size_ranks, 
                          bucket->count_recv, bucket->max_size, idxlist->count, comm);
 
 	// size of each message that each bucket receive
 	if (bucket->count_recv > 0)
 		bucket->msg_size_recv = (int *)malloc(bucket->count_recv*sizeof(int));
-	get_n_indices_from_each_process(bucket->msg_size_recv, 
+	num_indices_to_bucket_from_each_rank(bucket->msg_size_recv, 
                                     bucket->size_ranks, bucket->src_recv,
                                     bucket->count_recv, bucket->max_size,
                                     idxlist->count, comm);
