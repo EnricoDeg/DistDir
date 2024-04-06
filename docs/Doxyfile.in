@@ -1,1 +1,11 @@
-INPUT                  = "@DOXYGEN_INPUT_DIR@"
+INPUT                  = "@DOXYGEN_INPUT_DIR@/../src" \
+                         "@DOXYGEN_INPUT_DIR@/../docs/src"
+
+HAVE_DOT = no
+
+EXTRACT_ALL = yes
+
+FILE_PATTERNS = *.h \
+                *.dox
+
+OPTIMIZE_OUTPUT_FOR_C = yes
