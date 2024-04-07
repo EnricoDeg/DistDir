@@ -8,5 +8,9 @@ Enrico Degregori
 
 - @ref license
 
+
+@defgroup backend
+@defgroup examples
+
 */
 

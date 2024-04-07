@@ -41,9 +41,32 @@
 #define NCOLS 4
 #define NROWS 4
 
-int main () {
+/**
+ * @brief Basic example of exchange between two 2D domain decomposition each using 2 MPI processes.
+ * 
+ * @details The example uses a total of 4 MPI processes over a 4x4 global 2D domain.
+ *          Processes 0,1 have the following domain decomposition:
+ * 
+ *          Rank: 0
+ *          Indices: 0, 1, 2, 3, 4, 5, 6, 7
+ *          Rank: 1
+ *          Indices: 8, 9, 10, 11, 12, 13, 14
+ * 
+ *          Processes 2,3 have the following domain decomposition:
+ * 
+ *          Rank: 2
+ *          Indices: 0, 8, 1, 9, 2, 10, 3, 11
+ *          Rank: 3
+ *          Indices: 4, 12, 5, 13, 6, 14, 7, 15
+ * 
+ *          Ranks 0,1 send data to ranks 2,3
+ * 
+ *          Exchange of integers and doubles are tested.
+ * 
+ * @ingroup examples
+ */
+int example_basic2() {
 
-	MPI_Init(NULL,NULL);
 	int world_rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 	int world_size;
@@ -113,6 +136,17 @@ int main () {
 	delete_idxlist(p_idxlist);
 	delete_idxlist(p_idxlist_empty);
 	delete_map(p_map);
+
+	return 0;
+}
+
+
+int main () {
+
+	MPI_Init(NULL,NULL);
+
+	int err = example_basic2();
+	if (err != 0) return err;
 
 	MPI_Finalize();
 	return 0;

@@ -41,31 +41,32 @@
 #define NCOLS 4
 #define NROWS 4
 
-/**********************************************************************************************************************
- * The example uses a total of 4 MPI processes over a 4x4 global 2D domain.
- * Processes 0,1 have the following domain decomposition:
+/**
+ * @brief Basic example of exchange between two 2D domain decomposition each using 2 MPI processes.
  * 
- * Rank: 0
- * Indices: 0, 1, 2, 3, 4, 5, 6, 7
- * Rank: 1
- * Indices: 8, 9, 10, 11, 12, 13, 14
+ * @details The example uses a total of 4 MPI processes over a 4x4 global 2D domain.
+ *          Processes 0,1 have the following domain decomposition:
  * 
- * Processes 2,3 have the following domain decomposition:
+ *          Rank: 0
+ *          Indices: 0, 1, 2, 3, 4, 5, 6, 7
+ *          Rank: 1
+ *          Indices: 8, 9, 10, 11, 12, 13, 14
  * 
- * Rank: 2
- * Indices: 0, 1, 8, 9, 2, 3, 10, 11
- * Rank: 3
- * Indices: 4, 5, 12, 13, 7, 7, 14, 15
+ *          Processes 2,3 have the following domain decomposition:
  * 
- * Ranks 0,1 send data to ranks 2,3
+ *          Rank: 2
+ *          Indices: 0, 1, 8, 9, 2, 3, 10, 11
+ *          Rank: 3
+ *          Indices: 4, 5, 12, 13, 7, 7, 14, 15
  * 
- * Exchange of integers and doubles are tested.
- *
- *********************************************************************************************************************/
+ *          Ranks 0,1 send data to ranks 2,3
+ * 
+ *          Exchange of integers and doubles are tested.
+ * 
+ * @ingroup examples
+ */
+int example_basic1() {
 
-int main () {
-
-	MPI_Init(NULL,NULL);
 	int world_rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 	int world_size;
@@ -137,6 +138,16 @@ int main () {
 	delete_idxlist(p_idxlist);
 	delete_idxlist(p_idxlist_empty);
 	delete_map(p_map);
+
+	return 0;
+}
+
+int main () {
+
+	MPI_Init(NULL,NULL);
+
+	int err = example_basic1();
+	if (err != 0) return err;
 
 	MPI_Finalize();
 	return 0;
