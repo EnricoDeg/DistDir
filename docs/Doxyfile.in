@@ -1,6 +1,7 @@
 INPUT                  = "@DOXYGEN_INPUT_DIR@/../src" \
                          "@DOXYGEN_INPUT_DIR@/../docs/src" \
-                         "@DOXYGEN_INPUT_DIR@/../examples"
+                         "@DOXYGEN_INPUT_DIR@/../examples" \
+                         "@DOXYGEN_INPUT_DIR@/../tests"
 
 HAVE_DOT = no
 
@@ -8,8 +9,11 @@ EXTRACT_ALL = yes
 
 FILE_PATTERNS = *.h \
                 *.dox \
-                */examples/*.c
+                */examples/*.c \
+                */tests/*.c
 
 OPTIMIZE_OUTPUT_FOR_C = yes
+
+EXTRACT_STATIC = yes
 
 PROJECT_NAME = "DistDir"
