@@ -9,3 +9,33 @@ Features:
  - support for multigrid meshes
 
 Applications: exchange between concurrent components operating on the same grid but using a different number of processes.
+
+#### Quick start
+
+Dependencies:
+ - MPI
+ - CMake
+ - Doxygen
+
+##### Installation
+```
+export CC=mpicc
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+make install
+```
+
+##### Testing
+```
+cd build/tests
+ctest
+```
+
+##### Documentation
+```
+cd build
+make distdir_docs
+firefox docs/html/index.html
+```
