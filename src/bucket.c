@@ -40,7 +40,11 @@
 #include "mergesort.h"
 #include "check.h"
 
-void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist_local, int nbuckets, MPI_Comm comm) {
+void map_idxlist_to_RD_decomp(t_bucket  *bucket       ,
+                              t_idxlist *idxlist      ,
+                              int       *idxlist_local,
+                              int        nbuckets     ,
+                              MPI_Comm comm           ) {
 
 	int world_size;
 	check_mpi( MPI_Comm_size(comm, &world_size) );
@@ -98,8 +102,12 @@ void map_idxlist_to_RD_decomp(t_bucket *bucket, t_idxlist *idxlist, int *idxlist
 
 }
 
-void map_RD_decomp_to_idxlist(t_bucket *src_bucket, t_bucket *dst_bucket, int *idxlist_local,
-                              int idxlist_size, int nbuckets, MPI_Comm comm) {
+void map_RD_decomp_to_idxlist(t_bucket *src_bucket   ,
+                              t_bucket *dst_bucket   ,
+                              int      *idxlist_local,
+                              int       idxlist_size ,
+                              int       nbuckets     ,
+                              MPI_Comm  comm         ) {
 
 	int world_size;
 	check_mpi( MPI_Comm_size(comm, &world_size) );
