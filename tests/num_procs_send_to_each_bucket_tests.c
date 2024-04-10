@@ -39,6 +39,22 @@
 
 #include "src/backend.h"
 
+/**
+ * @brief test01 for num_procs_send_to_each_bucket function
+ * 
+ * @details The test is run with 4 MPI ranks which define the following
+ *          bucket_idxlist based on the following idxlist:
+ *          
+ *           - Rank 0: 0, 4, 8 , 12
+ *           - Rank 1: 1, 5, 9 , 13
+ *           - Rank 2: 2, 6, 10, 14
+ *           - Rank 4: 3, 7, 11, 15
+ *          
+ *          Each rank owns a bucket and it is expected to receive indices
+ *          information from 4 MPI ranks.
+ * 
+ * @ingroup backend_tests
+ */
 static int test01(MPI_Comm comm) {
 
 	const int num_points = 16;
