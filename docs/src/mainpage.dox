@@ -8,10 +8,56 @@ Enrico Degregori
 
 - @ref license
 
+@defgroup group
+          User interface to split the MPI Communicator in case of multiblock grids
+
+@defgroup idxlist
+          User interface to generate a t_idxlist object which contains information about global indices
+
+@defgroup map
+          User interface to generate a t_map object which contains information about the MPI communication mapping based on the provided source and destination idxlist
+
+@defgroup exchange
+          User interface for the exchange between MPI ranks based on a provided t_map object and an MPI_Datatype
+
+@defgroup bucket
+          Functions to map to and from RD decomposition which generate a t_bucket object
 
 @defgroup backend
+          Implementation of distributed directory algorithm
+
+@defgroup sorting
+          Sorting algorithms used internally by DistDir library
+
+@defgroup check
+          Functions used by Distdir library for internall checks
+
 @defgroup examples
-@defgroup tests
+          Standalone example of applications using DistDir library
+
+@defgroup group_tests
+          Tests of the group module
+
+@defgroup idxlist_tests
+          Tests of the idxlist module
+
+@defgroup map_tests
+          Tests of the map module
+
+@defgroup exchange_tests
+          Tests of the exchange module
+
+@defgroup bucket_tests
+          Tests of the bucket module
+
+@defgroup backend_tests
+          Tests of the backend module
+
+@defgroup sorting_tests
+          Tests of the sorting module
+
+@defgroup check_tests
+          Tests of the check module
 
 */
 

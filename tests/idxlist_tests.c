@@ -44,7 +44,7 @@
  * 
  * @details The test create a t_idxlist object and then it checks its size and values.
  * 
- * @ingroup tests
+ * @ingroup idxlist_tests
  */
 static void new_idxlist_test(void **state __attribute__((unused))) {
 
