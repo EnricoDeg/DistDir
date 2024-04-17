@@ -34,6 +34,8 @@
 import cython
 
 import numpy as _np
+cimport mpi4py.libmpi as libmpi
+cimport mpi4py.MPI as MPI
 
 cdef extern from "distdir.h":
 	ctypedef struct t_idxlist:
@@ -44,21 +46,41 @@ cdef extern from "distdir.h":
 	t_idxlist * new_idxlist_empty();
 	void delete_idxlist(t_idxlist *idxlist);
 
+	ctypedef struct t_map_exch_per_rank:
+		int exch_rank
+		int buffer_size
+		int *buffer_idxlist
+		void *buffer
+	
+	ctypedef struct t_map_exch:
+		int count
+		t_map_exch_per_rank **exch
+	
+	ctypedef struct t_map:
+		libmpi.MPI_Comm comm
+		t_map_exch *exch_send;
+		t_map_exch *exch_recv;
+	
+	t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, libmpi.MPI_Comm comm);
+	t_map * extend_map_3d(t_map *map2d, int nlevels);
+	void delete_map(t_map *map);
+
 cdef class idxlist:
 	cdef t_idxlist *_idxlist
 
 	def __init__(self, array=None):
-		cdef int[::1] array_view = _np.ascontiguousarray(array, dtype=_np.int32)
+		cdef int[::1] array_view
 		if array is None:
 			self._idxlist = new_idxlist_empty()
 		else:
+			array_view = _np.ascontiguousarray(array, dtype=_np.int32)
 			self._idxlist = new_idxlist(&array_view[0], len(array_view))
 
 	def __del__(self):
 		self.cleanup()
 
 	def cleanup(self):
-		delete_idxlist(self._idxlist)
+		delete_idxlist((<idxlist?>self)._idxlist)
 
 	def size(self):
 		return self._idxlist.count
@@ -69,3 +91,9 @@ cdef class idxlist:
 		# Coercion the memoryview to numpy array. Not working.
 		ret = _np.asarray(array_view)
 		return ret
+
+cdef class map:
+	cdef t_map *_map
+
+	def __init__(self, src_idxlist, dst_idxlist, MPI.Comm comm):
+		self._map = new_map( (<idxlist?>src_idxlist)._idxlist , (<idxlist?>dst_idxlist)._idxlist, comm.ob_mpi)
