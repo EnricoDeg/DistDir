@@ -48,7 +48,7 @@ cdef class idxlist:
 	cdef t_idxlist *_idxlist
 
 	def __init__(self, array=None):
-		cdef int[::1] array_view = _np.ascontiguousarray(array, dtype=_np.int)
+		cdef int[::1] array_view = _np.ascontiguousarray(array, dtype=_np.int32)
 		if array is None:
 			self._idxlist = new_idxlist(&array_view[0], len(array_view))
 		else:
