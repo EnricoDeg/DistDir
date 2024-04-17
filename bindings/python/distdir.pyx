@@ -37,8 +37,8 @@ import numpy as _np
 
 cdef extern from "distdir.h":
 	ctypedef struct t_idxlist:
-		int  _count
-		int *_list
+		int  count
+		int *list
 
 	t_idxlist * new_idxlist(int *idx_array, int num_indices);
 	t_idxlist * new_idxlist_empty();
@@ -50,12 +50,22 @@ cdef class idxlist:
 	def __init__(self, array=None):
 		cdef int[::1] array_view = _np.ascontiguousarray(array, dtype=_np.int32)
 		if array is None:
-			self._idxlist = new_idxlist(&array_view[0], len(array_view))
-		else:
 			self._idxlist = new_idxlist_empty()
+		else:
+			self._idxlist = new_idxlist(&array_view[0], len(array_view))
 
 	def __del__(self):
 		self.cleanup()
 
 	def cleanup(self):
 		delete_idxlist(self._idxlist)
+
+	def size(self):
+		return self._idxlist.count
+
+	def list(self):
+		# Get a memoryview.
+		cdef int[:] array_view = <int[:self.size()]> self._idxlist.list
+		# Coercion the memoryview to numpy array. Not working.
+		ret = _np.asarray(array_view)
+		return ret
