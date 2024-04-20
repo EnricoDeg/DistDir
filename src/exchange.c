@@ -88,7 +88,10 @@ static void select_un_pack_kernels(xt_un_pack_kernels *table_kernels, MPI_Dataty
 	}
 }
 
-void exchange_go(t_map *map, MPI_Datatype type, void *src_data, void* dst_data) {
+void exchange_go(t_map        *map     ,
+                 MPI_Datatype  type    ,
+                 void         *src_data,
+                 void         *dst_data) {
 
 	int world_size;
 	check_mpi( MPI_Comm_size(map->comm, &world_size) );

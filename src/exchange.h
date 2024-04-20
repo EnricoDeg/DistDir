@@ -36,6 +36,22 @@
 
 #include "map.h"
 
-void exchange_go(t_map *map, MPI_Datatype type, void *src_data, void* dst_data);
+/**
+ * @brief Arbitrary exchange given a map
+ * 
+ * @details Execute the MPI exchange given a previously generated map.
+ *          The source and destination buffers contain the data before and after the exchange
+ * 
+ * @param[in] map      pointer to a t_map structure
+ * @param[in] type     type of the data in the form of MPI datatype
+ * @param[in] src_data pointer to the data to be sent
+ * @param[in] dst_data pointer to the data to be received
+ * 
+ * @ingroup exchange
+ */
+void exchange_go(t_map        *map     ,
+                 MPI_Datatype  type    ,
+                 void         *src_data,
+                 void         *dst_data);
 
 #endif
