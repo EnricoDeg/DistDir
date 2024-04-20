@@ -127,6 +127,8 @@ int example_basic3() {
 	delete_idxlist(p_idxlist_empty);
 	delete_map(p_map2d);
 	delete_map(p_map);
+
+	return 0;
 }
 
 int main () {

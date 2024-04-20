@@ -168,6 +168,8 @@ int example_basic4() {
 	delete_idxlist(p_idxlist);
 	delete_idxlist(p_idxlist_empty);
 	delete_map(p_map);
+
+	return 0;
 }
 
 int main () {
