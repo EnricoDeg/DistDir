@@ -34,8 +34,46 @@
 #ifndef MERGESORT_H
 #define MERGESORT_H
 
+/**
+ * @brief Sort array
+ * 
+ * @details Sort array using mergesort algorithm
+ * 
+ * @param[in] arr Array to be sorted
+ * @param[in] l   First index of the array to be sorted
+ * @param[in] r   Last index of the array to be sorted
+ * 
+ * @ingroup sorting
+ */
 void mergeSort(int *arr, int l, int r);
+
+/**
+ * @brief Sort array and an associated index list
+ * 
+ * @details Sort array and an associated index list using mergesort algorithm
+ * 
+ * @param[in] arr     Array to be sorted
+ * @param[in] arr_idx Index list array to be sorted
+ * @param[in] l       First index of the array to be sorted
+ * @param[in] r       Last index of the array to be sorted
+ * 
+ * @ingroup sorting
+ */
 void mergeSort_with_idx(int *arr, int *arr_idx, int l, int r);
+
+/**
+ * @brief Sort array and two associated index lists
+ * 
+ * @details Sort array and two associated index lists using mergesort algorithm
+ * 
+ * @param[in] arr      Array to be sorted
+ * @param[in] arr_idx1 First Index list array to be sorted
+ * @param[in] arr_idx2 Second Index list array to be sorted
+ * @param[in] l        First index of the array to be sorted
+ * @param[in] r        Last index of the array to be sorted
+ * 
+ * @ingroup sorting
+ */
 void mergeSort_with_idx2(int *arr, int *arr_idx1, int *arr_idx2, int l, int r);
 
 #endif

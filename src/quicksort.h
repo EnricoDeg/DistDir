@@ -34,6 +34,17 @@
 #ifndef QUICKSORT_H
 #define QUICKSORT_H
 
+/**
+ * @brief Sort array
+ * 
+ * @details Sort array using quicksort algorithm
+ * 
+ * @param[in] arr Array to be sorted
+ * @param[in] l   First index of the array to be sorted
+ * @param[in] r   Last index of the array to be sorted
+ * 
+ * @ingroup sorting
+ */
 void quickSort(int *arr, int *arr_idx, int l, int h);
 
 #endif
