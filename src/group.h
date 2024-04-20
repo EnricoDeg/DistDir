@@ -36,6 +36,19 @@
 
 #include "mpi.h"
 
-void new_group(MPI_Comm *new_comm, MPI_Comm work_comm, int id);
+/**
+ * @brief Create new group of processes with the same provided id
+ * 
+ * @details Create new communicator grouping processes involved in the exchange
+ * 
+ * @param[in] new_comm  new communicator containing the processes in the new group
+ * @param[in] work_comm communicator containing all the processes calling the function
+ * @param[in] id        id defining the new group
+ * 
+ * @ingroup group
+ */
+void new_group(MPI_Comm *new_comm ,
+               MPI_Comm  work_comm,
+               int       id       );
 
 #endif
