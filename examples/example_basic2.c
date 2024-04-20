@@ -48,16 +48,16 @@
  *          Processes 0,1 have the following domain decomposition:
  * 
  *          Rank: 0
- *          Indices: 0, 1, 2, 3, 4, 5, 6, 7
+ *          Indices: 0, 2, 4, 6, 8, 10, 12, 14
  *          Rank: 1
- *          Indices: 8, 9, 10, 11, 12, 13, 14
+ *          Indices: 1, 3, 5, 7, 9, 11, 13, 15
  * 
  *          Processes 2,3 have the following domain decomposition:
  * 
  *          Rank: 2
- *          Indices: 0, 8, 1, 9, 2, 10, 3, 11
+ *          Indices: 0, 1, 2, 3, 4, 5, 6, 7
  *          Rank: 3
- *          Indices: 4, 12, 5, 13, 6, 14, 7, 15
+ *          Indices: 8, 9, 10, 11, 12, 13, 14, 15
  * 
  *          Ranks 0,1 send data to ranks 2,3
  * 
