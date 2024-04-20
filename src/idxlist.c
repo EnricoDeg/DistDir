@@ -35,7 +35,8 @@
 
 #include "idxlist.h"
 
-t_idxlist * new_idxlist(int *idx_array, int num_indices) {
+t_idxlist * new_idxlist(int *idx_array  ,
+                        int  num_indices) {
 
 	t_idxlist *idxlist;
 	idxlist = (t_idxlist *)malloc(sizeof(t_idxlist));
