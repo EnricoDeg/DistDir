@@ -33,13 +33,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "map.h"
 #include "mergesort.h"
 #include "bucket.h"
 #include "check.h"
 
-t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, MPI_Comm comm) {
+t_map * new_map(t_idxlist *src_idxlist ,
+                t_idxlist *dst_idxlist ,
+                MPI_Comm   comm        ) {
 
 	int world_size;
 	check_mpi( MPI_Comm_size(comm, &world_size) );
@@ -90,23 +93,17 @@ t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, MPI_Comm comm) {
 		dst_bucket_min_size = dst_bucket_size;
 		dst_bucket_max_size = dst_bucket_size + (n_global_indices % world_size);
 		if (world_rank == world_size-1) dst_bucket_size += (n_global_indices % world_size);
-		if (src_bucket_size != dst_bucket_size) {
-			// return 1;
-		} else {
-			bucket_size = src_bucket_size;
-		}
 
-		if (src_bucket_min_size != dst_bucket_min_size) {
-			// return 1;
-		} else {
-			bucket_min_size = src_bucket_min_size;
-		}
+#ifdef ERROR_CHECK
+		assert( src_bucket_size     == dst_bucket_size     ) ;
+		assert( src_bucket_min_size == dst_bucket_min_size ) ;
+		assert( src_bucket_max_size == dst_bucket_max_size ) ;
+#endif
 
-		if (src_bucket_max_size != dst_bucket_max_size) {
-			// return 1;
-		} else {
-			bucket_max_size = src_bucket_max_size;
-		}
+		bucket_size     = src_bucket_size     ;
+		bucket_min_size = src_bucket_min_size ;
+		bucket_max_size = src_bucket_max_size ;
+
 	}
 
 	// ========================================================================================
@@ -266,7 +263,8 @@ t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, MPI_Comm comm) {
 	return map;
 }
 
-t_map * extend_map_3d(t_map *map2d, int nlevels) {
+t_map * extend_map_3d(t_map *map2d  ,
+                      int    nlevels) {
 
 	// group all info into data structure
 	t_map *map;
