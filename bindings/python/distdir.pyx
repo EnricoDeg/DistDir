@@ -36,6 +36,7 @@ import cython
 import numpy as _np
 cimport mpi4py.libmpi as libmpi
 cimport mpi4py.MPI as MPI
+from mpi4py import MPI
 
 cdef extern from "distdir.h":
 	ctypedef struct t_idxlist:
@@ -64,6 +65,8 @@ cdef extern from "distdir.h":
 	t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, libmpi.MPI_Comm comm);
 	t_map * extend_map_3d(t_map *map2d, int nlevels);
 	void delete_map(t_map *map);
+
+	void exchange_go(t_map *map, libmpi.MPI_Datatype type, void *src_data, void* dst_data);
 
 cdef class idxlist:
 	cdef t_idxlist *_idxlist
@@ -94,21 +97,30 @@ cdef class idxlist:
 
 cdef class map:
 	cdef t_map *_map
-	cdef t_map *_map3d
-	cdef bint is_map3d
 
-	def __init__(self, src_idxlist, dst_idxlist, MPI.Comm comm):
-		self._map = new_map( (<idxlist?>src_idxlist)._idxlist , (<idxlist?>dst_idxlist)._idxlist, comm.ob_mpi)
-		self.is_map3d = False
+	def __init__(self, src_idxlist=None, dst_idxlist=None, MPI.Comm comm=None,
+	                   map2d=None, nlevels=None):
+		if src_idxlist is not None and dst_idxlist is not None and comm is not None:
+			self._map = new_map( (<idxlist?>src_idxlist)._idxlist , (<idxlist?>dst_idxlist)._idxlist, comm.ob_mpi)
+		elif map is not None and nlevels is not None:
+			self._map = extend_map_3d((<map?>map2d)._map, nlevels)
 
 	def __del__(self):
 		self.cleanup()
 
 	def cleanup(self):
 		delete_map((<map?>self)._map)
-		if self.is_map3d:
-			delete_map((<map?>self)._map3d)
 
-	def extend_3d(self, nlevels):
-		self._map3d = extend_map_3d((<map?>self)._map, nlevels)
-		self.is_map3d = True
+
+cdef class exchange:
+	def __init__(self):
+		pass
+
+	def __del__(self):
+		pass
+
+	def go(self, exchange_map, src_data, dst_data):
+		cdef MPI.Datatype type = MPI.DOUBLE 
+		cdef double[::1] src_data_view = _np.ascontiguousarray(src_data, dtype=_np.double)
+		cdef double[::1] dst_data_view = _np.ascontiguousarray(dst_data, dtype=_np.double)
+		exchange_go((<map?>exchange_map)._map, type.ob_mpi, <void*> &src_data_view[0], <void*> &dst_data_view[0])
