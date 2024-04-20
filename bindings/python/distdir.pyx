@@ -94,6 +94,21 @@ cdef class idxlist:
 
 cdef class map:
 	cdef t_map *_map
+	cdef t_map *_map3d
+	cdef bint is_map3d
 
 	def __init__(self, src_idxlist, dst_idxlist, MPI.Comm comm):
 		self._map = new_map( (<idxlist?>src_idxlist)._idxlist , (<idxlist?>dst_idxlist)._idxlist, comm.ob_mpi)
+		self.is_map3d = False
+
+	def __del__(self):
+		self.cleanup()
+
+	def cleanup(self):
+		delete_map((<map?>self)._map)
+		if self.is_map3d:
+			delete_map((<map?>self)._map3d)
+
+	def extend_3d(self, nlevels):
+		self._map3d = extend_map_3d((<map?>self)._map, nlevels)
+		self.is_map3d = True
