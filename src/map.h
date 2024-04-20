@@ -93,6 +93,8 @@ typedef struct t_map t_map;
  * @param[in] dst_idxlist pointer to destination index list
  * @param[in] comm        MPI communicator containing all the MPI procs involved in the exchange
  * 
+ * @return t_map structure
+ * 
  * @ingroup map
  */
 t_map * new_map(t_idxlist *src_idxlist ,
@@ -106,6 +108,8 @@ t_map * new_map(t_idxlist *src_idxlist ,
  * 
  * @param[in] map2d   pointer to t_map structure based on 2D decomposition
  * @param[in] nlevels number of vertical levels of the domain
+ * 
+ * @return t_map structure
  * 
  * @ingroup map
  */
