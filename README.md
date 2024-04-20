@@ -16,6 +16,7 @@ Dependencies:
  - MPI
  - CMake
  - Doxygen
+ - Python
 
 ##### Installation
 ```
@@ -39,3 +40,13 @@ cd build
 make distdir_docs
 firefox docs/html/index.html
 ```
+
+##### Python bindings
+Distdir library can be very easily used in a python script. Remember to set the `PYTHONPATH` environment variable:
+```
+export PYTHONPATH=${DISTDIR_ROOT}/lib/pydistdir
+```
+Examples of python scripts using `distdir` library can be found in `bindings/python/examples`
+
+##### Examples
+A complete list of use cases can be found in the `examples` folder
