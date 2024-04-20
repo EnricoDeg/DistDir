@@ -36,6 +36,15 @@
 
 #include <mpi.h>
 
+/**
+ * @brief Check error returned by an MPI function call
+ * 
+ * @details If an error is returned by an MPI function call, it prints it and then call MPI_Abort
+ * 
+ * @param[in] error_code error code returned by MPI function call
+ * 
+ * @ingroup check
+ */
 void check_mpi(int error_code);
 
 #endif
