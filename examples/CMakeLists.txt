@@ -16,6 +16,10 @@ add_executable(example_basic4 example_basic4.c)
 target_link_libraries (example_basic4 distdir)
 target_include_directories(example_basic4 PRIVATE ${PROJECT_SOURCE_DIR})
 
+add_executable(example_basic5 example_basic5.c)
+target_link_libraries (example_basic5 distdir)
+target_include_directories(example_basic5 PRIVATE ${PROJECT_SOURCE_DIR})
+
 add_executable(example_multi_grid1 example_multi_grid1.c)
 target_link_libraries (example_multi_grid1 distdir)
 target_include_directories(example_multi_grid1 PRIVATE ${PROJECT_SOURCE_DIR})
@@ -34,6 +38,10 @@ install (TARGETS
 
 install (TARGETS
   example_basic4 # executables
+  RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/examples)
+
+install (TARGETS
+  example_basic5 # executables
   RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/examples)
 
 install (TARGETS
