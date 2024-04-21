@@ -53,7 +53,13 @@ void map_idxlist_to_RD_decomp(t_bucket  *bucket       ,
 
 	// each element of the idxlist is assigned to a bucket
 	int bucket_idxlist[idxlist->count];
-	assign_idxlist_elements_to_buckets(bucket_idxlist, idxlist->list, bucket->min_size, idxlist->count, world_size);
+	if (bucket->stride < 0) {
+		assign_idxlist_elements_to_buckets(bucket_idxlist, idxlist->list, bucket->min_size, idxlist->count, world_size);
+	} else {
+		assign_idxlist_elements_to_buckets2(bucket_idxlist, idxlist->list,
+		                                   bucket->min_size_stride, idxlist->count,
+		                                   world_size, bucket->stride);
+	}
 
 	// sort bucket_idxlist -> idxlist and idxlist_local accordingly
 	int src_idxlist_sort[idxlist->count];
@@ -117,7 +123,7 @@ void map_RD_decomp_to_idxlist(t_bucket *src_bucket   ,
 	int dst_bucket_sort_src[src_bucket->size];
 	for (int i=0; i<src_bucket->size; i++)
 		for (int j=0; j<src_bucket->size; j++)
-			if (dst_bucket->idxlist[i] == src_bucket->idxlist[j])
+			if (dst_bucket->idxlist[j] == src_bucket->idxlist[i])
 				dst_bucket_sort_src[i] = dst_bucket->ranks[j];
 
 	src_bucket->rank_exch = (int *)malloc(idxlist_size*sizeof(int));

@@ -91,6 +91,7 @@ typedef struct t_map t_map;
  * 
  * @param[in] src_idxlist pointer to source index list
  * @param[in] dst_idxlist pointer to destination index list
+ * @param[in] stride      bucket stride
  * @param[in] comm        MPI communicator containing all the MPI procs involved in the exchange
  * 
  * @return t_map structure
@@ -99,6 +100,7 @@ typedef struct t_map t_map;
  */
 t_map * new_map(t_idxlist *src_idxlist ,
                 t_idxlist *dst_idxlist ,
+                int        stride      ,
                 MPI_Comm   comm        );
 
 /**

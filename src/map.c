@@ -42,6 +42,7 @@
 
 t_map * new_map(t_idxlist *src_idxlist ,
                 t_idxlist *dst_idxlist ,
+                int        stride      ,
                 MPI_Comm   comm        ) {
 
 	int world_size;
@@ -59,10 +60,14 @@ t_map * new_map(t_idxlist *src_idxlist ,
 
 	// compute the src and dst bucket size
 	int bucket_size, bucket_min_size, bucket_max_size;
+	int bucket_size_stride, bucket_min_size_stride, bucket_max_size_stride;
 	{
 		int src_bucket_size = 0;
 		int src_bucket_min_size = 0;
 		int src_bucket_max_size = 0;
+		int src_bucket_size_stride = 0;
+		int src_bucket_min_size_stride = 0;
+		int src_bucket_max_size_stride = 0;
 		{
 			int max_idx_value = 0;
 			for (int i = 0; i < src_idxlist->count; i++)
@@ -72,14 +77,34 @@ t_map * new_map(t_idxlist *src_idxlist ,
 		}
 		src_bucket_size++;
 		int n_global_indices = src_bucket_size;
-		src_bucket_size /= world_size;
-		src_bucket_min_size = src_bucket_size;
-		src_bucket_max_size = src_bucket_size + (n_global_indices % world_size);
-		if (world_rank == world_size-1) src_bucket_size += (n_global_indices % world_size);
+
+		if (stride < 0) {
+			src_bucket_size /= world_size;
+			src_bucket_min_size = src_bucket_size;
+			src_bucket_max_size = src_bucket_size + (n_global_indices % world_size);
+			if (world_rank == world_size-1) src_bucket_size += (n_global_indices % world_size);
+		} else {
+#ifdef ERROR_CHECK
+			assert( (n_global_indices % stride) == 0 ) ;
+#endif
+			int n_global_indices_stride = n_global_indices - stride * (n_global_indices / stride - 1);
+			src_bucket_size = n_global_indices_stride / world_size;
+			src_bucket_min_size_stride = src_bucket_size;
+			src_bucket_max_size_stride = src_bucket_size + (n_global_indices_stride % world_size);
+			if (world_rank == world_size-1) src_bucket_size += (n_global_indices_stride % world_size);
+			src_bucket_size_stride = src_bucket_size;
+
+			src_bucket_size *= (n_global_indices / stride);
+			src_bucket_max_size = src_bucket_max_size_stride * n_global_indices / stride;
+			src_bucket_min_size = src_bucket_min_size_stride * n_global_indices / stride;
+		}
 
 		int dst_bucket_size = 0;
 		int dst_bucket_min_size = 0;
 		int dst_bucket_max_size = 0;
+		int dst_bucket_size_stride = 0;
+		int dst_bucket_min_size_stride = 0;
+		int dst_bucket_max_size_stride = 0;
 		{
 			int max_idx_value = 0;
 			for (int i = 0; i < src_idxlist->count; i++)
@@ -89,20 +114,45 @@ t_map * new_map(t_idxlist *src_idxlist ,
 		}
 		dst_bucket_size++;
 		n_global_indices = dst_bucket_size;
-		dst_bucket_size /= world_size;
-		dst_bucket_min_size = dst_bucket_size;
-		dst_bucket_max_size = dst_bucket_size + (n_global_indices % world_size);
-		if (world_rank == world_size-1) dst_bucket_size += (n_global_indices % world_size);
+
+		if (stride < 0 ) {
+			dst_bucket_size /= world_size;
+			dst_bucket_min_size = dst_bucket_size;
+			dst_bucket_max_size = dst_bucket_size + (n_global_indices % world_size);
+			if (world_rank == world_size-1) dst_bucket_size += (n_global_indices % world_size);
+		} else {
 
 #ifdef ERROR_CHECK
-		assert( src_bucket_size     == dst_bucket_size     ) ;
-		assert( src_bucket_min_size == dst_bucket_min_size ) ;
-		assert( src_bucket_max_size == dst_bucket_max_size ) ;
+			assert( (n_global_indices % stride) == 0 ) ;
+#endif
+			int n_global_indices_stride = n_global_indices - stride * (n_global_indices / stride - 1);
+			dst_bucket_size = n_global_indices_stride / world_size;
+			dst_bucket_min_size_stride = dst_bucket_size;
+			dst_bucket_max_size_stride = dst_bucket_size + (n_global_indices_stride % world_size);
+			if (world_rank == world_size-1) dst_bucket_size += (n_global_indices_stride % world_size);
+			dst_bucket_size_stride = dst_bucket_size;
+
+			dst_bucket_size *= (n_global_indices / stride);
+			dst_bucket_max_size = dst_bucket_max_size_stride * n_global_indices / stride;
+			dst_bucket_min_size = dst_bucket_min_size_stride * n_global_indices / stride;
+
+		}
+
+#ifdef ERROR_CHECK
+		assert( src_bucket_size            == dst_bucket_size            ) ;
+		assert( src_bucket_min_size        == dst_bucket_min_size        ) ;
+		assert( src_bucket_max_size        == dst_bucket_max_size        ) ;
+		assert( src_bucket_size_stride     == dst_bucket_size_stride     ) ;
+		assert( src_bucket_min_size_stride == dst_bucket_min_size_stride ) ;
+		assert( src_bucket_max_size_stride == dst_bucket_max_size_stride ) ;
 #endif
 
-		bucket_size     = src_bucket_size     ;
-		bucket_min_size = src_bucket_min_size ;
-		bucket_max_size = src_bucket_max_size ;
+		bucket_size            = src_bucket_size           ;
+		bucket_min_size        = src_bucket_min_size       ;
+		bucket_max_size        = src_bucket_max_size       ;
+		bucket_size_stride     = src_bucket_size_stride    ;
+		bucket_min_size_stride = src_bucket_min_size_stride;
+		bucket_max_size_stride = src_bucket_max_size_stride;
 
 	}
 
@@ -117,6 +167,10 @@ t_map * new_map(t_idxlist *src_idxlist ,
 	src_bucket->size = bucket_size;
 	src_bucket->min_size = bucket_min_size;
 	src_bucket->max_size = bucket_max_size;
+	src_bucket->size_stride = bucket_size_stride;
+	src_bucket->min_size_stride = bucket_min_size_stride;
+	src_bucket->max_size_stride = bucket_max_size_stride;
+	src_bucket->stride = stride;
 	int src_idxlist_local[src_idxlist->count];
 
 	map_idxlist_to_RD_decomp(src_bucket, src_idxlist, src_idxlist_local, world_size, comm);
@@ -129,6 +183,10 @@ t_map * new_map(t_idxlist *src_idxlist ,
 	dst_bucket->size = bucket_size;
 	dst_bucket->min_size = bucket_min_size;
 	dst_bucket->max_size = bucket_max_size;
+	dst_bucket->size_stride = bucket_size_stride;
+	dst_bucket->min_size_stride = bucket_min_size_stride;
+	dst_bucket->max_size_stride = bucket_max_size_stride;
+	dst_bucket->stride = stride;
 	int dst_idxlist_local[dst_idxlist->count];
 
 	map_idxlist_to_RD_decomp(dst_bucket, dst_idxlist, dst_idxlist_local, world_size, comm);

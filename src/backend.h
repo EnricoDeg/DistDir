@@ -42,6 +42,7 @@
  *  
  * @param[out] bucket_idxlist    integer array with the bucket location for each element of the index list
  * @param[in]  idxlist           integer array with the values of the index list (global indices)
+ * @param[in]  bucket_min_size   the smaller bucket size in the RD decomposition
  * @param[in]  idxlist_size      size of the idxlist array
  * @param[in]  nbuckets          number of buckets
  * 
@@ -52,6 +53,31 @@ void assign_idxlist_elements_to_buckets(      int *bucket_idxlist,
                                               int bucket_min_size,
                                               int idxlist_size   ,
                                               int nbuckets       );
+
+/**
+ * @brief Assign each element of a given index list to a bucket.
+ * 
+ * @details The assignment of the index list elements to a bucket is based on a single stride and
+ *          exatrapolated from that.
+ *          Given N total global indices in a stride and M total buckets, bucket 0 owns elements 0 - N/M-1,
+ *          bucket 1 owns elements N/M - 2*N/M-1, etc. Then the full bucket indices can be extrapolated
+ *          given the total number of indices and the stride size.
+ *  
+ * @param[out] bucket_idxlist    integer array with the bucket location for each element of the index list
+ * @param[in]  idxlist           integer array with the values of the index list (global indices)
+ * @param[in]  bucket_min_size   the smaller bucket size in the RD decomposition
+ * @param[in]  idxlist_size      size of the idxlist array
+ * @param[in]  nbuckets          number of buckets
+ * @param[in]  bucket_stride     bucket stride
+ * 
+ * @ingroup backend
+ */
+void assign_idxlist_elements_to_buckets2(      int *bucket_idxlist,
+                                        const int *idxlist       ,
+                                              int bucket_min_size,
+                                              int idxlist_size   ,
+                                              int nbuckets       ,
+                                              int bucket_stride  );
 
 /**
  * @brief Return the number of processes that send information to this bucket.

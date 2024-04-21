@@ -56,6 +56,27 @@ void assign_idxlist_elements_to_buckets(      int *bucket_idxlist,
 	}
 }
 
+void assign_idxlist_elements_to_buckets2(     int *bucket_idxlist       ,
+                                        const int *idxlist              ,
+                                              int bucket_min_size_stride,
+                                              int idxlist_size          ,
+                                              int nbuckets              ,
+                                              int bucket_stride         ) {
+
+#ifdef ERROR_CHECK
+	assert(bucket_idxlist != NULL);
+#endif
+
+	for (int i = 0; i < idxlist_size; i++) {
+		int n_stride = idxlist[i] / bucket_stride;
+		int mapped_idxlist_stride = idxlist[i] - bucket_stride * n_stride;
+		bucket_idxlist[i] = mapped_idxlist_stride / bucket_min_size_stride;
+		if (bucket_idxlist[i] >= nbuckets)
+			bucket_idxlist[i] = nbuckets - 1;
+	}
+
+}
+
 int num_procs_send_to_each_bucket(const int      *bucket_idxlist,
                                         int       nbuckets      ,
                                         int       idxlist_size  ,

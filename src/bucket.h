@@ -43,12 +43,20 @@
  * 
  */
 struct t_bucket {
+	/** @brief Bucket stride */
+	int stride;
 	/** @brief Minimum number of global indices across all buckets */
 	int min_size;
+	/** @brief Minimum number of global indices across all buckets for a single stride */
+	int min_size_stride;
 	/** @brief Number of global indices in the bucket */
 	int size;
+	/** @brief Number of global indices in the bucket for a single stride*/
+	int size_stride;
 	/** @brief Maximum number of global indices across all buckets */
 	int max_size;
+	/** @brief Maximum number of global indices across all buckets  for a single stride*/
+	int max_size_stride;
 	/** @brief Array of indices inside the bucket sorted in ascending order of the MPI processes owning them.
                Size is sizes */
 	int *idxlist;
