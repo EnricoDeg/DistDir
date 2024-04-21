@@ -99,9 +99,9 @@ int example_basic3() {
 	p_idxlist_empty = new_idxlist_empty();
 
 	if (world_role == I_SRC) {
-		p_map2d = new_map(p_idxlist, p_idxlist_empty, MPI_COMM_WORLD);
+		p_map2d = new_map(p_idxlist, p_idxlist_empty, -1, MPI_COMM_WORLD);
 	} else {
-		p_map2d = new_map(p_idxlist_empty, p_idxlist, MPI_COMM_WORLD);
+		p_map2d = new_map(p_idxlist_empty, p_idxlist, -1, MPI_COMM_WORLD);
 	}
 	p_map = extend_map_3d(p_map2d, NLEVS);
 

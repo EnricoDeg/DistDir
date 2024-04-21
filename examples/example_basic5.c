@@ -96,7 +96,7 @@ int example_basic5() {
 	p_src_idxlist = new_idxlist(src_idxlist, npoints_local);
 	p_dst_idxlist = new_idxlist(dst_idxlist, npoints_local);
 
-	p_map = new_map(p_src_idxlist, p_dst_idxlist, MPI_COMM_WORLD);
+	p_map = new_map(p_src_idxlist, p_dst_idxlist, -1, MPI_COMM_WORLD);
 
 	// test exchange
 	{
