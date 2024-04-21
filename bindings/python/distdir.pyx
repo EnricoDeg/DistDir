@@ -62,7 +62,7 @@ cdef extern from "distdir.h":
 		t_map_exch *exch_send;
 		t_map_exch *exch_recv;
 	
-	t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, libmpi.MPI_Comm comm);
+	t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, int stride, libmpi.MPI_Comm comm);
 	t_map * extend_map_3d(t_map *map2d, int nlevels);
 	void delete_map(t_map *map);
 
@@ -98,15 +98,17 @@ cdef class idxlist:
 cdef class map:
 	cdef t_map *_map
 
-	def __init__(self, src_idxlist=None, dst_idxlist=None, MPI.Comm comm=None,
+	def __init__(self, src_idxlist=None, dst_idxlist=None, stride=None, MPI.Comm comm=None,
 	                   map2d=None, nlevels=None):
-		if src_idxlist is not None and dst_idxlist is not None and comm is not None:
-			self._map = new_map( (<idxlist?>src_idxlist)._idxlist , (<idxlist?>dst_idxlist)._idxlist, comm.ob_mpi)
+		cdef int stride_val;
+		if src_idxlist is not None and dst_idxlist is not None and comm is not None and stride is not None:
+			stride_val = _np.array(stride, dtype=_np.int32)
+			self._map = new_map( (<idxlist?>src_idxlist)._idxlist , (<idxlist?>dst_idxlist)._idxlist, stride_val, comm.ob_mpi)
 		elif map is not None and nlevels is not None:
 			self._map = extend_map_3d((<map?>map2d)._map, nlevels)
 
-	def __del__(self):
-		self.cleanup()
+#	def __del__(self):
+#		self.cleanup()
 
 	def cleanup(self):
 		delete_map((<map?>self)._map)

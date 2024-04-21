@@ -22,7 +22,7 @@ if rank == 0:
 else:
 	print('rank '+str(rank)+': '+str(a))
 
-map = distdir.map(src_idxlist, dst_idxlist, MPI.COMM_WORLD)
+map = distdir.map(src_idxlist, dst_idxlist, -1, MPI.COMM_WORLD)
 
 exchanger = distdir.exchange()
 
