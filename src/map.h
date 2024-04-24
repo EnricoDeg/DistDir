@@ -50,8 +50,6 @@ struct t_map_exch_per_rank {
 	int buffer_size;
 	/** @brief idxlist to create the exchange buffer */
 	int *buffer_idxlist;
-	/** @brief buffer to store the message */
-	void *buffer;
 };
 typedef struct t_map_exch_per_rank t_map_exch_per_rank;
 

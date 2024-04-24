@@ -35,6 +35,7 @@
 
 #include "exchange.h"
 #include "check.h"
+#include <stdio.h>
 
 typedef void (*kernel_func) (void*, void*, int*, int);
 
@@ -110,6 +111,35 @@ void exchange_go(t_map        *map     ,
 	int world_rank;
 	check_mpi( MPI_Comm_rank(map->comm, &world_rank) );
 
+	// group all info into data structure
+	t_exchanger *exchanger;
+
+	exchanger = (t_exchanger *)malloc(sizeof(t_exchanger));
+	exchanger->exch_send = (t_exchange *)malloc(sizeof(t_exchange));
+	exchanger->exch_recv = (t_exchange *)malloc(sizeof(t_exchange));
+
+	exchanger->exch_send->count = map->exch_send->count;
+	exchanger->exch_send->exch = (t_exchange_per_rank**)malloc(exchanger->exch_send->count * sizeof(t_exchange_per_rank*));
+
+	if (exchanger->exch_send->count>0) {
+		for (int count = 0; count < exchanger->exch_send->count; count++) {
+			if (map->exch_send->exch[count]->buffer_size > 0)
+				exchanger->exch_send->exch[count] = (t_exchange_per_rank *)malloc(sizeof(t_exchange_per_rank));
+			exchanger->exch_send->exch[count]->buffer_size = map->exch_send->exch[count]->buffer_size;
+		}
+	}
+
+	exchanger->exch_recv->count = map->exch_recv->count;
+	exchanger->exch_recv->exch = (t_exchange_per_rank**)malloc(exchanger->exch_recv->count * sizeof(t_exchange_per_rank*));
+
+	if (exchanger->exch_recv->count>0) {
+		for (int count = 0; count < exchanger->exch_recv->count; count++) {
+			if (map->exch_recv->exch[count]->buffer_size > 0)
+				exchanger->exch_recv->exch[count] = (t_exchange_per_rank *)malloc(sizeof(t_exchange_per_rank));
+			exchanger->exch_recv->exch[count]->buffer_size = map->exch_recv->exch[count]->buffer_size;
+		}
+	}
+
 	xt_un_pack_kernels vtable_kernels;
 	select_un_pack_kernels(&vtable_kernels, type);
 
@@ -125,16 +155,18 @@ void exchange_go(t_map        *map     ,
 	// send step
 	for (int count = 0; count < map->exch_send->count; count++) {
 		/* allocate the buffer */
-		map->exch_send->exch[count]->buffer = malloc(map->exch_send->exch[count]->buffer_size * type_size);
+		exchanger->exch_send->exch[count]->buffer = malloc(exchanger->exch_send->exch[count]->buffer_size * type_size);
 
 		/* pack the buffer */
-		vtable_kernels.pack(map->exch_send->exch[count]->buffer,
+		vtable_kernels.pack(exchanger->exch_send->exch[count]->buffer,
 		                    src_data,
 		                    map->exch_send->exch[count]->buffer_idxlist,
-		                    map->exch_send->exch[count]->buffer_size);
+		                    exchanger->exch_send->exch[count]->buffer_size);
 
 		/* send the buffer */
-		check_mpi( MPI_Isend(map->exch_send->exch[count]->buffer, map->exch_send->exch[count]->buffer_size, type,
+		check_mpi( MPI_Isend(exchanger->exch_send->exch[count]->buffer,
+		                     exchanger->exch_send->exch[count]->buffer_size,
+		                     type,
 		                     map->exch_send->exch[count]->exch_rank,
 		                     world_rank + world_size * (map->exch_send->exch[count]->exch_rank + 1),
 		                     map->comm, &req[nreq]) );
@@ -144,10 +176,12 @@ void exchange_go(t_map        *map     ,
 	// recv step
 	for (int count = 0; count < map->exch_recv->count; count++) {
 		/* allocate the buffer */
-		map->exch_recv->exch[count]->buffer = malloc(map->exch_recv->exch[count]->buffer_size * type_size);
+		exchanger->exch_recv->exch[count]->buffer = malloc(exchanger->exch_recv->exch[count]->buffer_size * type_size);
 
 		/* receive the buffer */
-		check_mpi( MPI_Irecv(map->exch_recv->exch[count]->buffer, map->exch_recv->exch[count]->buffer_size, type,
+		check_mpi( MPI_Irecv(exchanger->exch_recv->exch[count]->buffer,
+		                     exchanger->exch_recv->exch[count]->buffer_size,
+		                     type,
 		                     map->exch_recv->exch[count]->exch_rank,
 		                     map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
 		                     map->comm, &req[nreq]) );
@@ -159,16 +193,28 @@ void exchange_go(t_map        *map     ,
 
 	// unpack all recv buffers
 	for (int count = 0; count < map->exch_recv->count; count++) {
-		vtable_kernels.unpack(map->exch_recv->exch[count]->buffer,
+		vtable_kernels.unpack(exchanger->exch_recv->exch[count]->buffer,
 		                      dst_data,
 		                      map->exch_recv->exch[count]->buffer_idxlist,
-		                      map->exch_recv->exch[count]->buffer_size);
+		                      exchanger->exch_recv->exch[count]->buffer_size);
 	}
 
 	// free memory
-	for (int count = 0; count < map->exch_send->count; count++)
-		free(map->exch_send->exch[count]->buffer);
+	for (int count = 0; count < exchanger->exch_send->count; count++)
+		free(exchanger->exch_send->exch[count]->buffer);
 
-	for (int count = 0; count < map->exch_recv->count; count++)
-		free(map->exch_recv->exch[count]->buffer);
+	for (int count = 0; count < exchanger->exch_recv->count; count++)
+		free(exchanger->exch_recv->exch[count]->buffer);
+
+	for (int count = 0; count < exchanger->exch_send->count; count++)
+		free(exchanger->exch_send->exch[count]);
+	free(exchanger->exch_send->exch);
+	free(exchanger->exch_send);
+
+	for (int count = 0; count < exchanger->exch_recv->count; count++)
+		free(exchanger->exch_recv->exch[count]);
+	free(exchanger->exch_recv->exch);
+	free(exchanger->exch_recv);
+
+	free(exchanger);
 }

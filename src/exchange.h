@@ -36,6 +36,45 @@
 
 #include "map.h"
 
+/** @struct t_map_exch_per_rank
+ * 
+ *  @brief The structure contains buffers for each exchange
+ * 
+ */
+struct t_exchange_per_rank {
+	/** @brief size of the exchange message */
+	int buffer_size;
+	/** @brief buffer to store the message */
+	void *buffer;
+};
+typedef struct t_exchange_per_rank t_exchange_per_rank;
+
+/** @struct t_map_exch
+ * 
+ *  @brief The structure contains all buffers in one direction
+ * 
+ */
+struct t_exchange {
+	/** @brief number of exchanges */
+	int count;
+	/** @brief array of pointers to t_exchange_per_rank structure */
+	t_exchange_per_rank **exch;
+};
+typedef struct t_exchange t_exchange;
+
+/** @struct t_map_exch
+ * 
+ *  @brief The structure contains all buffers associated with a map
+ * 
+ */
+struct t_exchanger {
+	/** @brief pointer to t_exchange structure to store send information */
+	t_exchange *exch_send;
+	/** @brief pointer to t_exchange structure to store receive information */
+	t_exchange *exch_recv;
+};
+typedef struct t_exchanger t_exchanger;
+
 /**
  * @brief Arbitrary exchange given a map
  * 
