@@ -36,7 +36,7 @@
 #include "exchange.h"
 #include "check.h"
 
-typedef void (*kernel_func) (void*, int, void*, int);
+typedef void (*kernel_func) (void*, void*, int*, int);
 
 struct xt_un_pack_kernels {
 	kernel_func pack;
@@ -44,34 +44,46 @@ struct xt_un_pack_kernels {
 };
 typedef struct xt_un_pack_kernels xt_un_pack_kernels;
 
-static inline void pack_int(int *buffer, int i, int *data, int idx) {
-
-	buffer[i] = data[idx];
+static void pack_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[i];
+		buffer[i] = data[data_idx];
+	}
 }
 
-static inline void unpack_int(int *data, int idx, int *buffer, int i) {
-
-	data[idx] = buffer[i];
+static void unpack_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[i];
+		data[data_idx] = buffer[i];
+	}
 }
 
-static inline void pack_float(float *buffer, int i, float *data, int idx) {
-
-	buffer[i] = data[idx];
+static void pack_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[i];
+		buffer[i] = data[data_idx];
+	}
 }
 
-static inline void unpack_float(float *data, int idx, float *buffer, int i) {
-
-	data[idx] = buffer[i];
+static void unpack_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[i];
+		data[data_idx] = buffer[i];
+	}
 }
 
-static inline void pack_double(double *buffer, int i, double *data, int idx) {
-
-	buffer[i] = data[idx];
+static void pack_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[i];
+		buffer[i] = data[data_idx];
+	}
 }
 
-static inline void unpack_double(double *data, int idx, double *buffer, int i) {
-
-	data[idx] = buffer[i];
+static void unpack_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[i];
+		data[data_idx] = buffer[i];
+	}
 }
 
 static void select_un_pack_kernels(xt_un_pack_kernels *table_kernels, MPI_Datatype type) {
@@ -112,11 +124,16 @@ void exchange_go(t_map        *map     ,
 
 	// send step
 	for (int count = 0; count < map->exch_send->count; count++) {
+		/* allocate the buffer */
 		map->exch_send->exch[count]->buffer = malloc(map->exch_send->exch[count]->buffer_size * type_size);
-		for (int i = 0; i < map->exch_send->exch[count]->buffer_size; i++) {
-			int data_idx = map->exch_send->exch[count]->buffer_idxlist[i];
-			vtable_kernels.pack(map->exch_send->exch[count]->buffer, i, src_data, data_idx);
-		}
+
+		/* pack the buffer */
+		vtable_kernels.pack(map->exch_send->exch[count]->buffer,
+		                    src_data,
+		                    map->exch_send->exch[count]->buffer_idxlist,
+		                    map->exch_send->exch[count]->buffer_size);
+
+		/* send the buffer */
 		check_mpi( MPI_Isend(map->exch_send->exch[count]->buffer, map->exch_send->exch[count]->buffer_size, type,
 		                     map->exch_send->exch[count]->exch_rank,
 		                     world_rank + world_size * (map->exch_send->exch[count]->exch_rank + 1),
@@ -126,7 +143,10 @@ void exchange_go(t_map        *map     ,
 
 	// recv step
 	for (int count = 0; count < map->exch_recv->count; count++) {
+		/* allocate the buffer */
 		map->exch_recv->exch[count]->buffer = malloc(map->exch_recv->exch[count]->buffer_size * type_size);
+
+		/* receive the buffer */
 		check_mpi( MPI_Irecv(map->exch_recv->exch[count]->buffer, map->exch_recv->exch[count]->buffer_size, type,
 		                     map->exch_recv->exch[count]->exch_rank,
 		                     map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
@@ -134,14 +154,15 @@ void exchange_go(t_map        *map     ,
 		nreq++;
 	}
 
+	/* wait for all messages */
 	check_mpi( MPI_Waitall(nreq, req, stat) );
 
-	// unpack recv buffers
+	// unpack all recv buffers
 	for (int count = 0; count < map->exch_recv->count; count++) {
-		for (int i = 0; i < map->exch_recv->exch[count]->buffer_size; i++) {
-			int data_idx = map->exch_recv->exch[count]->buffer_idxlist[i];
-			vtable_kernels.unpack(dst_data, data_idx, map->exch_recv->exch[count]->buffer, i);
-		}
+		vtable_kernels.unpack(map->exch_recv->exch[count]->buffer,
+		                      dst_data,
+		                      map->exch_recv->exch[count]->buffer_idxlist,
+		                      map->exch_recv->exch[count]->buffer_size);
 	}
 
 	// free memory
