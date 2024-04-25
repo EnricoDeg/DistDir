@@ -36,6 +36,21 @@
 
 #include "map.h"
 
+typedef void (*kernel_func) (void*, void*, int*, int);
+
+/** @struct xt_un_pack_kernels
+ * 
+ *  @brief The structure contains pointer to pack and unpack functions
+ * 
+ */
+struct xt_un_pack_kernels {
+	/** @brief pointer to pack function */
+	kernel_func pack;
+	/** @brief pointer to unpack function */
+	kernel_func unpack;
+};
+typedef struct xt_un_pack_kernels xt_un_pack_kernels;
+
 /** @struct t_map_exch_per_rank
  * 
  *  @brief The structure contains buffers for each exchange
@@ -72,6 +87,8 @@ struct t_exchanger {
 	t_exchange *exch_send;
 	/** @brief pointer to t_exchange structure to store receive information */
 	t_exchange *exch_recv;
+	/** @brief pointer to pack and unpack functions */
+	xt_un_pack_kernels* vtable;
 };
 typedef struct t_exchanger t_exchanger;
 

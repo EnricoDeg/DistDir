@@ -37,14 +37,6 @@
 #include "check.h"
 #include <stdio.h>
 
-typedef void (*kernel_func) (void*, void*, int*, int);
-
-struct xt_un_pack_kernels {
-	kernel_func pack;
-	kernel_func unpack;
-};
-typedef struct xt_un_pack_kernels xt_un_pack_kernels;
-
 static void pack_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size) {
 	for (int i = 0; i < buffer_size; i++) {
 		int data_idx = buffer_idxlist[i];
@@ -140,8 +132,9 @@ void exchange_go(t_map        *map     ,
 		}
 	}
 
-	xt_un_pack_kernels vtable_kernels;
-	select_un_pack_kernels(&vtable_kernels, type);
+	xt_un_pack_kernels* vtable_kernels = (xt_un_pack_kernels*)malloc(sizeof(xt_un_pack_kernels));
+	select_un_pack_kernels(vtable_kernels, type);
+	exchanger->vtable = vtable_kernels;
 
 	// exchange data array
 	MPI_Request req[map->exch_send->count + map->exch_recv->count];
@@ -158,7 +151,7 @@ void exchange_go(t_map        *map     ,
 		exchanger->exch_send->exch[count]->buffer = malloc(exchanger->exch_send->exch[count]->buffer_size * type_size);
 
 		/* pack the buffer */
-		vtable_kernels.pack(exchanger->exch_send->exch[count]->buffer,
+		exchanger->vtable->pack(exchanger->exch_send->exch[count]->buffer,
 		                    src_data,
 		                    map->exch_send->exch[count]->buffer_idxlist,
 		                    exchanger->exch_send->exch[count]->buffer_size);
@@ -193,7 +186,7 @@ void exchange_go(t_map        *map     ,
 
 	// unpack all recv buffers
 	for (int count = 0; count < map->exch_recv->count; count++) {
-		vtable_kernels.unpack(exchanger->exch_recv->exch[count]->buffer,
+		exchanger->vtable->unpack(exchanger->exch_recv->exch[count]->buffer,
 		                      dst_data,
 		                      map->exch_recv->exch[count]->buffer_idxlist,
 		                      exchanger->exch_recv->exch[count]->buffer_size);
@@ -215,6 +208,7 @@ void exchange_go(t_map        *map     ,
 		free(exchanger->exch_recv->exch[count]);
 	free(exchanger->exch_recv->exch);
 	free(exchanger->exch_recv);
+	free(exchanger->vtable);
 
 	free(exchanger);
 }
