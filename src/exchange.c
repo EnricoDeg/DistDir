@@ -136,9 +136,11 @@ void exchange_go(t_map        *map     ,
 	select_un_pack_kernels(vtable_kernels, type);
 	exchanger->vtable = vtable_kernels;
 
+	exchanger->map = map;
+
 	// exchange data array
-	MPI_Request req[map->exch_send->count + map->exch_recv->count];
-	MPI_Status stat[map->exch_send->count + map->exch_recv->count];
+	MPI_Request req[exchanger->map->exch_send->count + exchanger->map->exch_recv->count];
+	MPI_Status stat[exchanger->map->exch_send->count + exchanger->map->exch_recv->count];
 	int nreq = 0;
 
 	MPI_Aint type_size;
@@ -146,28 +148,28 @@ void exchange_go(t_map        *map     ,
 	check_mpi( MPI_Type_get_extent(type, &type_lb, &type_size) );
 
 	// send step
-	for (int count = 0; count < map->exch_send->count; count++) {
+	for (int count = 0; count < exchanger->map->exch_send->count; count++) {
 		/* allocate the buffer */
 		exchanger->exch_send->exch[count]->buffer = malloc(exchanger->exch_send->exch[count]->buffer_size * type_size);
 
 		/* pack the buffer */
 		exchanger->vtable->pack(exchanger->exch_send->exch[count]->buffer,
 		                    src_data,
-		                    map->exch_send->exch[count]->buffer_idxlist,
+		                    exchanger->map->exch_send->exch[count]->buffer_idxlist,
 		                    exchanger->exch_send->exch[count]->buffer_size);
 
 		/* send the buffer */
 		check_mpi( MPI_Isend(exchanger->exch_send->exch[count]->buffer,
 		                     exchanger->exch_send->exch[count]->buffer_size,
 		                     type,
-		                     map->exch_send->exch[count]->exch_rank,
-		                     world_rank + world_size * (map->exch_send->exch[count]->exch_rank + 1),
-		                     map->comm, &req[nreq]) );
+		                     exchanger->map->exch_send->exch[count]->exch_rank,
+		                     world_rank + world_size * (exchanger->map->exch_send->exch[count]->exch_rank + 1),
+		                     exchanger->map->comm, &req[nreq]) );
 		nreq++;
 	}
 
 	// recv step
-	for (int count = 0; count < map->exch_recv->count; count++) {
+	for (int count = 0; count < exchanger->map->exch_recv->count; count++) {
 		/* allocate the buffer */
 		exchanger->exch_recv->exch[count]->buffer = malloc(exchanger->exch_recv->exch[count]->buffer_size * type_size);
 
@@ -175,9 +177,9 @@ void exchange_go(t_map        *map     ,
 		check_mpi( MPI_Irecv(exchanger->exch_recv->exch[count]->buffer,
 		                     exchanger->exch_recv->exch[count]->buffer_size,
 		                     type,
-		                     map->exch_recv->exch[count]->exch_rank,
-		                     map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
-		                     map->comm, &req[nreq]) );
+		                     exchanger->map->exch_recv->exch[count]->exch_rank,
+		                     exchanger->map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
+		                     exchanger->map->comm, &req[nreq]) );
 		nreq++;
 	}
 
@@ -185,10 +187,10 @@ void exchange_go(t_map        *map     ,
 	check_mpi( MPI_Waitall(nreq, req, stat) );
 
 	// unpack all recv buffers
-	for (int count = 0; count < map->exch_recv->count; count++) {
+	for (int count = 0; count < exchanger->map->exch_recv->count; count++) {
 		exchanger->vtable->unpack(exchanger->exch_recv->exch[count]->buffer,
 		                      dst_data,
-		                      map->exch_recv->exch[count]->buffer_idxlist,
+		                      exchanger->map->exch_recv->exch[count]->buffer_idxlist,
 		                      exchanger->exch_recv->exch[count]->buffer_size);
 	}
 

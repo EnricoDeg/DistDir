@@ -89,6 +89,8 @@ struct t_exchanger {
 	t_exchange *exch_recv;
 	/** @brief pointer to pack and unpack functions */
 	xt_un_pack_kernels* vtable;
+	/** @brief pointer to map object */
+	t_map *map;
 };
 typedef struct t_exchanger t_exchanger;
 
