@@ -91,6 +91,10 @@ struct t_exchanger {
 	xt_un_pack_kernels* vtable;
 	/** @brief pointer to map object */
 	t_map *map;
+	/** @brief MPI datatype used for the exchange */
+	MPI_Datatype type;
+	/** @brief Size of the MPI datatype used for the exchange */
+	MPI_Aint type_size;
 };
 typedef struct t_exchanger t_exchanger;
 

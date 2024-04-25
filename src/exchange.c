@@ -138,6 +138,8 @@ void exchange_go(t_map        *map     ,
 
 	exchanger->map = map;
 
+	exchanger->type = type;
+
 	// exchange data array
 	MPI_Request req[exchanger->map->exch_send->count + exchanger->map->exch_recv->count];
 	MPI_Status stat[exchanger->map->exch_send->count + exchanger->map->exch_recv->count];
@@ -147,10 +149,13 @@ void exchange_go(t_map        *map     ,
 	MPI_Aint type_lb;
 	check_mpi( MPI_Type_get_extent(type, &type_lb, &type_size) );
 
+	exchanger->type_size = type_size;
+
 	// send step
 	for (int count = 0; count < exchanger->map->exch_send->count; count++) {
 		/* allocate the buffer */
-		exchanger->exch_send->exch[count]->buffer = malloc(exchanger->exch_send->exch[count]->buffer_size * type_size);
+		exchanger->exch_send->exch[count]->buffer = malloc(exchanger->exch_send->exch[count]->buffer_size *
+		                                                   exchanger->type_size);
 
 		/* pack the buffer */
 		exchanger->vtable->pack(exchanger->exch_send->exch[count]->buffer,
@@ -161,7 +166,7 @@ void exchange_go(t_map        *map     ,
 		/* send the buffer */
 		check_mpi( MPI_Isend(exchanger->exch_send->exch[count]->buffer,
 		                     exchanger->exch_send->exch[count]->buffer_size,
-		                     type,
+		                     exchanger->type,
 		                     exchanger->map->exch_send->exch[count]->exch_rank,
 		                     world_rank + world_size * (exchanger->map->exch_send->exch[count]->exch_rank + 1),
 		                     exchanger->map->comm, &req[nreq]) );
@@ -171,12 +176,13 @@ void exchange_go(t_map        *map     ,
 	// recv step
 	for (int count = 0; count < exchanger->map->exch_recv->count; count++) {
 		/* allocate the buffer */
-		exchanger->exch_recv->exch[count]->buffer = malloc(exchanger->exch_recv->exch[count]->buffer_size * type_size);
+		exchanger->exch_recv->exch[count]->buffer = malloc(exchanger->exch_recv->exch[count]->buffer_size *
+		                                                   exchanger->type_size);
 
 		/* receive the buffer */
 		check_mpi( MPI_Irecv(exchanger->exch_recv->exch[count]->buffer,
 		                     exchanger->exch_recv->exch[count]->buffer_size,
-		                     type,
+		                     exchanger->type,
 		                     exchanger->map->exch_recv->exch[count]->exch_rank,
 		                     exchanger->map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
 		                     exchanger->map->comm, &req[nreq]) );
