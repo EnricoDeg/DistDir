@@ -24,9 +24,9 @@ else:
 
 map = distdir.map(src_idxlist, dst_idxlist, -1, MPI.COMM_WORLD)
 
-exchanger = distdir.exchange()
+exchanger = distdir.exchanger(map)
 
-exchanger.go(map, a, a)
+exchanger.go(a, a)
 
 if rank == 0:
 	print('rank '+str(rank)+': '+str(a))
