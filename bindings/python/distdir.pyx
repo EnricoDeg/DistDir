@@ -59,14 +59,38 @@ cdef extern from "distdir.h":
 	
 	ctypedef struct t_map:
 		libmpi.MPI_Comm comm
-		t_map_exch *exch_send;
-		t_map_exch *exch_recv;
+		t_map_exch *exch_send
+		t_map_exch *exch_recv
 	
 	t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, int stride, libmpi.MPI_Comm comm);
 	t_map * extend_map_3d(t_map *map2d, int nlevels);
 	void delete_map(t_map *map);
 
-	void exchange_go(t_map *map, libmpi.MPI_Datatype type, void *src_data, void* dst_data);
+	ctypedef void (*kernel_func) (void*, void*, int*, int);
+	
+	ctypedef struct xt_un_pack_kernels:
+		kernel_func pack
+		kernel_func unpack
+
+	ctypedef struct t_exchange_per_rank:
+		int buffer_size
+		void *buffer
+
+	ctypedef struct t_exchange:
+		int count
+		t_exchange_per_rank **exch
+
+	ctypedef struct t_exchanger:
+		t_exchange *exch_send
+		t_exchange *exch_recv
+		xt_un_pack_kernels* vtable
+		t_map *map
+		libmpi.MPI_Datatype type
+		libmpi.MPI_Aint type_size
+
+	t_exchanger* new_exchanger(t_map *map, libmpi.MPI_Datatype type)
+	void exchanger_go(t_exchanger* exchanger, void *src_data, void* dst_data)
+	void delete_exchanger(t_exchanger * exchanger)
 
 cdef class idxlist:
 	cdef t_idxlist *_idxlist
@@ -107,22 +131,27 @@ cdef class map:
 		elif map is not None and nlevels is not None:
 			self._map = extend_map_3d((<map?>map2d)._map, nlevels)
 
-#	def __del__(self):
-#		self.cleanup()
+	def __del__(self):
+		self.cleanup()
 
 	def cleanup(self):
 		delete_map((<map?>self)._map)
 
 
-cdef class exchange:
-	def __init__(self):
-		pass
+cdef class exchanger:
+	cdef t_exchanger *_exchanger
+
+	def __init__(self, p_map):
+		cdef MPI.Datatype type = MPI.DOUBLE
+		self._exchanger = new_exchanger((<map?>p_map)._map, type.ob_mpi)
 
 	def __del__(self):
-		pass
+		self.cleanup()
 
-	def go(self, exchange_map, src_data, dst_data):
-		cdef MPI.Datatype type = MPI.DOUBLE 
+	def cleanup(self):
+		delete_exchanger((<exchanger?>self)._exchanger)
+
+	def go(self, src_data, dst_data):
 		cdef double[::1] src_data_view = _np.ascontiguousarray(src_data, dtype=_np.double)
 		cdef double[::1] dst_data_view = _np.ascontiguousarray(dst_data, dtype=_np.double)
-		exchange_go((<map?>exchange_map)._map, type.ob_mpi, <void*> &src_data_view[0], <void*> &dst_data_view[0])
+		exchanger_go((<exchanger?>self)._exchanger, <void*> &src_data_view[0], <void*> &dst_data_view[0])
