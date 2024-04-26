@@ -93,16 +93,9 @@ static void select_un_pack_kernels(xt_un_pack_kernels *table_kernels, MPI_Dataty
 	}
 }
 
-void exchange_go(t_map        *map     ,
-                 MPI_Datatype  type    ,
-                 void         *src_data,
-                 void         *dst_data) {
-
-	int world_size;
-	check_mpi( MPI_Comm_size(map->comm, &world_size) );
-	int world_rank;
-	check_mpi( MPI_Comm_rank(map->comm, &world_rank) );
-
+t_exchanger* new_exchanger(t_map        *map ,
+                           MPI_Datatype  type) {
+	
 	// group all info into data structure
 	t_exchanger *exchanger;
 
@@ -138,18 +131,30 @@ void exchange_go(t_map        *map     ,
 
 	exchanger->map = map;
 
-	exchanger->type = type;
-
-	// exchange data array
-	MPI_Request req[exchanger->map->exch_send->count + exchanger->map->exch_recv->count];
-	MPI_Status stat[exchanger->map->exch_send->count + exchanger->map->exch_recv->count];
-	int nreq = 0;
-
 	MPI_Aint type_size;
 	MPI_Aint type_lb;
 	check_mpi( MPI_Type_get_extent(type, &type_lb, &type_size) );
 
 	exchanger->type_size = type_size;
+
+	exchanger->type = type;
+
+	return exchanger;
+}
+
+void exchanger_go(t_exchanger  *exchanger ,
+                  void         *src_data  ,
+                  void         *dst_data  ) {
+
+	int world_size;
+	check_mpi( MPI_Comm_size(exchanger->map->comm, &world_size) );
+	int world_rank;
+	check_mpi( MPI_Comm_rank(exchanger->map->comm, &world_rank) );
+
+	// exchange data array
+	MPI_Request req[exchanger->map->exch_send->count + exchanger->map->exch_recv->count];
+	MPI_Status stat[exchanger->map->exch_send->count + exchanger->map->exch_recv->count];
+	int nreq = 0;
 
 	// send step
 	for (int count = 0; count < exchanger->map->exch_send->count; count++) {
@@ -199,6 +204,10 @@ void exchange_go(t_map        *map     ,
 		                      exchanger->map->exch_recv->exch[count]->buffer_idxlist,
 		                      exchanger->exch_recv->exch[count]->buffer_size);
 	}
+
+}
+
+void delete_exchanger(t_exchanger *exchanger) {
 
 	// free memory
 	for (int count = 0; count < exchanger->exch_send->count; count++)

@@ -150,18 +150,22 @@ int example_basic4() {
 
 	// test exchange
 	{
+		t_exchanger *exchanger = new_exchanger(p_map, MPI_INT);
+
 		int data[npoints_local];
 		// src MPI ranks fill data array
 		if (world_role == I_SRC)
 			for (int i = 0; i < npoints_local; i++)
 				data[i] = i + npoints_local * world_rank;
 
-		exchange_go(p_map, MPI_INT, data, data);
+		exchanger_go(exchanger, data, data);
 
 		printf("%d: ", world_rank);
 		for (int i = 0; i < npoints_local; i++)
 			printf("%d ", data[i]);
 		printf("\n");
+
+		delete_exchanger(exchanger);
 	}
 
 	free(idxlist);

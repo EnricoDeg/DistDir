@@ -99,21 +99,43 @@ struct t_exchanger {
 typedef struct t_exchanger t_exchanger;
 
 /**
- * @brief Arbitrary exchange given a map
+ * @brief Create a new t_exchanger structure
  * 
- * @details Execute the MPI exchange given a previously generated map.
- *          The source and destination buffers contain the data before and after the exchange
+ * @details Create an exchanger given a map object and a datatype
  * 
  * @param[in] map      pointer to a t_map structure
  * @param[in] type     type of the data in the form of MPI datatype
- * @param[in] src_data pointer to the data to be sent
- * @param[in] dst_data pointer to the data to be received
  * 
  * @ingroup exchange
  */
-void exchange_go(t_map        *map     ,
-                 MPI_Datatype  type    ,
-                 void         *src_data,
-                 void         *dst_data);
+t_exchanger* new_exchanger(t_map        *map ,
+                           MPI_Datatype  type);
+
+/**
+ * @brief Arbitrary exchange given a map
+ * 
+ * @details Execute the MPI exchange given a previously generated exchanger.
+ *          The source and destination buffers contain the data before and after the exchange
+ * 
+ * @param[in] exchanger pointer to a t_exchanger structure
+ * @param[in] src_data  pointer to the data to be sent
+ * @param[in] dst_data  pointer to the data to be received
+ * 
+ * @ingroup exchange
+ */
+void exchanger_go(t_exchanger  *exchanger,
+                  void         *src_data ,
+                  void         *dst_data );
+
+/**
+ * @brief Clean memory of a t_exchanger structure
+ * 
+ * @details Free all the memory of a t_exchanger structure
+ * 
+ * @param[in] exchanger pointer to t_exchanger structure
+ * 
+ * @ingroup exchange
+ */
+void delete_exchanger(t_exchanger * exchanger);
 
 #endif
