@@ -42,8 +42,8 @@ enum distdir_hardware {
 
 enum distdir_exchanger {
 	IsendIrecv = 0,
-	SendRecv = 1,
-	IsendRecv = 2
+	IsendRecv1 = 1,
+	IsendRecv2 = 2
 };
 
 enum distdir_verbose {
