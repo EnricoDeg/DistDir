@@ -1,5 +1,5 @@
 /*
- * @file distdir.h
+ * @file setting.h
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -31,13 +31,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef DIST_DIR_H
-#define DIST_DIR_H
+#ifndef SETTING_H
+#define SETTING_H
 
-#include "idxlist.h"
-#include "map.h"
-#include "exchange.h"
-#include "group.h"
-#include "setting.h"
+struct t_config {
+	int initialized;
+};
+typedef struct t_config t_config;
+
+void distdir_initialize();
+
+void distdir_finalize();
 
 #endif

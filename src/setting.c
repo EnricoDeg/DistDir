@@ -1,5 +1,5 @@
 /*
- * @file distdir.h
+ * @file setting.c
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -31,13 +31,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef DIST_DIR_H
-#define DIST_DIR_H
-
-#include "idxlist.h"
-#include "map.h"
-#include "exchange.h"
-#include "group.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include "setting.h"
+#include "check.h"
 
-#endif
+static t_config *config;
+
+void distdir_initialize() {
+
+	int mpi_initialized;
+	check_mpi( MPI_Initialized( &mpi_initialized ) );
+	if (!mpi_initialized) {
+		MPI_Init(NULL, NULL);
+		check_mpi( MPI_Initialized( &mpi_initialized ) );
+	}
+
+	config = (t_config *)malloc(sizeof(t_config));
+	config->initialized = mpi_initialized;
+}
+
+void distdir_finalize() {
+
+	int mpi_finalized;
+	int mpi_initialized = config->initialized;
+	check_mpi( MPI_Finalized( &mpi_finalized ) );
+
+	free(config);
+
+	if (mpi_initialized && !mpi_finalized)
+		check_mpi(MPI_Finalize());
+}
