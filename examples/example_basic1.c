@@ -69,10 +69,6 @@ int example_basic1() {
 
 	distdir_initialize();
 
-	set_config_exchanger(IsendRecv);
-
-	printf("exchanger type = %d\n", get_config_exchanger());
-
 	int world_rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 	int world_size;

@@ -35,6 +35,7 @@
 
 #include "exchange.h"
 #include "check.h"
+#include "setting.h"
 #include <stdio.h>
 
 static void pack_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size) {
@@ -151,6 +152,24 @@ t_exchanger* new_exchanger(t_map        *map ,
 		                                                   exchanger->type_size);
 	}
 
+	int exchanger_type = get_config_exchanger();
+	switch (exchanger_type) {
+		case IsendIrecv:
+			exchanger->req = (MPI_Request *)malloc((exchanger->map->exch_send->count +
+			                                        exchanger->map->exch_recv->count) * sizeof(MPI_Request));
+			exchanger->stat = (MPI_Status *)malloc((exchanger->map->exch_send->count + 
+			                                        exchanger->map->exch_recv->count) * sizeof(MPI_Status));
+			break;
+		case IsendRecv:
+			exchanger->req = (MPI_Request *)malloc((exchanger->map->exch_send->count)*sizeof(MPI_Request));
+			exchanger->stat = (MPI_Status *)malloc((exchanger->map->exch_send->count)*sizeof(MPI_Status));
+			break;
+		case SendRecv:
+			exchanger->req = (MPI_Request *)malloc(sizeof(MPI_Request));
+			exchanger->stat = (MPI_Status *)malloc(sizeof(MPI_Status));
+			break;
+	}
+
 	return exchanger;
 }
 
@@ -163,9 +182,6 @@ void exchanger_go(t_exchanger  *exchanger ,
 	int world_rank;
 	check_mpi( MPI_Comm_rank(exchanger->map->comm, &world_rank) );
 
-	// exchange data array
-	MPI_Request req[exchanger->map->exch_send->count + exchanger->map->exch_recv->count];
-	MPI_Status stat[exchanger->map->exch_send->count + exchanger->map->exch_recv->count];
 	int nreq = 0;
 
 	// send step
@@ -183,7 +199,7 @@ void exchanger_go(t_exchanger  *exchanger ,
 		                     exchanger->type,
 		                     exchanger->map->exch_send->exch[count]->exch_rank,
 		                     world_rank + world_size * (exchanger->map->exch_send->exch[count]->exch_rank + 1),
-		                     exchanger->map->comm, &req[nreq]) );
+		                     exchanger->map->comm, exchanger->req+nreq) );
 		nreq++;
 	}
 
@@ -196,12 +212,12 @@ void exchanger_go(t_exchanger  *exchanger ,
 		                     exchanger->type,
 		                     exchanger->map->exch_recv->exch[count]->exch_rank,
 		                     exchanger->map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
-		                     exchanger->map->comm, &req[nreq]) );
+		                     exchanger->map->comm, exchanger->req+nreq) );
 		nreq++;
 	}
 
 	/* wait for all messages */
-	check_mpi( MPI_Waitall(nreq, req, stat) );
+	check_mpi( MPI_Waitall(nreq, exchanger->req, exchanger->stat) );
 
 	// unpack all recv buffers
 	for (int count = 0; count < exchanger->map->exch_recv->count; count++) {
@@ -231,7 +247,11 @@ void delete_exchanger(t_exchanger *exchanger) {
 		free(exchanger->exch_recv->exch[count]);
 	free(exchanger->exch_recv->exch);
 	free(exchanger->exch_recv);
+
 	free(exchanger->vtable);
+
+	free(exchanger->req);
+	free(exchanger->stat);
 
 	free(exchanger);
 }

@@ -95,6 +95,10 @@ struct t_exchanger {
 	MPI_Datatype type;
 	/** @brief Size of the MPI datatype used for the exchange */
 	MPI_Aint type_size;
+	/** @brief array of message requests */
+	MPI_Request *req;
+	/** @brief array of message status */
+	MPI_Status *stat;
 };
 typedef struct t_exchanger t_exchanger;
 
