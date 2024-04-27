@@ -34,13 +34,45 @@
 #ifndef SETTING_H
 #define SETTING_H
 
+enum distdir_hardware {
+	CPU = 0,
+	GPU_NVIDIA = 1,
+	GPU_AMD = 2
+};
+
+enum distdir_exchanger {
+	IsendIrecv = 0,
+	SendRecv = 1,
+	IsendRecv = 2
+};
+
+enum distdir_verbose {
+	verbose_true = 0,
+	verbose_false = 1
+};
+
 struct t_config {
 	int initialized;
+	enum distdir_hardware hardware;
+	enum distdir_exchanger exchanger;
+	enum distdir_verbose verbose;
 };
 typedef struct t_config t_config;
 
 void distdir_initialize();
 
 void distdir_finalize();
+
+void set_config_hardware(int hardware_type);
+
+void set_config_exchanger(int exchanger_type);
+
+void set_config_verbose(int verbose_type);
+
+int  get_config_hardware();
+
+int get_config_exchanger();
+
+int get_config_verbose();
 
 #endif
