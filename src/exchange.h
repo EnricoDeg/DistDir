@@ -36,25 +36,6 @@
 
 #include "map.h"
 
-typedef void (*kernel_func_pack) (void*, void*, int*, int);
-
-typedef void* (*kernel_func_alloc) (int);
-
-/** @struct xt_un_pack_kernels
- * 
- *  @brief The structure contains pointer to pack and unpack functions
- * 
- */
-struct t_kernels {
-	/** @brief pointer to pack function */
-	kernel_func_pack pack;
-	/** @brief pointer to unpack function */
-	kernel_func_pack unpack;
-	/** @brief pointer to allocate function */
-	kernel_func_alloc allocator;
-};
-typedef struct t_kernels t_kernels;
-
 /** @struct t_map_exch_per_rank
  * 
  *  @brief The structure contains buffers for each exchange
@@ -81,6 +62,47 @@ struct t_exchange {
 };
 typedef struct t_exchange t_exchange;
 
+struct t_mpi_exchange {
+	/** @brief MPI datatype used for the exchange */
+	MPI_Datatype type;
+	/** @brief Size of the MPI datatype used for the exchange */
+	MPI_Aint type_size;
+	/** @brief array of message requests */
+	MPI_Request *req;
+	/** @brief array of message status */
+	MPI_Status *stat;
+	/** @brief number of message requests */
+	int nreq;
+};
+typedef struct t_mpi_exchange t_mpi_exchange;
+
+typedef void (*kernel_func_pack) (void*, void*, int*, int);
+
+typedef void* (*kernel_func_alloc) (size_t);
+
+/** @struct xt_un_pack_kernels
+ * 
+ *  @brief The structure contains pointer to pack and unpack functions
+ * 
+ */
+struct t_kernels {
+	/** @brief pointer to pack function */
+	kernel_func_pack pack;
+	/** @brief pointer to unpack function */
+	kernel_func_pack unpack;
+	/** @brief pointer to allocate function */
+	kernel_func_alloc allocator;
+};
+typedef struct t_kernels t_kernels;
+
+typedef void (*kernel_func_go) (t_exchange *, t_exchange*,  t_map*, t_kernels*, t_mpi_exchange*, void*, void *);
+
+struct t_messages {
+	/** @brief pointer to backend send/recv function */
+	kernel_func_go send_recv;
+};
+typedef struct t_messages t_messages;
+
 /** @struct t_map_exch
  * 
  *  @brief The structure contains all buffers associated with a map
@@ -93,16 +115,12 @@ struct t_exchanger {
 	t_exchange *exch_recv;
 	/** @brief pointer to pack and unpack functions */
 	t_kernels* vtable;
+	/** @brief pointer to pack and unpack functions */
+	t_messages* vtable_messages;
 	/** @brief pointer to map object */
 	t_map *map;
-	/** @brief MPI datatype used for the exchange */
-	MPI_Datatype type;
-	/** @brief Size of the MPI datatype used for the exchange */
-	MPI_Aint type_size;
-	/** @brief array of message requests */
-	MPI_Request *req;
-	/** @brief array of message status */
-	MPI_Status *stat;
+	/** @brief pointer to mpi_exchange struct */
+	t_mpi_exchange *mpi_exchange;
 };
 typedef struct t_exchanger t_exchanger;
 
