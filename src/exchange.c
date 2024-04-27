@@ -139,6 +139,18 @@ t_exchanger* new_exchanger(t_map        *map ,
 
 	exchanger->type = type;
 
+	for (int count = 0; count < exchanger->map->exch_send->count; count++) {
+		/* allocate the buffer */
+		exchanger->exch_send->exch[count]->buffer = malloc(exchanger->exch_send->exch[count]->buffer_size *
+		                                                   exchanger->type_size);
+	}
+
+	for (int count = 0; count < exchanger->map->exch_recv->count; count++) {
+		/* allocate the buffer */
+		exchanger->exch_recv->exch[count]->buffer = malloc(exchanger->exch_recv->exch[count]->buffer_size *
+		                                                   exchanger->type_size);
+	}
+
 	return exchanger;
 }
 
@@ -158,9 +170,6 @@ void exchanger_go(t_exchanger  *exchanger ,
 
 	// send step
 	for (int count = 0; count < exchanger->map->exch_send->count; count++) {
-		/* allocate the buffer */
-		exchanger->exch_send->exch[count]->buffer = malloc(exchanger->exch_send->exch[count]->buffer_size *
-		                                                   exchanger->type_size);
 
 		/* pack the buffer */
 		exchanger->vtable->pack(exchanger->exch_send->exch[count]->buffer,
@@ -180,9 +189,6 @@ void exchanger_go(t_exchanger  *exchanger ,
 
 	// recv step
 	for (int count = 0; count < exchanger->map->exch_recv->count; count++) {
-		/* allocate the buffer */
-		exchanger->exch_recv->exch[count]->buffer = malloc(exchanger->exch_recv->exch[count]->buffer_size *
-		                                                   exchanger->type_size);
 
 		/* receive the buffer */
 		check_mpi( MPI_Irecv(exchanger->exch_recv->exch[count]->buffer,
