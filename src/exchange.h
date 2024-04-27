@@ -36,20 +36,24 @@
 
 #include "map.h"
 
-typedef void (*kernel_func) (void*, void*, int*, int);
+typedef void (*kernel_func_pack) (void*, void*, int*, int);
+
+typedef void* (*kernel_func_alloc) (int);
 
 /** @struct xt_un_pack_kernels
  * 
  *  @brief The structure contains pointer to pack and unpack functions
  * 
  */
-struct xt_un_pack_kernels {
+struct t_kernels {
 	/** @brief pointer to pack function */
-	kernel_func pack;
+	kernel_func_pack pack;
 	/** @brief pointer to unpack function */
-	kernel_func unpack;
+	kernel_func_pack unpack;
+	/** @brief pointer to allocate function */
+	kernel_func_alloc allocator;
 };
-typedef struct xt_un_pack_kernels xt_un_pack_kernels;
+typedef struct t_kernels t_kernels;
 
 /** @struct t_map_exch_per_rank
  * 
@@ -88,7 +92,7 @@ struct t_exchanger {
 	/** @brief pointer to t_exchange structure to store receive information */
 	t_exchange *exch_recv;
 	/** @brief pointer to pack and unpack functions */
-	xt_un_pack_kernels* vtable;
+	t_kernels* vtable;
 	/** @brief pointer to map object */
 	t_map *map;
 	/** @brief MPI datatype used for the exchange */

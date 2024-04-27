@@ -80,17 +80,28 @@ static void unpack_double(double *buffer, double *data, int *buffer_idxlist, int
 	}
 }
 
-static void select_un_pack_kernels(xt_un_pack_kernels *table_kernels, MPI_Datatype type) {
+static void* allocator_cpu(size_t buffer_size) {
+    void *ptr = malloc(buffer_size);
+
+    if (!ptr && (buffer_size > 0)) {
+      fprintf(stderr, "malloc failed!\n");
+      exit(EXIT_FAILURE);
+    }
+
+    return ptr;
+}
+
+static void select_un_pack_kernels(t_kernels *table_kernels, MPI_Datatype type) {
 
 	if (type == MPI_INT) {
-		table_kernels->pack = (kernel_func)pack_int;
-		table_kernels->unpack = (kernel_func)unpack_int;
+		table_kernels->pack = (kernel_func_pack)pack_int;
+		table_kernels->unpack = (kernel_func_pack)unpack_int;
 	} else if (type == MPI_REAL) {
-		table_kernels->pack = (kernel_func)pack_float;
-		table_kernels->unpack = (kernel_func)unpack_float;
+		table_kernels->pack = (kernel_func_pack)pack_float;
+		table_kernels->unpack = (kernel_func_pack)unpack_float;
 	} else if (type == MPI_DOUBLE) {
-		table_kernels->pack = (kernel_func)pack_double;
-		table_kernels->unpack = (kernel_func)unpack_double;
+		table_kernels->pack = (kernel_func_pack)pack_double;
+		table_kernels->unpack = (kernel_func_pack)unpack_double;
 	}
 }
 
@@ -126,9 +137,15 @@ t_exchanger* new_exchanger(t_map        *map ,
 		}
 	}
 
-	xt_un_pack_kernels* vtable_kernels = (xt_un_pack_kernels*)malloc(sizeof(xt_un_pack_kernels));
+	t_kernels* vtable_kernels = (t_kernels*)malloc(sizeof(t_kernels));
 	select_un_pack_kernels(vtable_kernels, type);
 	exchanger->vtable = vtable_kernels;
+
+	int hardware_type = get_config_hardware();
+	switch (hardware_type) {
+		case CPU:
+			exchanger->vtable->allocator = allocator_cpu;
+	}
 
 	exchanger->map = map;
 
@@ -142,14 +159,14 @@ t_exchanger* new_exchanger(t_map        *map ,
 
 	for (int count = 0; count < exchanger->map->exch_send->count; count++) {
 		/* allocate the buffer */
-		exchanger->exch_send->exch[count]->buffer = malloc(exchanger->exch_send->exch[count]->buffer_size *
-		                                                   exchanger->type_size);
+		exchanger->exch_send->exch[count]->buffer = exchanger->vtable->allocator(exchanger->exch_send->exch[count]->buffer_size *
+		                                                                         exchanger->type_size);
 	}
 
 	for (int count = 0; count < exchanger->map->exch_recv->count; count++) {
 		/* allocate the buffer */
-		exchanger->exch_recv->exch[count]->buffer = malloc(exchanger->exch_recv->exch[count]->buffer_size *
-		                                                   exchanger->type_size);
+		exchanger->exch_recv->exch[count]->buffer = exchanger->vtable->allocator(exchanger->exch_recv->exch[count]->buffer_size *
+		                                                                         exchanger->type_size);
 	}
 
 	int exchanger_type = get_config_exchanger();
