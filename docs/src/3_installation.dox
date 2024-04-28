@@ -1,0 +1,22 @@
+/**
+ * \page installation Installation
+
+\tableofcontents
+
+Dependencies:
+
+ - MPI
+ - CMake
+ - Doxygen
+ - Python
+
+\code
+export CC=mpicc
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+make install
+\endcode
+
+*/

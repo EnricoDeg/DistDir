@@ -1,0 +1,62 @@
+/**
+ * \page start Getting started
+
+\tableofcontents
+
+\section init Initialization
+
+First of all, the library needs to be initialized with a call to \c distdir_initialize.
+
+This function internally calls \c MPI_Init and configure the library.
+
+\section idxlist Index list
+
+The user needs to provide index lists with global indices.
+For each exchange, two index lists need to be created,
+one with the indices to be sent and one with the indices to be received.
+
+The API function \c new_idxlist requires an integer array with the global indices and its size and
+it returns a t_idxlist object.
+
+In case of unidirectional exchange, the source or receiver index list should be empty.
+An empty index list can be created with a call to \c new_idxlist_empty .
+
+\section map Map
+
+Once the index lists are correcty created, most of the effort on the user side is done and 
+the library can create a map between all processes involved in the exchange based on the source and receiver index lists.
+
+The mapping is done internally using a basic distributed directory algorithm.
+The mapping is done with a call to the API function \c new_map which requires the source and receiver index lists and 
+the MPI communicator. An additional parameter can be provided which helps to optimally set up the distributed directory, but
+a negative value can be provided to use default values internally.
+A detailed explanation about this additional parameter is given in the next page and it is particularly useful to
+exchange 3D fields.
+
+The function returns a t_map object which is agnostic about the data types of the fields involved in the actual exchange.
+The object holds information about the ranks from which the indices needs to be received and the ranks to which the 
+indices need to be sent.
+
+\section exchange Exchange
+A exchanger object needs to be created to specialize the computed map for a specific field or group of fields with 
+the same exchange pattern and the same data type.
+The API function \c new_exchanger requires a t_map object and a MPI data type in order to return a t_exchanger object.
+
+Once the exchanger object is created, the exchange is set up and it can be triggered with a call to \c exchanger_go which
+requires the t_exchanger object and the source and receiver pointers to the data in memory. Ideally, this is the only
+function call of the API which is used in the time loop of an application.
+
+\section finalization Finalization and clean up
+Each object created during the set up of an exchange needs to be destroyed.
+
+The t_idxlist object is only needed for the mapping, so it can ideally already destroyed during the initialization phase.
+This is achieved with a call to \c delete_idxlist.
+
+The t_map object is needed for the actual exchange, so it should be deleted in the finalization step of an application.
+This is achieved with a call to \c delete_map. Same principle can be applied to the t_exchanger object which can be 
+destroyed with a call to \c delete_exchanger.
+
+Finally, the library can be finalized with a call to \c distdir_finalize. The function internally clean up the memory 
+for the library configuration and call \c MPI_Finalize if not already done.
+
+*/

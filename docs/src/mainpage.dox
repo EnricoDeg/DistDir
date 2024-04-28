@@ -7,6 +7,9 @@ Enrico Degregori
 <h2>Table of Contents</h2>
 
 - @ref license
+- @ref rationale
+- @ref installation
+- @ref start
 
 @defgroup group
           User interface to split the MPI Communicator in case of multiblock grids
