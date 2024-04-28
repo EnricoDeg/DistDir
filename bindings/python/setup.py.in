@@ -2,8 +2,8 @@ from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
 
-ext_modules = [Extension(name="distdir",
-               sources=["${CMAKE_CURRENT_SOURCE_DIR}/distdir.pyx"],
+ext_modules = [Extension(name="pydistdir",
+               sources=["${CMAKE_CURRENT_SOURCE_DIR}/pydistdir.pyx"],
                include_dirs=["${PROJECT_SOURCE_DIR}/src"],
                library_dirs=["${CMAKE_BINARY_DIR}/src"],
                libraries=["distdir"],

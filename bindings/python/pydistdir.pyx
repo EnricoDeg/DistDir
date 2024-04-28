@@ -37,7 +37,7 @@ import numpy as _np
 cimport mpi4py.libmpi as libmpi
 cimport mpi4py.MPI as MPI
 from mpi4py import MPI
-from enum import Enum
+from enum import IntEnum
 
 cdef extern from "Python.h":
 	int Py_AtExit(void (*)())
@@ -143,11 +143,9 @@ cdef extern from "distdir.h":
 	void exchanger_go(t_exchanger* exchanger, void *src_data, void* dst_data)
 	void delete_exchanger(t_exchanger * exchanger)
 
-
-class distdir_verbose(Enum):
+class pydistdir_verbose(IntEnum):
 	verbose_true = 0
 	verbose_false = 1
-
 
 cdef class distdir:
 	def __init__(self):
