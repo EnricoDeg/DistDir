@@ -36,72 +36,20 @@
 #include "exchange.h"
 #include "check.h"
 #include "setting.h"
+#include "backend_cpu.h"
 #include <stdio.h>
-
-static void pack_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		buffer[i] = data[data_idx];
-	}
-}
-
-static void unpack_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		data[data_idx] = buffer[i];
-	}
-}
-
-static void pack_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		buffer[i] = data[data_idx];
-	}
-}
-
-static void unpack_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		data[data_idx] = buffer[i];
-	}
-}
-
-static void pack_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		buffer[i] = data[data_idx];
-	}
-}
-
-static void unpack_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		data[data_idx] = buffer[i];
-	}
-}
-
-static void* allocator_cpu(size_t buffer_size) {
-    void *ptr = malloc(buffer_size);
-
-    if (!ptr && (buffer_size > 0)) {
-      fprintf(stderr, "malloc failed!\n");
-      exit(EXIT_FAILURE);
-    }
-
-    return ptr;
-}
 
 static void select_un_pack_kernels(t_kernels *table_kernels, MPI_Datatype type) {
 
 	if (type == MPI_INT) {
-		table_kernels->pack = (kernel_func_pack)pack_int;
-		table_kernels->unpack = (kernel_func_pack)unpack_int;
+		table_kernels->pack = (kernel_func_pack)pack_cpu_int;
+		table_kernels->unpack = (kernel_func_pack)unpack_cpu_int;
 	} else if (type == MPI_REAL) {
-		table_kernels->pack = (kernel_func_pack)pack_float;
-		table_kernels->unpack = (kernel_func_pack)unpack_float;
+		table_kernels->pack = (kernel_func_pack)pack_cpu_float;
+		table_kernels->unpack = (kernel_func_pack)unpack_cpu_float;
 	} else if (type == MPI_DOUBLE) {
-		table_kernels->pack = (kernel_func_pack)pack_double;
-		table_kernels->unpack = (kernel_func_pack)unpack_double;
+		table_kernels->pack = (kernel_func_pack)pack_cpu_double;
+		table_kernels->unpack = (kernel_func_pack)unpack_cpu_double;
 	}
 }
 
