@@ -43,7 +43,10 @@ enum distdir_hardware {
 enum distdir_exchanger {
 	IsendIrecv = 0,
 	IsendRecv1 = 1,
-	IsendRecv2 = 2
+	IsendRecv2 = 2,
+	IsendIrecvNoWait = 3,
+	IsendRecv1NoWait = 4,
+	IsendRecv2NoWait = 5
 };
 
 enum distdir_verbose {

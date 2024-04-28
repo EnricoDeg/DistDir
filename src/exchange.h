@@ -71,8 +71,10 @@ struct t_mpi_exchange {
 	MPI_Request *req;
 	/** @brief array of message status */
 	MPI_Status *stat;
-	/** @brief number of message requests */
-	int nreq;
+	/** @brief number of send message requests */
+	int nreq_send;
+	/** @brief number of recv message requests */
+	int nreq_recv;
 };
 typedef struct t_mpi_exchange t_mpi_exchange;
 
@@ -95,7 +97,15 @@ struct t_kernels {
 };
 typedef struct t_kernels t_kernels;
 
-typedef void (*kernel_func_go) (t_exchange *, t_exchange*,  t_map*, t_kernels*, t_mpi_exchange*, void*, void *);
+typedef void (*kernel_func_wait) (t_mpi_exchange*);
+
+struct t_wait {
+	kernel_func_wait pre_wait;
+	kernel_func_wait post_wait;
+};
+typedef struct t_wait t_wait;
+
+typedef void (*kernel_func_go) (t_exchange *, t_exchange*,  t_map*, t_kernels*, t_mpi_exchange*, t_wait*, void*, void *);
 
 struct t_messages {
 	/** @brief pointer to backend send/recv function */
@@ -117,6 +127,8 @@ struct t_exchanger {
 	t_kernels* vtable;
 	/** @brief pointer to pack and unpack functions */
 	t_messages* vtable_messages;
+	/** @brief pointer to wait functions */
+	t_wait* vtable_wait;
 	/** @brief pointer to map object */
 	t_map *map;
 	/** @brief pointer to mpi_exchange struct */
