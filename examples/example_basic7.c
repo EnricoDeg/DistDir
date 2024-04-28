@@ -79,6 +79,8 @@
 
 int example_basic7() {
 
+	distdir_initialize();
+
 	int world_rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 	int world_size;
@@ -232,16 +234,15 @@ int example_basic7() {
 	delete_idxlist(p_idxlist_empty);
 	delete_map(p_map);
 
+	distdir_finalize();
+
 	return 0;
 }
 
 int main () {
 
-	MPI_Init(NULL,NULL);
-
 	int err = example_basic7();
 	if (err != 0) return err;
 
-	MPI_Finalize();
 	return 0;
 }

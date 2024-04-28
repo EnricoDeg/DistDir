@@ -38,7 +38,8 @@
 
 int main () {
 
-	MPI_Init(NULL,NULL);
+	distdir_initialize();
+
 	int world_rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 	int world_size;
@@ -58,6 +59,6 @@ int main () {
 
 	printf("%d: rank %d of %d\n", world_rank, group_rank, group_size);
 
-	MPI_Finalize();
+	distdir_finalize();
 	return 0;
 }
