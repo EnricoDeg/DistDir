@@ -1,6 +1,32 @@
 /**
  * \page wip Work in Progress
 
+\tableofcontents
 
+\section exchanger_wip Exchanger
+
+ - add exchanger type to pack all the data before sending them into chunks to different processes
+
+\section hardware_wip Hardware
+
+ - Add support for GPU
+
+\section bindings_wip Bindings
+
+ - Fortran
+ - C++
+ - Julia
+
+\section cicd_wip CI/CD
+
+Add CI/CD with different stages:
+ - build
+ - tests
+ - examples
+ - documentation
+
+\section documentation_wip Documentation
+
+ - Public documentation online
 
 */
