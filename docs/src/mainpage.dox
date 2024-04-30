@@ -10,6 +10,10 @@ Enrico Degregori
 - @ref rationale
 - @ref installation
 - @ref start
+- @ref advance
+- @ref bindings
+- @ref limit
+- @ref wip
 
 @defgroup group
           User interface to split the MPI Communicator in case of multiblock grids
