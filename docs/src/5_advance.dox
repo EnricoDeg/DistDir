@@ -4,6 +4,69 @@
 \tableofcontents
 
 \section config Configuration parameters
+When the library is initialized calling \c distdir_initialize, a \c t_config structure is internally created.
+It contains the settings of the library which can be specified as environment variables or using API functions.
+At the moment, the following settings are supported:
+
+ - hardware type: it can be specified using the environment variable \c DISTDIR_HARDWARE or
+ the API function \c set_config_hardware
+
+ - exchanger type: it can be specified using the environment variable \c DISTDIR_EXCHANGER or
+ the API function \c set_config_exchanger
+
+ - verbose mode: it can be specified using the environment variable \c DISTDIR_VERBOSE or
+ the API function \c set_config_verbose
+
+The hardware type specifies if the MPI ranks are running on CPU or GPU. An enumerator is defined internally:
+
+ - \c CPU=0
+
+ - \c GPU_NVIDIA=1
+
+ - \c GPU_AMD=2
+
+The \c CPU is the default. The environment variable would set this parameter globally, while the API allows
+to set it per MPI rank. This means that a group of MPI processes can run on the GPU and send data to a group of 
+MPI processes running on the CPU. In this case, the API function must be used and it can be set per t_map, before
+the call to \c new_map.
+
+The exchanger type specifies the type of exchange. An enumerator is defined internally:
+
+ - \c IsendIrecv=0 : each buffer to be sent is filled and then sent with a call to \c MPI_Isend,
+while all the buffers to be received are received with a call to \c MPI_Irecv, then \c MPI_Waitall is called
+and the received buffers are unpacked into the field data array
+
+ - \c IsendRecv1=1 : each buffer to be sent is filled and then sent with a call to \c MPI_Isend, 
+ then \c MPI_Waitalc l is called. Finally, all the buffers to be received are received with a call to \c MPI_Recv 
+ and as the final step all the received buffers are unpacked into the field data array
+
+ - \c IsendRecv2=2 : each buffer to be sent is filled and then sent with a call to \c MPI_Isend,
+ then \c MPI_Waitall is called. Finally, all the buffers to be received are received with a call to \c MPI_Recv
+ and immediately unpacked into the field data array. 
+
+ - \c IsendIrecvNoWait=3 : same as \c IsendIrecv but the sending messages are waited during the next call to 
+ the function or during the call to \c distdir_finalize. It can be used only when the sending processes and the 
+ receiving processes do not overlap, i.e. concurrent implementations.
+
+ - \c IsendRecv1NoWait=4 : same as \c IsendRecv1 but the sending messages are waited during the next call to 
+ the function or during the call to \c distdir_finalize. It can be used only when the sending processes and the 
+ receiving processes do not overlap, i.e. concurrent implementations.
+
+ - \c IsendRecv2NoWait=5 : same as \c IsendRecv2 but the sending messages are waited during the next call to 
+ the function or during the call to \c distdir_finalize. It can be used only when the sending processes and the 
+ receiving processes do not overlap, i.e. concurrent implementations.
+
+The default exchanger is \c IsendIrecv. The environment variable would set this parameter globally, while the API allows
+to set it per t_exchanger object. This means that given the same map, fields exchanged with different exchangers but
+having the same communication path, can use different type of exchange. In this case the API function must be called 
+before the call to \c new_exchanger, which creates a t_exchanger object.
+
+The verbose mode specifies if the library should run in verbose mode or not. An enumerator is defined internally:
+
+ - \c verbose_true=0
+ - \c verbose_false=1
+
+This parameter is self explanatory.
 
 \section map3d Mapping 3D fields
 
