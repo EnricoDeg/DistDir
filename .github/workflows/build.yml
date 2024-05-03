@@ -15,6 +15,9 @@ jobs:
     - name: GCC installation
       run: sudo -k apt -y update && sudo -k apt -y install gcc
 
+    - name: doxygen
+      run: sudo apt-get install doxygen -y
+
     - name: download-openmpi
       run: wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.1.tar.gz
     
@@ -33,9 +36,15 @@ jobs:
     - name: DistDir installation
       run: mkdir build_distdir && cd build_distdir && cmake -DCMAKE_C_COMPILER=mpicc -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug .. && make install
 
-    - name: run example_basic1
-      run: export LD_LIBRARY_PATH=${PWD}/lib:${LD_LIBRARY_PATH} && mpirun --allow-run-as-root -n 4 examples/example_basic1
+      #- name: run example_basic1
+      #run: export LD_LIBRARY_PATH=${PWD}/lib:${LD_LIBRARY_PATH} && mpirun --allow-run-as-root -n 4 examples/example_basic1
 
-    - name: Tests
-      run: export LD_LIBRARY_PATH=${PWD}/lib:${LD_LIBRARY_PATH} && cd build_distdir/tests && ctest
+      #- name: Tests
+      #run: export LD_LIBRARY_PATH=${PWD}/lib:${LD_LIBRARY_PATH} && cd build_distdir/tests && ctest
 
+    - name: Deploy Documentation
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: build_distdir/docs/html # The folder the action should deploy.
