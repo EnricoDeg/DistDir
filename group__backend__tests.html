@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DistDir: Main Page</title>
+<title>DistDir: Backend_tests</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -60,25 +60,59 @@ $(function() {
 </iframe>
 </div>
 
-<div class="PageDoc"><div class="header">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">DistDir Documentation</div>  </div>
+<div class="title">Backend_tests</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h2>Autors</h2>
-<p>Enrico Degregori</p>
-<h2>Table of Contents</h2>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:gacda4772eb299c58884493e8e763e08d2"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__tests.html#gacda4772eb299c58884493e8e763e08d2">test01</a> (MPI_Comm comm)</td></tr>
+<tr class="memdesc:gacda4772eb299c58884493e8e763e08d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">test01 for num_procs_send_to_each_bucket function  <a href="group__backend__tests.html#gacda4772eb299c58884493e8e763e08d2">More...</a><br /></td></tr>
+<tr class="separator:gacda4772eb299c58884493e8e763e08d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<p>Tests of the backend module </p>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="gacda4772eb299c58884493e8e763e08d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gacda4772eb299c58884493e8e763e08d2">&#9670;&nbsp;</a></span>test01()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int test01 </td>
+          <td>(</td>
+          <td class="paramtype">MPI_Comm&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>test01 for num_procs_send_to_each_bucket function </p>
+<p>The test is run with 4 MPI ranks which define the following bucket_idxlist based on the following idxlist:</p>
 <ul>
-<li><a class="el" href="license.html">License</a></li>
-<li><a class="el" href="rationale.html">Rationale</a></li>
-<li><a class="el" href="installation.html">Installation</a></li>
-<li><a class="el" href="start.html">Getting started</a></li>
-<li><a class="el" href="advance.html">Advance Topics</a></li>
-<li><a class="el" href="bindings.html">Bindings</a></li>
-<li><a class="el" href="limit.html">Limitations</a></li>
-<li><a class="el" href="wip.html">Work in Progress</a> </li>
+<li>Rank 0: 0, 4, 8 , 12</li>
+<li>Rank 1: 1, 5, 9 , 13</li>
+<li>Rank 2: 2, 6, 10, 14</li>
+<li>Rank 4: 3, 7, 11, 15</li>
 </ul>
-</div></div><!-- PageDoc -->
+<p>Each rank owns a bucket and it is expected to receive indices information from 4 MPI ranks. </p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

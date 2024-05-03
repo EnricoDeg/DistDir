@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DistDir: Main Page</title>
+<title>DistDir: Check</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -60,25 +60,50 @@ $(function() {
 </iframe>
 </div>
 
-<div class="PageDoc"><div class="header">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">DistDir Documentation</div>  </div>
+<div class="title">Check</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h2>Autors</h2>
-<p>Enrico Degregori</p>
-<h2>Table of Contents</h2>
-<ul>
-<li><a class="el" href="license.html">License</a></li>
-<li><a class="el" href="rationale.html">Rationale</a></li>
-<li><a class="el" href="installation.html">Installation</a></li>
-<li><a class="el" href="start.html">Getting started</a></li>
-<li><a class="el" href="advance.html">Advance Topics</a></li>
-<li><a class="el" href="bindings.html">Bindings</a></li>
-<li><a class="el" href="limit.html">Limitations</a></li>
-<li><a class="el" href="wip.html">Work in Progress</a> </li>
-</ul>
-</div></div><!-- PageDoc -->
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ga0f9f5c36e257a13cd424d002dbe068ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__check.html#ga0f9f5c36e257a13cd424d002dbe068ec">check_mpi</a> (int error_code)</td></tr>
+<tr class="memdesc:ga0f9f5c36e257a13cd424d002dbe068ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check error returned by an MPI function call.  <a href="group__check.html#ga0f9f5c36e257a13cd424d002dbe068ec">More...</a><br /></td></tr>
+<tr class="separator:ga0f9f5c36e257a13cd424d002dbe068ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<p>Functions used by Distdir library for internall checks </p>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ga0f9f5c36e257a13cd424d002dbe068ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0f9f5c36e257a13cd424d002dbe068ec">&#9670;&nbsp;</a></span>check_mpi()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void check_mpi </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>error_code</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check error returned by an MPI function call. </p>
+<p>If an error is returned by an MPI function call, it prints it and then call MPI_Abort</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">error_code</td><td>error code returned by MPI function call </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
