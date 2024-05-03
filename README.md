@@ -53,3 +53,6 @@ Examples of python scripts using `distdir` library can be found in `bindings/pyt
 
 ##### Examples
 A complete list of use cases can be found in the `examples` folder
+
+##### Documentation
+The full documentation can be found here: https://enricodeg.github.io/DistDir
