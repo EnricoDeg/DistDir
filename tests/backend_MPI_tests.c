@@ -39,7 +39,7 @@
 
 static void test_num_procs_send_to_each_bucket(void **state __attribute__((unused))) {
 
-	int err = system("mpirun -n 4 ./num_procs_send_to_each_bucket_tests");
+	int err = system("mpirun --allow-run-as-root -n 4 ./num_procs_send_to_each_bucket_tests");
 	assert_int_equal(err, 0);
 }
 
