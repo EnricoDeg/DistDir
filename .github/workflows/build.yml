@@ -1,0 +1,41 @@
+name: Build and Tests
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  gcc-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: GCC installation
+      run: sudo -k apt -y update && sudo -k apt -y install gcc
+
+    - name: download-openmpi
+      run: wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.1.tar.gz
+    
+    - name: extract-openmpi
+      run: tar -xvf ./openmpi-5.0.1.tar.gz
+
+    - name: configure-openmpi
+      run: ./openmpi-5.0.1/configure
+
+    - name: install-openmpi
+      run: make -j 4 && sudo -k make install
+
+    - name: CMake installation
+      run: sudo -k apt install -y cmake
+
+    - name: DistDir installation
+      run: mkdir build_distdir && cd build_distdir && cmake -DCMAKE_C_COMPILER=mpicc -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_BUILD_TYPE=Debug .. && make install
+
+    - name: run example_basic1
+      run: export LD_LIBRARY_PATH=${PWD}/lib:${LD_LIBRARY_PATH} && mpirun --allow-run-as-root -n 4 examples/example_basic1
+
+    - name: Tests
+      run: export LD_LIBRARY_PATH=${PWD}/lib:${LD_LIBRARY_PATH} && cd build_distdir/tests && ctest
+
