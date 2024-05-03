@@ -1,7 +1,7 @@
-INPUT                  = "@DOXYGEN_INPUT_DIR@/../src" \
-                         "@DOXYGEN_INPUT_DIR@/../docs/src" \
-                         "@DOXYGEN_INPUT_DIR@/../examples" \
-                         "@DOXYGEN_INPUT_DIR@/../tests"
+INPUT                  = "@DOXYGEN_INPUT_DIR@/src" \
+                         "@DOXYGEN_INPUT_DIR@/docs/src" \
+                         "@DOXYGEN_INPUT_DIR@/examples" \
+                         "@DOXYGEN_INPUT_DIR@/tests"
 
 HAVE_DOT = no
 
