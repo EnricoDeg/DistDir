@@ -29,7 +29,7 @@ else:
 		data = np.zeros(shape=(8), dtype = np.double)
 	src_idxlist = pydistdir.idxlist()
 
-map = pydistdir.map(src_idxlist, dst_idxlist, -1, MPI.COMM_WORLD)
+map = pydistdir.map(src_idxlist=src_idxlist, dst_idxlist=dst_idxlist, comm=MPI.COMM_WORLD)
 
 exchanger = pydistdir.exchanger(map)
 
