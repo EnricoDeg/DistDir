@@ -200,7 +200,7 @@ cdef class idxlist:
 cdef class map:
 	cdef t_map *_map
 
-	def __init__(self, src_idxlist=None, dst_idxlist=None, stride=None, MPI.Comm comm=None,
+	def __init__(self, src_idxlist=None, dst_idxlist=None, MPI.Comm comm=None, stride=None,
 	                   map2d=None, nlevels=None):
 		cdef int stride_val;
 		if src_idxlist is not None and dst_idxlist is not None and comm is not None and stride is not None:
@@ -208,6 +208,10 @@ cdef class map:
 			self._map = new_map( (<idxlist?>src_idxlist)._idxlist , (<idxlist?>dst_idxlist)._idxlist, stride_val, comm.ob_mpi)
 		elif map is not None and nlevels is not None:
 			self._map = extend_map_3d((<map?>map2d)._map, nlevels)
+		elif src_idxlist is not None and dst_idxlist is not None and comm is not None and stride is None:
+			a = _np.array([-1], dtype=_np.int32)
+			stride_val = a[0]
+			self._map = new_map( (<idxlist?>src_idxlist)._idxlist , (<idxlist?>dst_idxlist)._idxlist, stride_val, comm.ob_mpi)
 
 	def __del__(self):
 		self.cleanup()
