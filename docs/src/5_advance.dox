@@ -4,6 +4,7 @@
 \tableofcontents
 
 \section config Configuration parameters
+
 When the library is initialized calling \c distdir_initialize, a \c t_config structure is internally created.
 It contains the settings of the library which can be specified as environment variables or using API functions.
 At the moment, the following settings are supported:
@@ -69,6 +70,37 @@ The verbose mode specifies if the library should run in verbose mode or not. An 
 This parameter is self explanatory.
 
 \section map3d Mapping 3D fields
+
+The mapping of 3D fields is computationally more expensive and the choice of the RD decomposition is crucial 
+to achieve good performance in computing the exchange pattern (t_map object).
+The idea of the library to tackle this problem is to optimize the mapping algorithm for 2D fields and then adapt it 
+to the third dimension. This is straightforward if an application used only 2D domain decomposition, such as many 
+climate and NWP applications.
+
+In this case, the optimal way to use the library is to create a t_map object for the  exchange of 3D fields in two stages:
+
+ - create a t_map object calling the \c new_map API function and providing the global indices of the 2D decomposition
+ for the first vertical level
+
+ - use the t_map object to create another t_map object which extrapolate the exchange pattern in the third dimension, 
+ where there is no domain decomposition. This is achieved using the \c extend_map_3d API function which requires the 
+ t_map object based on the 2D decomposition on a single vertical level and the number of level on which the user wants to
+ extrapolate the t_map object. A new t_map object is created and can be used to create the t_exchanger objects, thus
+ the initally create t_map object can be immediately deleted.
+
+The creation of maps with extrapolation is very convenient and it should provide optimal performance. However, it is not 
+applicable to a large range of applications. In particular, this method is not applicable to applications having 3D 
+domain decomposition, such as any CFD application.
+
+In this case, the \c new_map function must be used directly to create the t_map object for 3D fields.
+However, the user can provide an additional argument to the function which allows to 
+create bucket strides based on the 2D global domain. The stride parameter should have the value of the number of points 
+in the global 2D domain. Internally, the library is creating buckets based on the stride parameter which are identical to 
+the ones which would be generated with a 2D slice of the same field. Then, the buckets are strided and there will be one 
+stride of each bucket on each vertical level of the 3D field. Then, the forward mapping to the RD decomposition and the 
+backward mapping to the original decomposition is done as usual. The 3D mapping done in this way is still
+significantly more computationally expensive than the 2D mapping but it is expected to still provide good performance 
+which covers a wide range of applications.
 
 \section exchanger Exchanger methods
 
