@@ -20,13 +20,8 @@
 \section cicd_wip CI/CD
 
 Add CI/CD with different stages:
- - build
  - tests
  - examples
- - documentation
-
-\section documentation_wip Documentation
-
- - Public documentation online
+ - bindings
 
 */
