@@ -55,7 +55,7 @@
  * 
  * @ingroup backend_tests
  */
-static int test01(MPI_Comm comm) {
+static int num_procs_send_to_each_bucket_test01(MPI_Comm comm) {
 
 	const int num_points = 16;
 
@@ -94,7 +94,7 @@ int main() {
 
 	int error = 0;
 
-	error += test01(MPI_COMM_WORLD);
+	error += num_procs_send_to_each_bucket_test01(MPI_COMM_WORLD);
 
 	// Finalize the MPI environment.
 	MPI_Finalize();
