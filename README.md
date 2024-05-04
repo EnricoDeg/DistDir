@@ -43,6 +43,7 @@ cd build
 make distdir_docs
 firefox docs/html/index.html
 ```
+The full documentation can be found here: https://enricodeg.github.io/DistDir
 
 ##### Python bindings
 Distdir library can be very easily used in a python script. Remember to set the `PYTHONPATH` environment variable:
@@ -53,6 +54,3 @@ Examples of python scripts using `distdir` library can be found in `bindings/pyt
 
 ##### Examples
 A complete list of use cases can be found in the `examples` folder
-
-##### Documentation
-The full documentation can be found here: https://enricodeg.github.io/DistDir
