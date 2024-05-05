@@ -19,7 +19,6 @@ if rank < 2:
 		src_idxlist = pydistdir.idxlist([2, 3, 6, 7, 10, 11, 14, 15])
 		data = np.array([8, 9, 10, 11, 12, 13, 14, 15], dtype = np.double)
 	dst_idxlist = pydistdir.idxlist()
-	a = np.array([1,4,3,2], dtype=np.double)
 else:
 	if rank == 2:
 		dst_idxlist = pydistdir.idxlist([0, 1, 2, 3, 4, 5, 6, 7])
