@@ -133,12 +133,12 @@ call \c MPI_Isend without waiting for the messages to be received and continue w
 following writing step, they wait for the messages of the previous writing step and then fill the buffer and send the 
 new data.
 
-The \nowait exchangers can only be used when the sending and receiving processes belong to two non overlapping groups.
+The \c nowait exchangers can only be used when the sending and receiving processes belong to two non overlapping groups.
 This means that they can not be used then the data are sent to a subset of processes which is another well known strategy 
 to optimize the output files writing or when a transposition is done for spectral method. The range of applications 
 using the \c nowait exchangers is limited but those cases are widely used and they are expected to be fully optimized 
-with those exchangers. As mentioned for the other exchangers, the choice between the \nowait exchangers depends on the 
-application and the MPI implementation, this the users should test the different \nowait exchanger types for their 
+with those exchangers. As mentioned for the other exchangers, the choice between the \c nowait exchangers depends on the 
+application and the MPI implementation, this the users should test the different \c nowait exchanger types for their 
 specific use cases.
 
 */
