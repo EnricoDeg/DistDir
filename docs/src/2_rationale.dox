@@ -1,5 +1,14 @@
 /**
  * \page rationale Rationale
 
+\tableofcontents
+
+\section motivation Motivation
+
+\section design Design
+
+\section algorithm Algorithm
+
+\image html algorithm.png
 
 */

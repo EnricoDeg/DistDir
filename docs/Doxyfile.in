@@ -17,3 +17,5 @@ OPTIMIZE_OUTPUT_FOR_C = yes
 EXTRACT_STATIC = yes
 
 PROJECT_NAME = "DistDir"
+
+IMAGE_PATH             = "@DOXYGEN_INPUT_DIR@/docs/figures"
