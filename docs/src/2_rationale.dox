@@ -7,8 +7,8 @@
 
 The development of the DistDir library started with the main goal to help model developers to integrate complex 
 communication patterns in their scientific applications. The main use case in mind was the concurrent execution 
-because it is crucial for exascale computing. It allows to scale the application beyond the domain decomposition and 
-to improve the model efficiency because each component can run with the optimal number of processes and on the 
+because it is crucial for exascale computing. It allows to scale an application beyond domain decomposition and 
+to improve its efficiency because each component can run with the optimal number of processes and on the 
 optimal hardware. The main challenge of concurrent execution is the computation of the communication patterns 
 between different components and DistDir aims to target this issue with a clear interface and 
 a minimal integration effort from model developers.
@@ -19,10 +19,10 @@ is hidden and the user needs to provide pointers to data fields.
 
 \section design Design
 
-The modular design of the library allows to expand it in the future by adding new algorithm or adding support for 
+The modular design of the library allows to expand it in the future by adding new algorithms or by adding support for 
 new architectures. The library can be divided into a \c core and an \c exchanger component.
 
-The \c core is where the distributed directory algorithm is implemented, but other algorithm can be easily added
+The \c core is where the distributed directory algorithm is implemented, but other algorithms can be easily added
 in the future. This part of the library will always run on CPU and it should always be used during the initialization 
 of a model. It is the most computationally expensive part where the communication patterns are computed and its 
 performance is crucial to scale the models.
@@ -37,22 +37,25 @@ each function call and any additional setup in order to minimize overheads.
 
 \section algorithm Algorithm
 
-The library backend currently support a simple implementation of a distributed directory algorithm which uses a third 
+The library backend currently supports a simple implementation of a distributed directory algorithm which uses a third 
 domain decomposition based on 1D buckets (rendevous decomposition) to compute the communication patterns.
 The main benefit of this algorithm is that it does not require global information to be sent to each MPI process and 
-it can scale because each MPI process is part of the rendevous decomposition.
+it can scale because each MPI process tsakes part in the rendevous decomposition. In the future it might be possible 
+to involve a subset of processes in the rendevous decomposition which might be beneficial when a very high number of 
+processes is involved in the communication.
 
 The algorithm is described using the figure below which shows a simple use case with one group of processes sending data 
 to another group of processes. The two groups have different domain decompositions. The algorithm can be divided in two 
-steps:
+steps.
 
- - each group of processes sends rank information for each index of the subdomain to the bucket where the index belongs.
+ - Each process sends its rank information for each index of the process subdomain to the bucket
+   where the index belongs.
 
- - after the first step, each bucket has information about source and destination ranks for each index of the budket.
-   As a second step, each bucket send information of source ranks to the destination ranks associated with the indices and 
-   vice versa
+ - After the first step, each bucket has information about source and destination ranks for each index of the bucket.
+   As a second step, each bucket sends information of source ranks to the destination ranks associated with the indices and 
+   vice versa.
 
-After these two step, each sending process has information about the destination ranks of its local index list and each 
+After these two steps, each sending process has information about the destination ranks of its local index list and each 
 receiving process has informatioin about source ranks of its local index list. This means that each MPI process has all 
 the information to perform the actual exchange (communication patterns).
 
