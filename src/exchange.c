@@ -38,6 +38,9 @@
 #include "check.h"
 #include "setting.h"
 #include "backend_cpu.h"
+#ifdef CUDA
+#include "backend_cuda.h"
+#endif
 #include "backend_mpi.h"
 #include <stdio.h>
 
@@ -329,8 +332,9 @@ static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
 	}
 }
 
-t_exchanger* new_exchanger(t_map        *map ,
-                           MPI_Datatype  type) {
+t_exchanger* new_exchanger(t_map        *map  ,
+                           MPI_Datatype  type ,
+                           distdir_hardware hw) {
 	
 	// group all info into data structure
 	t_exchanger *exchanger;
@@ -357,11 +361,20 @@ t_exchanger* new_exchanger(t_map        *map ,
 
 	exchanger->vtable_wait = (t_wait*)malloc(sizeof(t_wait));
 
-	int hardware_type = get_config_hardware();
-	switch (hardware_type) {
+	switch (hw) {
 		case CPU:
 			exchanger->vtable->allocator = allocator_cpu;
+			break;
+#ifdef CUDA
+		case GPU_NVIDIA:
+			exchanger->vtable->allocator = allocator_cuda;
+			break;
+#endif
 	}
+
+#ifdef CUDA
+	int *test = (int*)allocator_cuda(5);
+#endif
 
 	exchanger->map = map;
 
