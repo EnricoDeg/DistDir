@@ -36,19 +36,6 @@
 
 #include "map.h"
 
-/** @struct t_map_exch_per_rank
- * 
- *  @brief The structure contains buffers for each exchange
- * 
- */
-struct t_exchange_per_rank {
-	/** @brief size of the exchange message */
-	int buffer_size;
-	/** @brief buffer to store the message */
-	void *buffer;
-};
-typedef struct t_exchange_per_rank t_exchange_per_rank;
-
 /** @struct t_map_exch
  * 
  *  @brief The structure contains all buffers in one direction
@@ -57,8 +44,10 @@ typedef struct t_exchange_per_rank t_exchange_per_rank;
 struct t_exchange {
 	/** @brief number of exchanges */
 	int count;
-	/** @brief array of pointers to t_exchange_per_rank structure */
-	t_exchange_per_rank **exch;
+	/** @brief total size of the exchange messages */
+	int buffer_size;
+	/** @brief buffer to store the messages */
+	void *buffer;
 };
 typedef struct t_exchange t_exchange;
 
@@ -78,7 +67,16 @@ struct t_mpi_exchange {
 };
 typedef struct t_mpi_exchange t_mpi_exchange;
 
-typedef void (*kernel_func_pack) (void*, void*, int*, int);
+typedef void (*kernel_func_pack) ( void*, void*, int*, int, int );
+
+typedef void (*kernel_func_isend) ( void *, int , MPI_Datatype, int, int,
+                                    MPI_Comm, MPI_Request *, int ) ;
+
+typedef void (*kernel_func_irecv) ( void *, int, MPI_Datatype, int, int,
+                                    MPI_Comm, MPI_Request *, int ) ;
+
+typedef void (*kernel_func_recv)  ( void *, int, MPI_Datatype, int, int,
+                                    MPI_Comm, MPI_Status * , int) ;
 
 typedef void* (*kernel_func_alloc) (size_t);
 
@@ -92,6 +90,12 @@ struct t_kernels {
 	kernel_func_pack pack;
 	/** @brief pointer to unpack function */
 	kernel_func_pack unpack;
+	/** @brief pointer to isend function */
+	kernel_func_isend isend;
+	/** @brief pointer to irecv function */
+	kernel_func_irecv irecv;
+	/** @brief pointer to recv function */
+	kernel_func_recv recv;
 	/** @brief pointer to allocate function */
 	kernel_func_alloc allocator;
 };
