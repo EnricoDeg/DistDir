@@ -38,61 +38,8 @@
 #include "check.h"
 #include "setting.h"
 #include "backend_cpu.h"
+#include "backend_mpi.h"
 #include <stdio.h>
-
-static void mpi_wrapper_isend_int(int *buffer, int count, MPI_Datatype datatype, int dest, int tag,
-              MPI_Comm comm, MPI_Request *request, int offset) {
-
-	check_mpi( MPI_Isend(&buffer[offset], count, datatype, dest, tag, comm, request) );
-}
-
-static void mpi_wrapper_isend_float(float *buffer, int count, MPI_Datatype datatype, int dest, int tag,
-              MPI_Comm comm, MPI_Request *request, int offset) {
-
-	check_mpi( MPI_Isend(&buffer[offset], count, datatype, dest, tag, comm, request) );
-}
-
-static void mpi_wrapper_isend_double(double *buffer, int count, MPI_Datatype datatype, int dest, int tag,
-              MPI_Comm comm, MPI_Request *request, int offset) {
-
-	check_mpi( MPI_Isend(&buffer[offset], count, datatype, dest, tag, comm, request) );
-}
-
-static void mpi_wrapper_irecv_int(int *buffer, int count, MPI_Datatype datatype, int source, int tag,
-              MPI_Comm comm, MPI_Request *request, int offset) {
-
-	check_mpi( MPI_Irecv(&buffer[offset], count, datatype, source, tag, comm, request) );
-}
-
-static void mpi_wrapper_irecv_float(float *buffer, int count, MPI_Datatype datatype, int source, int tag,
-              MPI_Comm comm, MPI_Request *request, int offset) {
-
-	check_mpi( MPI_Irecv(&buffer[offset], count, datatype, source, tag, comm, request) );
-}
-
-static void mpi_wrapper_irecv_double(double *buffer, int count, MPI_Datatype datatype, int source, int tag,
-              MPI_Comm comm, MPI_Request *request, int offset) {
-
-	check_mpi( MPI_Irecv(&buffer[offset], count, datatype, source, tag, comm, request) );
-}
-
-static void mpi_wrapper_recv_int(int *buffer, int count, MPI_Datatype datatype, int source, int tag,
-             MPI_Comm comm, MPI_Status *status, int offset) {
-
-	check_mpi( MPI_Recv(&buffer[offset], count, datatype, source, tag, comm, status) );
-}
-
-static void mpi_wrapper_recv_float(float *buffer, int count, MPI_Datatype datatype, int source, int tag,
-             MPI_Comm comm, MPI_Status *status, int offset) {
-
-	check_mpi( MPI_Recv(&buffer[offset], count, datatype, source, tag, comm, status) );
-}
-
-static void mpi_wrapper_recv_double(double *buffer, int count, MPI_Datatype datatype, int source, int tag,
-             MPI_Comm comm, MPI_Status *status, int offset) {
-
-	check_mpi( MPI_Recv(&buffer[offset], count, datatype, source, tag, comm, status) );
-}
 
 static void select_un_pack_kernels(t_kernels *table_kernels, MPI_Datatype type) {
 
@@ -120,8 +67,8 @@ static void select_un_pack_kernels(t_kernels *table_kernels, MPI_Datatype type) 
 static void exchanger_waitall(t_mpi_exchange* mpi_exchange) {
 
 	if ((mpi_exchange->nreq_send + mpi_exchange->nreq_recv) > 0)
-		check_mpi( MPI_Waitall(mpi_exchange->nreq_send + mpi_exchange->nreq_recv,
-		                       mpi_exchange->req, mpi_exchange->stat) );
+		mpi_exchange->wait(mpi_exchange->nreq_send + mpi_exchange->nreq_recv,
+		                       mpi_exchange->req, mpi_exchange->stat);
 }
 
 static void exchanger_waitall_dummy(t_mpi_exchange* mpi_exchange) {
@@ -132,15 +79,15 @@ static void exchanger_waitall_dummy(t_mpi_exchange* mpi_exchange) {
 static void exchanger_waitall_send(t_mpi_exchange* mpi_exchange) {
 
 	if (mpi_exchange->nreq_send > 0)
-		check_mpi( MPI_Waitall(mpi_exchange->nreq_send,
-		                       mpi_exchange->req, mpi_exchange->stat) );
+		mpi_exchange->wait(mpi_exchange->nreq_send,
+		                       mpi_exchange->req, mpi_exchange->stat);
 }
 
 static void exchanger_waitall_recv(t_mpi_exchange *mpi_exchange) {
 
 	if (mpi_exchange->nreq_recv > 0)
-		check_mpi( MPI_Waitall(mpi_exchange->nreq_recv,
-		                       mpi_exchange->req, mpi_exchange->stat) );
+		mpi_exchange->wait(mpi_exchange->nreq_recv,
+		                       mpi_exchange->req, mpi_exchange->stat);
 }
 
 static void exchanger_IsendIrecv(t_exchange *exch_send, t_exchange *exch_recv,
@@ -428,6 +375,7 @@ t_exchanger* new_exchanger(t_map        *map ,
 
 	exchanger->mpi_exchange->nreq_send = 0;
 	exchanger->mpi_exchange->nreq_recv = 0;
+	exchanger->mpi_exchange->wait = mpi_wrapper_waitall;
 
 	/* allocate the buffer */
 	if (exchanger->exch_send->buffer_size > 0)

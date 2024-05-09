@@ -51,6 +51,8 @@ struct t_exchange {
 };
 typedef struct t_exchange t_exchange;
 
+typedef void (*kernel_backend_func_wait) (int, MPI_Request *, MPI_Status *);
+
 struct t_mpi_exchange {
 	/** @brief MPI datatype used for the exchange */
 	MPI_Datatype type;
@@ -64,6 +66,8 @@ struct t_mpi_exchange {
 	int nreq_send;
 	/** @brief number of recv message requests */
 	int nreq_recv;
+	/** @brief communication library wait function */
+	kernel_backend_func_wait wait;
 };
 typedef struct t_mpi_exchange t_mpi_exchange;
 

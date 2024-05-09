@@ -13,6 +13,7 @@ set(SOURCE_EXE  check.c
                 bucket.c
                 map.c
 		backend_cpu.c
+		backend_mpi.c
                 exchange.c)
 
 add_library(distdir SHARED ${SOURCE_EXE})
