@@ -40,17 +40,80 @@
 #include "backend_cpu.h"
 #include <stdio.h>
 
+static void mpi_wrapper_isend_int(int *buffer, int count, MPI_Datatype datatype, int dest, int tag,
+              MPI_Comm comm, MPI_Request *request, int offset) {
+
+	check_mpi( MPI_Isend(&buffer[offset], count, datatype, dest, tag, comm, request) );
+}
+
+static void mpi_wrapper_isend_float(float *buffer, int count, MPI_Datatype datatype, int dest, int tag,
+              MPI_Comm comm, MPI_Request *request, int offset) {
+
+	check_mpi( MPI_Isend(&buffer[offset], count, datatype, dest, tag, comm, request) );
+}
+
+static void mpi_wrapper_isend_double(double *buffer, int count, MPI_Datatype datatype, int dest, int tag,
+              MPI_Comm comm, MPI_Request *request, int offset) {
+
+	check_mpi( MPI_Isend(&buffer[offset], count, datatype, dest, tag, comm, request) );
+}
+
+static void mpi_wrapper_irecv_int(int *buffer, int count, MPI_Datatype datatype, int source, int tag,
+              MPI_Comm comm, MPI_Request *request, int offset) {
+
+	check_mpi( MPI_Irecv(&buffer[offset], count, datatype, source, tag, comm, request) );
+}
+
+static void mpi_wrapper_irecv_float(float *buffer, int count, MPI_Datatype datatype, int source, int tag,
+              MPI_Comm comm, MPI_Request *request, int offset) {
+
+	check_mpi( MPI_Irecv(&buffer[offset], count, datatype, source, tag, comm, request) );
+}
+
+static void mpi_wrapper_irecv_double(double *buffer, int count, MPI_Datatype datatype, int source, int tag,
+              MPI_Comm comm, MPI_Request *request, int offset) {
+
+	check_mpi( MPI_Irecv(&buffer[offset], count, datatype, source, tag, comm, request) );
+}
+
+static void mpi_wrapper_recv_int(int *buffer, int count, MPI_Datatype datatype, int source, int tag,
+             MPI_Comm comm, MPI_Status *status, int offset) {
+
+	check_mpi( MPI_Recv(&buffer[offset], count, datatype, source, tag, comm, status) );
+}
+
+static void mpi_wrapper_recv_float(float *buffer, int count, MPI_Datatype datatype, int source, int tag,
+             MPI_Comm comm, MPI_Status *status, int offset) {
+
+	check_mpi( MPI_Recv(&buffer[offset], count, datatype, source, tag, comm, status) );
+}
+
+static void mpi_wrapper_recv_double(double *buffer, int count, MPI_Datatype datatype, int source, int tag,
+             MPI_Comm comm, MPI_Status *status, int offset) {
+
+	check_mpi( MPI_Recv(&buffer[offset], count, datatype, source, tag, comm, status) );
+}
+
 static void select_un_pack_kernels(t_kernels *table_kernels, MPI_Datatype type) {
 
 	if (type == MPI_INT) {
 		table_kernels->pack = (kernel_func_pack)pack_cpu_int;
 		table_kernels->unpack = (kernel_func_pack)unpack_cpu_int;
+		table_kernels->isend = (kernel_func_isend)mpi_wrapper_isend_int;
+		table_kernels->irecv = (kernel_func_irecv)mpi_wrapper_irecv_int;
+		table_kernels->recv = (kernel_func_recv)mpi_wrapper_recv_int;
 	} else if (type == MPI_REAL) {
 		table_kernels->pack = (kernel_func_pack)pack_cpu_float;
 		table_kernels->unpack = (kernel_func_pack)unpack_cpu_float;
+		table_kernels->isend = (kernel_func_isend)mpi_wrapper_isend_float;
+		table_kernels->irecv = (kernel_func_irecv)mpi_wrapper_irecv_float;
+		table_kernels->recv = (kernel_func_recv)mpi_wrapper_recv_float;
 	} else if (type == MPI_DOUBLE) {
 		table_kernels->pack = (kernel_func_pack)pack_cpu_double;
 		table_kernels->unpack = (kernel_func_pack)unpack_cpu_double;
+		table_kernels->isend = (kernel_func_isend)mpi_wrapper_isend_double;
+		table_kernels->irecv = (kernel_func_irecv)mpi_wrapper_irecv_double;
+		table_kernels->recv = (kernel_func_recv)mpi_wrapper_recv_double;
 	}
 }
 
@@ -99,18 +162,28 @@ static void exchanger_IsendIrecv(t_exchange *exch_send, t_exchange *exch_recv,
 	for (int count = 0; count < map->exch_send->count; count++) {
 
 		/* pack the buffer */
-		vtable->pack(exch_send->exch[count]->buffer,
-		                        src_data,
-		                        map->exch_send->exch[count]->buffer_idxlist,
-		                        exch_send->exch[count]->buffer_size);
+		int offset = map->exch_send->buffer_offset[count];
+
+		int upper_bound = count == map->exch_send->count-1 ?
+		                           map->exch_send->buffer_size :
+		                           map->exch_send->buffer_offset[count + 1];
+
+		int size = upper_bound - map->exch_send->buffer_offset[count];
+
+		vtable->pack(exch_send->buffer,
+		             src_data,
+		             map->exch_send->buffer_idxlist,
+		             size,
+		             offset);
 
 		/* send the buffer */
-		check_mpi( MPI_Isend(exch_send->exch[count]->buffer,
-		                     exch_send->exch[count]->buffer_size,
-		                     mpi_exchange->type,
-		                     map->exch_send->exch[count]->exch_rank,
-		                     world_rank + world_size * (map->exch_send->exch[count]->exch_rank + 1),
-		                     map->comm, mpi_exchange->req + nreq) );
+		vtable->isend(exch_send->buffer,
+		              size,
+		              mpi_exchange->type,
+		              map->exch_send->exch[count]->exch_rank,
+		              world_rank + world_size * (map->exch_send->exch[count]->exch_rank + 1),
+		              map->comm, mpi_exchange->req + nreq,
+		              offset);
 		mpi_exchange->nreq_send++;
 		nreq++;
 	}
@@ -118,12 +191,21 @@ static void exchanger_IsendIrecv(t_exchange *exch_send, t_exchange *exch_recv,
 	// recv step
 	for (int count = 0; count < map->exch_recv->count; count++) {
 
-		check_mpi( MPI_Irecv(exch_recv->exch[count]->buffer,
-		                     exch_recv->exch[count]->buffer_size,
-		                     mpi_exchange->type,
-		                     map->exch_recv->exch[count]->exch_rank,
-		                     map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
-		                     map->comm, mpi_exchange->req + nreq) );
+		int offset = map->exch_recv->buffer_offset[count];
+
+		int upper_bound = count == map->exch_recv->count-1 ?
+		                           map->exch_recv->buffer_size :
+		                           map->exch_recv->buffer_offset[count + 1];
+
+		int size = upper_bound - map->exch_recv->buffer_offset[count];
+
+		vtable->irecv(exch_recv->buffer,
+		              size,
+		              mpi_exchange->type,
+		              map->exch_recv->exch[count]->exch_rank,
+		              map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
+		              map->comm, mpi_exchange->req + nreq,
+		              offset);
 		mpi_exchange->nreq_recv++;
 		nreq++;
 	}
@@ -133,10 +215,19 @@ static void exchanger_IsendIrecv(t_exchange *exch_send, t_exchange *exch_recv,
 
 	/* unpack all recv buffers */
 	for (int count = 0; count < map->exch_recv->count; count++) {
-		vtable->unpack(exch_recv->exch[count]->buffer,
-		                      dst_data,
-		                      map->exch_recv->exch[count]->buffer_idxlist,
-		                      exch_recv->exch[count]->buffer_size);
+
+		int offset = map->exch_recv->buffer_offset[count];
+
+		int upper_bound = count == map->exch_recv->count-1 ?
+		                           map->exch_recv->buffer_size :
+		                           map->exch_recv->buffer_offset[count + 1];
+
+		int size = upper_bound - map->exch_recv->buffer_offset[count];
+
+		vtable->unpack(exch_recv->buffer,
+		               dst_data,
+		               map->exch_recv->buffer_idxlist,
+		               size, offset);
 	}
 }
 
@@ -157,18 +248,27 @@ static void exchanger_IsendRecv1(t_exchange *exch_send, t_exchange *exch_recv,
 	for (int count = 0; count < map->exch_send->count; count++) {
 
 		/* pack the buffer */
-		vtable->pack(exch_send->exch[count]->buffer,
+		int offset = map->exch_send->buffer_offset[count];
+
+		int upper_bound = count == map->exch_send->count-1 ?
+		                           map->exch_send->buffer_size :
+		                           map->exch_send->buffer_offset[count + 1];
+
+		int size = upper_bound - map->exch_send->buffer_offset[count];
+
+		vtable->pack(exch_send->buffer,
 		                        src_data,
-		                        map->exch_send->exch[count]->buffer_idxlist,
-		                        exch_send->exch[count]->buffer_size);
+		                        map->exch_send->buffer_idxlist,
+		                        size, offset);
 
 		/* send the buffer */
-		check_mpi( MPI_Isend(exch_send->exch[count]->buffer,
-		                     exch_send->exch[count]->buffer_size,
-		                     mpi_exchange->type,
-		                     map->exch_send->exch[count]->exch_rank,
-		                     world_rank + world_size * (map->exch_send->exch[count]->exch_rank + 1),
-		                     map->comm, mpi_exchange->req + mpi_exchange->nreq_send) );
+		vtable->isend(exch_send->buffer,
+		              size,
+		              mpi_exchange->type,
+		              map->exch_send->exch[count]->exch_rank,
+		              world_rank + world_size * (map->exch_send->exch[count]->exch_rank + 1),
+		              map->comm, mpi_exchange->req + mpi_exchange->nreq_send,
+		              offset);
 		mpi_exchange->nreq_send++;
 	}
 
@@ -178,20 +278,37 @@ static void exchanger_IsendRecv1(t_exchange *exch_send, t_exchange *exch_recv,
 	// recv step
 	for (int count = 0; count < map->exch_recv->count; count++) {
 
-		check_mpi( MPI_Recv(exch_recv->exch[count]->buffer,
-		                     exch_recv->exch[count]->buffer_size,
-		                     mpi_exchange->type,
-		                     map->exch_recv->exch[count]->exch_rank,
-		                     map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
-		                     map->comm, mpi_exchange->stat) );
+		int offset = map->exch_recv->buffer_offset[count];
+		
+		int upper_bound = count == map->exch_recv->count-1 ?
+		                           map->exch_recv->buffer_size :
+		                           map->exch_recv->buffer_offset[count + 1];
+
+		int size = upper_bound - map->exch_recv->buffer_offset[count];
+
+		vtable->recv(exch_recv->buffer,
+		             size,
+		             mpi_exchange->type,
+		             map->exch_recv->exch[count]->exch_rank,
+		             map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
+		             map->comm, mpi_exchange->stat,
+		             offset);
 	}
 
 	/* unpack all recv buffers */
 	for (int count = 0; count < map->exch_recv->count; count++) {
-		vtable->unpack(exch_recv->exch[count]->buffer,
-		                      dst_data,
-		                      map->exch_recv->exch[count]->buffer_idxlist,
-		                      exch_recv->exch[count]->buffer_size);
+		int offset = map->exch_recv->buffer_offset[count];
+
+		int upper_bound = count == map->exch_recv->count-1 ?
+		                           map->exch_recv->buffer_size :
+		                           map->exch_recv->buffer_offset[count + 1];
+
+		int size = upper_bound - map->exch_recv->buffer_offset[count];
+
+		vtable->unpack(exch_recv->buffer,
+		               dst_data,
+		               map->exch_recv->buffer_idxlist,
+		               size, offset);
 	}
 }
 
@@ -212,18 +329,27 @@ static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
 	for (int count = 0; count < map->exch_send->count; count++) {
 
 		/* pack the buffer */
-		vtable->pack(exch_send->exch[count]->buffer,
-		                        src_data,
-		                        map->exch_send->exch[count]->buffer_idxlist,
-		                        exch_send->exch[count]->buffer_size);
+		int offset = map->exch_send->buffer_offset[count];
+
+		int upper_bound = count == map->exch_send->count-1 ?
+		                           map->exch_send->buffer_size :
+		                           map->exch_send->buffer_offset[count + 1];
+
+		int size = upper_bound - map->exch_send->buffer_offset[count];
+
+		vtable->pack(exch_send->buffer,
+		             src_data,
+		             map->exch_send->buffer_idxlist,
+		             size, offset);
 
 		/* send the buffer */
-		check_mpi( MPI_Isend(exch_send->exch[count]->buffer,
-		                     exch_send->exch[count]->buffer_size,
-		                     mpi_exchange->type,
-		                     map->exch_send->exch[count]->exch_rank,
-		                     world_rank + world_size * (map->exch_send->exch[count]->exch_rank + 1),
-		                     map->comm, mpi_exchange->req + mpi_exchange->nreq_send) );
+		vtable->isend(exch_send->buffer,
+		              size,
+		              mpi_exchange->type,
+		              map->exch_send->exch[count]->exch_rank,
+		              world_rank + world_size * (map->exch_send->exch[count]->exch_rank + 1),
+		              map->comm, mpi_exchange->req + mpi_exchange->nreq_send,
+		              offset);
 		mpi_exchange->nreq_send++;
 	}
 
@@ -233,20 +359,27 @@ static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
 	// recv and unpack step
 	for (int count = 0; count < map->exch_recv->count; count++) {
 
-		check_mpi( MPI_Recv(exch_recv->exch[count]->buffer,
-		                     exch_recv->exch[count]->buffer_size,
-		                     mpi_exchange->type,
-		                     map->exch_recv->exch[count]->exch_rank,
-		                     map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
-		                     map->comm, mpi_exchange->stat) );
+		int offset = map->exch_recv->buffer_offset[count];
 
-		vtable->unpack(exch_recv->exch[count]->buffer,
-		                      dst_data,
-		                      map->exch_recv->exch[count]->buffer_idxlist,
-		                      exch_recv->exch[count]->buffer_size);
+		int upper_bound = count == map->exch_recv->count-1 ?
+		                           map->exch_recv->buffer_size :
+		                           map->exch_recv->buffer_offset[count + 1];
 
+		int size = upper_bound - map->exch_recv->buffer_offset[count];
+
+		vtable->recv(exch_recv->buffer,
+		             size,
+		             mpi_exchange->type,
+		             map->exch_recv->exch[count]->exch_rank,
+		             map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
+		             map->comm, mpi_exchange->stat,
+		             offset);
+
+		vtable->unpack(exch_recv->buffer,
+		               dst_data,
+		               map->exch_recv->buffer_idxlist,
+		               size, offset);
 	}
-
 }
 
 t_exchanger* new_exchanger(t_map        *map ,
@@ -260,26 +393,12 @@ t_exchanger* new_exchanger(t_map        *map ,
 	exchanger->exch_recv = (t_exchange *)malloc(sizeof(t_exchange));
 
 	exchanger->exch_send->count = map->exch_send->count;
-	exchanger->exch_send->exch = (t_exchange_per_rank**)malloc(exchanger->exch_send->count * sizeof(t_exchange_per_rank*));
 
-	if (exchanger->exch_send->count>0) {
-		for (int count = 0; count < exchanger->exch_send->count; count++) {
-			if (map->exch_send->exch[count]->buffer_size > 0)
-				exchanger->exch_send->exch[count] = (t_exchange_per_rank *)malloc(sizeof(t_exchange_per_rank));
-			exchanger->exch_send->exch[count]->buffer_size = map->exch_send->exch[count]->buffer_size;
-		}
-	}
+	exchanger->exch_send->buffer_size = map->exch_send->buffer_size;
 
 	exchanger->exch_recv->count = map->exch_recv->count;
-	exchanger->exch_recv->exch = (t_exchange_per_rank**)malloc(exchanger->exch_recv->count * sizeof(t_exchange_per_rank*));
 
-	if (exchanger->exch_recv->count>0) {
-		for (int count = 0; count < exchanger->exch_recv->count; count++) {
-			if (map->exch_recv->exch[count]->buffer_size > 0)
-				exchanger->exch_recv->exch[count] = (t_exchange_per_rank *)malloc(sizeof(t_exchange_per_rank));
-			exchanger->exch_recv->exch[count]->buffer_size = map->exch_recv->exch[count]->buffer_size;
-		}
-	}
+	exchanger->exch_recv->buffer_size = map->exch_recv->buffer_size;
 
 	exchanger->mpi_exchange = (t_mpi_exchange *)malloc(sizeof(t_mpi_exchange));
 
@@ -310,17 +429,14 @@ t_exchanger* new_exchanger(t_map        *map ,
 	exchanger->mpi_exchange->nreq_send = 0;
 	exchanger->mpi_exchange->nreq_recv = 0;
 
-	for (int count = 0; count < exchanger->map->exch_send->count; count++) {
-		/* allocate the buffer */
-		exchanger->exch_send->exch[count]->buffer = exchanger->vtable->allocator(exchanger->exch_send->exch[count]->buffer_size *
-		                                                                         exchanger->mpi_exchange->type_size);
-	}
+	/* allocate the buffer */
+	if (exchanger->exch_send->buffer_size > 0)
+		exchanger->exch_send->buffer = exchanger->vtable->allocator(exchanger->exch_send->buffer_size *
+		                                                            exchanger->mpi_exchange->type_size);
 
-	for (int count = 0; count < exchanger->map->exch_recv->count; count++) {
-		/* allocate the buffer */
-		exchanger->exch_recv->exch[count]->buffer = exchanger->vtable->allocator(exchanger->exch_recv->exch[count]->buffer_size *
-		                                                                         exchanger->mpi_exchange->type_size);
-	}
+	if (exchanger->exch_recv->buffer_size > 0)
+		exchanger->exch_recv->buffer = exchanger->vtable->allocator(exchanger->exch_recv->buffer_size *
+		                                                            exchanger->mpi_exchange->type_size);
 
 	int exchanger_type = get_config_exchanger();
 	switch (exchanger_type) {
@@ -398,21 +514,19 @@ void delete_exchanger(t_exchanger *exchanger) {
 	exchanger->vtable_wait->pre_wait(exchanger->mpi_exchange);
 
 	// free memory
-	for (int count = 0; count < exchanger->exch_send->count; count++)
-		free(exchanger->exch_send->exch[count]->buffer);
+	if (exchanger->exch_send->buffer_size > 0)
+		free(exchanger->exch_send->buffer);
 
-	for (int count = 0; count < exchanger->exch_recv->count; count++)
-		free(exchanger->exch_recv->exch[count]->buffer);
+	if (exchanger->exch_recv->buffer_size > 0)
+		free(exchanger->exch_recv->buffer);
 
-	for (int count = 0; count < exchanger->exch_send->count; count++)
-		free(exchanger->exch_send->exch[count]);
-	free(exchanger->exch_send->exch);
-	free(exchanger->exch_send);
+	if (exchanger->exch_send->count > 0) {
+		free(exchanger->exch_send);
+	}
 
-	for (int count = 0; count < exchanger->exch_recv->count; count++)
-		free(exchanger->exch_recv->exch[count]);
-	free(exchanger->exch_recv->exch);
-	free(exchanger->exch_recv);
+	if (exchanger->exch_recv->count > 0) {
+		free(exchanger->exch_recv);
+	}
 
 	free(exchanger->vtable);
 	free(exchanger->vtable_messages);
