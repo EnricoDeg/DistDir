@@ -48,8 +48,6 @@ void pack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buff
 
 void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset);
 
-void *get_pointer_int(int *buffer, int offset);
-
 void* allocator_cpu(size_t buffer_size);
 
 #endif
