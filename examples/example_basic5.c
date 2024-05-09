@@ -100,9 +100,10 @@ int example_basic5() {
 
 	p_map = new_map(p_src_idxlist, p_dst_idxlist, -1, MPI_COMM_WORLD);
 
+	distdir_hardware hw = CPU;
 	// test exchange
 	{
-		t_exchanger *exchanger = new_exchanger(p_map, MPI_INT);
+		t_exchanger *exchanger = new_exchanger(p_map, MPI_INT, hw);
 
 		int src_data[npoints_local];
 		int dst_data[npoints_local];

@@ -107,9 +107,10 @@ int example_basic3() {
 	}
 	p_map = extend_map_3d(p_map2d, NLEVS);
 
+	distdir_hardware hw = CPU;
 	// test exchange
 	{
-		t_exchanger *exchanger = new_exchanger(p_map, MPI_INT);
+		t_exchanger *exchanger = new_exchanger(p_map, MPI_INT, hw);
 
 		int data[npoints_local*NLEVS];
 		// src MPI ranks fill data array
