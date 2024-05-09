@@ -35,6 +35,7 @@
 #define EXCHANGE_H
 
 #include "map.h"
+#include "setting.h"
 
 /** @struct t_map_exch
  * 
@@ -151,11 +152,13 @@ typedef struct t_exchanger t_exchanger;
  * 
  * @param[in] map      pointer to a t_map structure
  * @param[in] type     type of the data in the form of MPI datatype
+ * @param[in] hw       hardware location of the data on the MPI process
  * 
  * @ingroup exchange
  */
-t_exchanger* new_exchanger(t_map        *map ,
-                           MPI_Datatype  type);
+t_exchanger* new_exchanger(t_map        *map  ,
+                           MPI_Datatype  type ,
+                           distdir_hardware hw);
 
 /**
  * @brief Arbitrary exchange given a map
