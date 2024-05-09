@@ -54,21 +54,14 @@ static int get_env_variable(const char* variable_name) {
 
 static void set_default_config(t_config *config) {
 
-	config->hardware = CPU;
 	config->exchanger = IsendIrecv;
 	config->verbose = verbose_false;
 }
 
 static void print_config() {
 
-	printf("DISTDIR_HARDWARE  = %d\n", config->hardware );
 	printf("DISTDIR_EXCHANGER = %d\n", config->exchanger);
 	printf("DISTDIR_VERBOSE   = %d\n", config->verbose  );
-}
-
-void set_config_hardware(int hardware_type) {
-
-	config->hardware = hardware_type;
 }
 
 void set_config_exchanger(int exchanger_type) {
@@ -79,11 +72,6 @@ void set_config_exchanger(int exchanger_type) {
 void set_config_verbose(int verbose_type) {
 
 	config->verbose = verbose_type;
-}
-
-int get_config_hardware() {
-
-	return config->hardware;
 }
 
 int get_config_exchanger() {
@@ -108,12 +96,6 @@ void distdir_initialize() {
 	config = (t_config *)malloc(sizeof(t_config));
 	config->initialized = mpi_initialized;
 	set_default_config(config);
-
-	// set hardware type from env variable
-	{
-		int variable = get_env_variable("DISTDIR_HARDWARE");
-		if (variable != -1) config->hardware = variable;
-	}
 
 	// set exchanger type from env variable
 	{
