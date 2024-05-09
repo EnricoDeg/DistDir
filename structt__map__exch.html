@@ -79,8 +79,17 @@ Data Fields</h2></td></tr>
 <tr class="memdesc:a011cdad4e48c82558822cf2ea7b8bd18"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of exchanges  <a href="structt__map__exch.html#a011cdad4e48c82558822cf2ea7b8bd18">More...</a><br /></td></tr>
 <tr class="separator:a011cdad4e48c82558822cf2ea7b8bd18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa9541183c1335965d980baa1a25aa36f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structt__map__exch__per__rank.html">t_map_exch_per_rank</a> **&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__map__exch.html#aa9541183c1335965d980baa1a25aa36f">exch</a></td></tr>
-<tr class="memdesc:aa9541183c1335965d980baa1a25aa36f"><td class="mdescLeft">&#160;</td><td class="mdescRight">array of pointers to <a class="el" href="structt__map__exch__per__rank.html" title="The structure contains buffers for each exchange.">t_map_exch_per_rank</a> structure  <a href="structt__map__exch.html#aa9541183c1335965d980baa1a25aa36f">More...</a><br /></td></tr>
+<tr class="memdesc:aa9541183c1335965d980baa1a25aa36f"><td class="mdescLeft">&#160;</td><td class="mdescRight">array of pointers to <a class="el" href="structt__map__exch__per__rank.html" title="The structure contains information about each exchange.">t_map_exch_per_rank</a> structure  <a href="structt__map__exch.html#aa9541183c1335965d980baa1a25aa36f">More...</a><br /></td></tr>
 <tr class="separator:aa9541183c1335965d980baa1a25aa36f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec7a3e54edf3e5aad1ae316e367ba4e5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__map__exch.html#aec7a3e54edf3e5aad1ae316e367ba4e5">buffer_size</a></td></tr>
+<tr class="memdesc:aec7a3e54edf3e5aad1ae316e367ba4e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">size of the exchange message  <a href="structt__map__exch.html#aec7a3e54edf3e5aad1ae316e367ba4e5">More...</a><br /></td></tr>
+<tr class="separator:aec7a3e54edf3e5aad1ae316e367ba4e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20914633a3aeeaa5d05f752b4203c8b8"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__map__exch.html#a20914633a3aeeaa5d05f752b4203c8b8">buffer_idxlist</a></td></tr>
+<tr class="memdesc:a20914633a3aeeaa5d05f752b4203c8b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">idxlist to create the exchange buffer  <a href="structt__map__exch.html#a20914633a3aeeaa5d05f752b4203c8b8">More...</a><br /></td></tr>
+<tr class="separator:a20914633a3aeeaa5d05f752b4203c8b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5494f9773927c57392f34c4ca98e6f57"><td class="memItemLeft" align="right" valign="top">int *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__map__exch.html#a5494f9773927c57392f34c4ca98e6f57">buffer_offset</a></td></tr>
+<tr class="memdesc:a5494f9773927c57392f34c4ca98e6f57"><td class="mdescLeft">&#160;</td><td class="mdescRight">offset for each exchange  <a href="structt__map__exch.html#a5494f9773927c57392f34c4ca98e6f57">More...</a><br /></td></tr>
+<tr class="separator:a5494f9773927c57392f34c4ca98e6f57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The structure contains all buffers in one direction. </p>
@@ -88,6 +97,54 @@ Data Fields</h2></td></tr>
 <p>The structure contains information about all the exchanges in one direction.</p>
 <p>The structure contains all buffers associated with a map. </p>
 </div><h2 class="groupheader">Field Documentation</h2>
+<a id="a20914633a3aeeaa5d05f752b4203c8b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20914633a3aeeaa5d05f752b4203c8b8">&#9670;&nbsp;</a></span>buffer_idxlist</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* t_map_exch::buffer_idxlist</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>idxlist to create the exchange buffer </p>
+
+</div>
+</div>
+<a id="a5494f9773927c57392f34c4ca98e6f57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5494f9773927c57392f34c4ca98e6f57">&#9670;&nbsp;</a></span>buffer_offset</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int* t_map_exch::buffer_offset</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>offset for each exchange </p>
+
+</div>
+</div>
+<a id="aec7a3e54edf3e5aad1ae316e367ba4e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec7a3e54edf3e5aad1ae316e367ba4e5">&#9670;&nbsp;</a></span>buffer_size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int t_map_exch::buffer_size</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>size of the exchange message </p>
+
+</div>
+</div>
 <a id="a011cdad4e48c82558822cf2ea7b8bd18"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a011cdad4e48c82558822cf2ea7b8bd18">&#9670;&nbsp;</a></span>count</h2>
 
@@ -116,7 +173,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>array of pointers to <a class="el" href="structt__map__exch__per__rank.html" title="The structure contains buffers for each exchange.">t_map_exch_per_rank</a> structure </p>
+<p>array of pointers to <a class="el" href="structt__map__exch__per__rank.html" title="The structure contains information about each exchange.">t_map_exch_per_rank</a> structure </p>
 
 </div>
 </div>

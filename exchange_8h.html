@@ -79,8 +79,6 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__exchange__per__rank.html">t_exchange_per_rank</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__exchange.html">t_exchange</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a></td></tr>
@@ -96,14 +94,18 @@ Data Structures</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ac79f3c26da11ca20c90560400d339ac1"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structt__exchange__per__rank.html">t_exchange_per_rank</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#ac79f3c26da11ca20c90560400d339ac1">t_exchange_per_rank</a></td></tr>
-<tr class="separator:ac79f3c26da11ca20c90560400d339ac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbdb54c52fb06c1cec17ed16ea4c57ef"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structt__exchange.html">t_exchange</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#acbdb54c52fb06c1cec17ed16ea4c57ef">t_exchange</a></td></tr>
 <tr class="separator:acbdb54c52fb06c1cec17ed16ea4c57ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11486e654574187bd3a8cec1ecf46d20"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#a11486e654574187bd3a8cec1ecf46d20">t_mpi_exchange</a></td></tr>
 <tr class="separator:a11486e654574187bd3a8cec1ecf46d20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a025df18f96a7b0f8649d5145965a7dee"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#a025df18f96a7b0f8649d5145965a7dee">kernel_func_pack</a>) (void *, void *, int *, int)</td></tr>
-<tr class="separator:a025df18f96a7b0f8649d5145965a7dee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a539b9be5594c4189f3c3afd5bb10f681"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#a539b9be5594c4189f3c3afd5bb10f681">kernel_func_pack</a>) (void *, void *, int *, int, int)</td></tr>
+<tr class="separator:a539b9be5594c4189f3c3afd5bb10f681"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62f02f2e3178df0d547f0ed75ebfffc0"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#a62f02f2e3178df0d547f0ed75ebfffc0">kernel_func_isend</a>) (void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Request *, int)</td></tr>
+<tr class="separator:a62f02f2e3178df0d547f0ed75ebfffc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae96e79bc403aa35ac7789575fd54c532"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#ae96e79bc403aa35ac7789575fd54c532">kernel_func_irecv</a>) (void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Request *, int)</td></tr>
+<tr class="separator:ae96e79bc403aa35ac7789575fd54c532"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87f0cf2c8e97ea4f15cfc84789dccd73"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#a87f0cf2c8e97ea4f15cfc84789dccd73">kernel_func_recv</a>) (void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status *, int)</td></tr>
+<tr class="separator:a87f0cf2c8e97ea4f15cfc84789dccd73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e5abbed7ab04b570560c7832905821a"><td class="memItemLeft" align="right" valign="top">typedef void *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#a3e5abbed7ab04b570560c7832905821a">kernel_func_alloc</a>) (size_t)</td></tr>
 <tr class="separator:a3e5abbed7ab04b570560c7832905821a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afffa7c43db17f871b8a13bceaaa51711"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structt__kernels.html">t_kernels</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#afffa7c43db17f871b8a13bceaaa51711">t_kernels</a></td></tr>
@@ -160,14 +162,56 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a025df18f96a7b0f8649d5145965a7dee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a025df18f96a7b0f8649d5145965a7dee">&#9670;&nbsp;</a></span>kernel_func_pack</h2>
+<a id="ae96e79bc403aa35ac7789575fd54c532"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae96e79bc403aa35ac7789575fd54c532">&#9670;&nbsp;</a></span>kernel_func_irecv</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(* kernel_func_pack) (void *, void *, int *, int)</td>
+          <td class="memname">typedef void(* kernel_func_irecv) (void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Request *, int)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a62f02f2e3178df0d547f0ed75ebfffc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62f02f2e3178df0d547f0ed75ebfffc0">&#9670;&nbsp;</a></span>kernel_func_isend</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* kernel_func_isend) (void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Request *, int)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a539b9be5594c4189f3c3afd5bb10f681"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a539b9be5594c4189f3c3afd5bb10f681">&#9670;&nbsp;</a></span>kernel_func_pack</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* kernel_func_pack) (void *, void *, int *, int, int)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a87f0cf2c8e97ea4f15cfc84789dccd73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87f0cf2c8e97ea4f15cfc84789dccd73">&#9670;&nbsp;</a></span>kernel_func_recv</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* kernel_func_recv) (void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status *, int)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -196,20 +240,6 @@ Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">typedef struct <a class="el" href="structt__exchange.html">t_exchange</a> <a class="el" href="structt__exchange.html">t_exchange</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ac79f3c26da11ca20c90560400d339ac1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac79f3c26da11ca20c90560400d339ac1">&#9670;&nbsp;</a></span>t_exchange_per_rank</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef struct <a class="el" href="structt__exchange__per__rank.html">t_exchange_per_rank</a> <a class="el" href="structt__exchange__per__rank.html">t_exchange_per_rank</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
