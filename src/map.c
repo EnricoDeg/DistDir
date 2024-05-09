@@ -61,6 +61,7 @@ t_map * new_map(t_idxlist *src_idxlist ,
 	// compute the src and dst bucket size
 	int bucket_size, bucket_min_size, bucket_max_size;
 	int bucket_size_stride, bucket_min_size_stride, bucket_max_size_stride;
+	int n_global_indices;
 	{
 		int src_bucket_size = 0;
 		int src_bucket_min_size = 0;
@@ -76,7 +77,7 @@ t_map * new_map(t_idxlist *src_idxlist ,
 			check_mpi( MPI_Allreduce(&max_idx_value, &src_bucket_size, 1, MPI_INT, MPI_MAX, comm) );
 		}
 		src_bucket_size++;
-		int n_global_indices = src_bucket_size;
+		n_global_indices = src_bucket_size;
 
 		if (stride < 0) {
 			src_bucket_size /= world_size;
@@ -224,9 +225,17 @@ t_map * new_map(t_idxlist *src_idxlist ,
 	}
 
 	// fill info about each send message
-	map->exch_send->exch = (t_map_exch_per_rank**)malloc(map->exch_send->count * sizeof(t_map_exch_per_rank*));
+	map->exch_send->buffer_size = 0;
 
 	if (src_idxlist->count > 0) {
+
+		map->exch_send->exch = (t_map_exch_per_rank**)malloc(map->exch_send->count * sizeof(t_map_exch_per_rank*));
+
+		map->exch_send->buffer_offset = (int *)malloc(map->exch_send->count * sizeof(int));
+		map->exch_send->buffer_offset[0] = 0 ;
+		map->exch_send->buffer_idxlist = (int *)malloc(src_idxlist->count*sizeof(int));
+		map->exch_send->buffer_size = src_idxlist->count;
+
 		int count = 0;
 		int offset = 0;
 		int buffer_size = 0;
@@ -235,10 +244,12 @@ t_map * new_map(t_idxlist *src_idxlist ,
 				if (buffer_size > 0)
 					map->exch_send->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
 				map->exch_send->exch[count]->exch_rank = src_bucket->rank_exch[offset];
-				map->exch_send->exch[count]->buffer_size = buffer_size;
-				map->exch_send->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
-				for (int j=offset; j<i; j++)
-					map->exch_send->exch[count]->buffer_idxlist[j-offset] = src_idxlist_local[j];
+				if (count + 1 < map->exch_send->count)
+					map->exch_send->buffer_offset[count+1] = buffer_size;
+				for (int j=offset; j<i; j++) {
+					int memory_position = map->exch_send->buffer_offset[count] + j - offset;
+					map->exch_send->buffer_idxlist[memory_position] = src_idxlist_local[j];
+				}
 				offset = i;
 				buffer_size = 0;
 				count++;
@@ -248,10 +259,10 @@ t_map * new_map(t_idxlist *src_idxlist ,
 		if (buffer_size > 0)
 			map->exch_send->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
 		map->exch_send->exch[count]->exch_rank = src_bucket->rank_exch[offset];
-		map->exch_send->exch[count]->buffer_size = buffer_size;
-		map->exch_send->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
-		for (int j=offset; j<src_idxlist->count; j++)
-			map->exch_send->exch[count]->buffer_idxlist[j-offset] = src_idxlist_local[j];
+		for (int j=offset; j<src_idxlist->count; j++) {
+			int memory_position = map->exch_send->buffer_offset[count] + j - offset;
+			map->exch_send->buffer_idxlist[memory_position] = src_idxlist_local[j];
+		}
 	}
 
 	// number of procs the current rank has to send data to
@@ -267,9 +278,17 @@ t_map * new_map(t_idxlist *src_idxlist ,
 	}
 
 	// fill info about each recv message
-	map->exch_recv->exch = (t_map_exch_per_rank**)malloc(map->exch_recv->count * sizeof(t_map_exch_per_rank*));
+	map->exch_recv->buffer_size = 0;
 
 	if (dst_idxlist->count > 0) {
+
+		map->exch_recv->exch = (t_map_exch_per_rank**)malloc(map->exch_recv->count * sizeof(t_map_exch_per_rank*));
+
+		map->exch_recv->buffer_offset = (int *)malloc(map->exch_recv->count * sizeof(int));
+		map->exch_recv->buffer_offset[0] = 0 ;
+		map->exch_recv->buffer_idxlist = (int *)malloc(dst_idxlist->count*sizeof(int));
+		map->exch_recv->buffer_size = dst_idxlist->count;
+
 		int count = 0;
 		int offset = 0;
 		int buffer_size = 0;
@@ -278,10 +297,12 @@ t_map * new_map(t_idxlist *src_idxlist ,
 				if (buffer_size > 0)
 					map->exch_recv->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
 				map->exch_recv->exch[count]->exch_rank = dst_bucket->rank_exch[offset];
-				map->exch_recv->exch[count]->buffer_size = buffer_size;
-				map->exch_recv->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
-				for (int j=offset; j<i; j++)
-					map->exch_recv->exch[count]->buffer_idxlist[j-offset] = dst_idxlist_local[j];
+				if (count + 1 < map->exch_recv->count)
+					map->exch_recv->buffer_offset[count+1] = buffer_size;
+				for (int j=offset; j<i; j++) {
+					int memory_position = map->exch_recv->buffer_offset[count] + j - offset;
+					map->exch_recv->buffer_idxlist[memory_position] = dst_idxlist_local[j];
+				}
 				offset = i;
 				buffer_size = 0;
 				count++;
@@ -291,10 +312,10 @@ t_map * new_map(t_idxlist *src_idxlist ,
 		if (buffer_size > 0)
 			map->exch_recv->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
 		map->exch_recv->exch[count]->exch_rank = dst_bucket->rank_exch[offset];
-		map->exch_recv->exch[count]->buffer_size = buffer_size;
-		map->exch_recv->exch[count]->buffer_idxlist = (int *)malloc(buffer_size * sizeof(int));
-		for (int j=offset; j<dst_idxlist->count; j++)
-			map->exch_recv->exch[count]->buffer_idxlist[j-offset] = dst_idxlist_local[j];
+		for (int j=offset; j<dst_idxlist->count; j++) {
+			int memory_position = map->exch_recv->buffer_offset[count] + j - offset;
+			map->exch_recv->buffer_idxlist[memory_position] = dst_idxlist_local[j];
+		}
 	}
 
 	// free buckets memory
@@ -334,41 +355,97 @@ t_map * extend_map_3d(t_map *map2d  ,
 
 	// number of procs the current rank has to send data to
 	map->exch_send->count = map2d->exch_send->count;
+	map->exch_send->buffer_size = map2d->exch_send->buffer_size * nlevels;
+
+	if (map->exch_send->count > 0) {
+
+		map->exch_send->buffer_offset = (int *)malloc(map->exch_send->count*sizeof(int));
+		for (int i=0; i<map->exch_send->count; i++)
+			map->exch_send->buffer_offset[i] = map2d->exch_send->buffer_offset[i] * nlevels;
+		map->exch_send->buffer_idxlist = (int *)malloc(map2d->exch_send->buffer_size * nlevels * sizeof(int));
+
+		for (int count=0; count<map->exch_send->count; count++) {
+
+			int offset = map->exch_send->buffer_offset[count];
+
+			int upper_bound = count == map->exch_send->count-1 ?
+			                  map->exch_send->buffer_size :
+			                  map->exch_send->buffer_offset[count + 1];
+
+			int size = upper_bound - map->exch_send->buffer_offset[count];
+
+			int offset2d = map2d->exch_send->buffer_offset[count];
+
+			int upper_bound2d = count == map2d->exch_send->count-1 ?
+			                    map2d->exch_send->buffer_size :
+			                    map2d->exch_send->buffer_offset[count + 1];
+
+			int size2d = upper_bound2d - map2d->exch_send->buffer_offset[count];
+
+			for (int level = 0; level < nlevels; level++) {
+				for (int i=0; i<size2d; i++) {
+					map->exch_send->buffer_idxlist[offset + level*size2d + i] = map2d->exch_send->buffer_idxlist[offset2d+i] + 
+					                                                            level * size;
+				}
+			}
+		}
+	}
 
 	// fill info about each send message
 	if (map->exch_send->count > 0) {
 		map->exch_send->exch = (t_map_exch_per_rank**)malloc(map->exch_send->count * sizeof(t_map_exch_per_rank*));
 		for (int count = 0; count < map->exch_send->count; count++) {
-			int buffer_size2d = map2d->exch_send->exch[count]->buffer_size;
-			if (buffer_size2d > 0)
+			if (map2d->exch_send->exch[count]!=NULL)
 				map->exch_send->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
 			map->exch_send->exch[count]->exch_rank = map2d->exch_send->exch[count]->exch_rank;
-			map->exch_send->exch[count]->buffer_size = buffer_size2d * nlevels;
-			map->exch_send->exch[count]->buffer_idxlist = (int *)malloc(map->exch_send->exch[count]->buffer_size * sizeof(int));
-			for (int level = 0; level < nlevels; level++)
-				for (int i = 0; i < buffer_size2d; i++)
-					map->exch_send->exch[count]->buffer_idxlist[i+level*buffer_size2d] = map2d->exch_send->exch[count]->buffer_idxlist[i] + 
-					                                                                     level * map->exch_send->exch[count]->buffer_size;
 		}
 	}
 
 	// number of procs the current rank has to recv data from
 	map->exch_recv->count = map2d->exch_recv->count;
+	map->exch_recv->buffer_size = map2d->exch_recv->buffer_size * nlevels;
+
+	if (map->exch_recv->count > 0) {
+	
+		map->exch_recv->buffer_offset = (int *)malloc(map->exch_recv->count*sizeof(int));
+		for (int i=0; i<map->exch_recv->count; i++)
+			map->exch_recv->buffer_offset[i] = map2d->exch_recv->buffer_offset[i] * nlevels;
+		map->exch_recv->buffer_idxlist = (int *)malloc(map2d->exch_recv->buffer_size * nlevels * sizeof(int));
+
+		for (int count=0; count<map->exch_recv->count; count++) {
+
+			int offset = map->exch_recv->buffer_offset[count];
+
+			int upper_bound = count == map->exch_recv->count-1 ?
+			                  map->exch_recv->buffer_size :
+			                  map->exch_recv->buffer_offset[count + 1];
+
+			int size = upper_bound - map->exch_recv->buffer_offset[count];
+
+			int offset2d = map2d->exch_recv->buffer_offset[count];
+
+			int upper_bound2d = count == map2d->exch_recv->count-1 ?
+			                    map2d->exch_recv->buffer_size :
+			                    map2d->exch_recv->buffer_offset[count + 1];
+
+			int size2d = upper_bound2d - map2d->exch_recv->buffer_offset[count];
+
+			for (int level = 0; level < nlevels; level++) {
+				for (int i=0; i<size2d; i++) {
+					map->exch_recv->buffer_idxlist[offset + level*size2d + i] = map2d->exch_recv->buffer_idxlist[offset2d+i] + 
+					                                                            level * size;
+				}
+			}
+		}
+	}
 
 	// fill info about each recv message
 	if (map->exch_recv->count > 0) {
 		map->exch_recv->exch = (t_map_exch_per_rank**)malloc(map->exch_recv->count * sizeof(t_map_exch_per_rank*));
 		for (int count = 0; count < map->exch_recv->count; count++) {
-			int buffer_size2d = map2d->exch_recv->exch[count]->buffer_size;
-			if (buffer_size2d > 0)
+			if (map2d->exch_recv->exch[count]!=NULL)
 				map->exch_recv->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
 			map->exch_recv->exch[count]->exch_rank = map2d->exch_recv->exch[count]->exch_rank;
-			map->exch_recv->exch[count]->buffer_size = buffer_size2d * nlevels;
-			map->exch_recv->exch[count]->buffer_idxlist = (int *)malloc(map->exch_recv->exch[count]->buffer_size * sizeof(int));
-			for (int level = 0; level < nlevels; level++)
-				for (int i = 0; i < buffer_size2d; i++)
-					map->exch_recv->exch[count]->buffer_idxlist[i+level*buffer_size2d] = map2d->exch_recv->exch[count]->buffer_idxlist[i] + 
-					                                                                     level * map->exch_recv->exch[count]->buffer_size;
 		}
 	}
 
@@ -378,22 +455,27 @@ t_map * extend_map_3d(t_map *map2d  ,
 void delete_map(t_map *map) {
 
 	// map send info
-	for (int count = 0; count < map->exch_send->count; count++) {
-		if (map->exch_send->exch[count]->buffer_size > 0) {
-			free(map->exch_send->exch[count]->buffer_idxlist);
-		}
-		free(map->exch_send->exch[count]);
+	if (map->exch_send->count > 0) {
+		for (int count = 0; count < map->exch_send->count; count++)
+			free(map->exch_send->exch[count]);
+		free(map->exch_send->exch);
+		if (map->exch_send->buffer_size > 0)
+			free(map->exch_send->buffer_idxlist);
+		if (map->exch_send->count > 0)
+			free(map->exch_send->buffer_offset);
 	}
-	free(map->exch_send->exch);
 	free(map->exch_send);
 
 	// map recv info
-	for (int count = 0; count < map->exch_recv->count; count++) {
-		if (map->exch_recv->exch[count]->buffer_size > 0)
-			free(map->exch_recv->exch[count]->buffer_idxlist);
-		free(map->exch_recv->exch[count]);
+	if (map->exch_recv->count > 0) {
+		for (int count = 0; count < map->exch_recv->count; count++)
+			free(map->exch_recv->exch[count]);
+		free(map->exch_recv->exch);
+		if (map->exch_recv->buffer_size > 0)
+			free(map->exch_recv->buffer_idxlist);
+		if (map->exch_recv->count > 0)
+			free(map->exch_recv->buffer_offset);
 	}
-	free(map->exch_recv->exch);
 	free(map->exch_recv);
 
 	free(map);

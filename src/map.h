@@ -46,10 +46,6 @@
 struct t_map_exch_per_rank {
 	/** @brief rank to send/recv data to/from */
 	int exch_rank;
-	/** @brief size of the exchange message */
-	int buffer_size;
-	/** @brief idxlist to create the exchange buffer */
-	int *buffer_idxlist;
 };
 typedef struct t_map_exch_per_rank t_map_exch_per_rank;
 
@@ -63,6 +59,12 @@ struct t_map_exch {
 	int count;
 	/** @brief array of pointers to t_map_exch_per_rank structure */
 	t_map_exch_per_rank **exch;
+	/** @brief size of the exchange message */
+	int buffer_size;
+	/** @brief idxlist to create the exchange buffer */
+	int *buffer_idxlist;
+	/** @brief offset for each exchange */
+	int *buffer_offset;
 };
 typedef struct t_map_exch t_map_exch;
 
