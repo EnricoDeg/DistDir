@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(distdir C)
+if(ENABLE_CUDA)
+    set(LANG_CUDA CUDA)
+endif()
+
+project(distdir C ${LANG_CUDA})
+
+if(ENABLE_CUDA)
+    find_package(CUDA QUIET REQUIRED)
+endif()
 
 include(cmake/FetchCMocka.cmake)
 
