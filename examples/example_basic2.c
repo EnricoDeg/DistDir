@@ -104,9 +104,10 @@ int example_basic2() {
 		p_map = new_map(p_idxlist_empty, p_idxlist, -1, MPI_COMM_WORLD);
 	}
 
+	distdir_hardware hw = CPU;
 	// test exchange
 	{
-		t_exchanger *exchanger = new_exchanger(p_map, MPI_INT);
+		t_exchanger *exchanger = new_exchanger(p_map, MPI_INT, hw);
 
 		int data[npoints_local];
 		// src MPI ranks fill data array
@@ -125,7 +126,7 @@ int example_basic2() {
 	}
 
 	{
-		t_exchanger *exchanger = new_exchanger(p_map, MPI_DOUBLE);
+		t_exchanger *exchanger = new_exchanger(p_map, MPI_DOUBLE, hw);
 
 		double data[npoints_local];
 		// src MPI ranks fill data array
