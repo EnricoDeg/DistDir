@@ -36,45 +36,45 @@
 #include "backend_cpu.h"
 #include "check.h"
 
-void pack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size) {
+void pack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
 	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		buffer[i] = data[data_idx];
+		int data_idx = buffer_idxlist[offset+i];
+		buffer[offset+i] = data[data_idx];
 	}
 }
 
-void unpack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size) {
+void unpack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
 	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		data[data_idx] = buffer[i];
+		int data_idx = buffer_idxlist[offset+i];
+		data[data_idx] = buffer[offset+i];
 	}
 }
 
-void pack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size) {
+void pack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
 	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		buffer[i] = data[data_idx];
+		int data_idx = buffer_idxlist[offset+i];
+		buffer[offset+i] = data[data_idx];
 	}
 }
 
-void unpack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size) {
+void unpack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
 	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		data[data_idx] = buffer[i];
+		int data_idx = buffer_idxlist[offset+i];
+		data[data_idx] = buffer[offset+i];
 	}
 }
 
-void pack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size) {
+void pack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
 	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		buffer[i] = data[data_idx];
+		int data_idx = buffer_idxlist[offset+i];
+		buffer[offset+i] = data[data_idx];
 	}
 }
 
-void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size) {
+void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
 	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[i];
-		data[data_idx] = buffer[i];
+		int data_idx = buffer_idxlist[offset+i];
+		data[data_idx] = buffer[offset+i];
 	}
 }
 

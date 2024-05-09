@@ -36,17 +36,19 @@
 
 #include <stdlib.h>
 
-void pack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size);
+void pack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset);
 
-void unpack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size);
+void unpack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset);
 
-void pack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size);
+void pack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset);
 
-void unpack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size);
+void unpack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset);
 
-void pack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size);
+void pack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset);
 
-void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size);
+void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset);
+
+void *get_pointer_int(int *buffer, int offset);
 
 void* allocator_cpu(size_t buffer_size);
 
