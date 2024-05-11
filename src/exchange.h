@@ -49,6 +49,8 @@ struct t_exchange {
 	int buffer_size;
 	/** @brief buffer to store the messages */
 	void *buffer;
+	/** @brief pointer to buffer_idxlist **/
+	int *buffer_idxlist;
 };
 typedef struct t_exchange t_exchange;
 
@@ -85,6 +87,8 @@ typedef void (*kernel_func_recv)  ( void *, int, MPI_Datatype, int, int,
 
 typedef void* (*kernel_func_alloc) (size_t);
 
+typedef void  (*kernel_func_free) (void *);
+
 /** @struct xt_un_pack_kernels
  * 
  *  @brief The structure contains pointer to pack and unpack functions
@@ -103,6 +107,8 @@ struct t_kernels {
 	kernel_func_recv recv;
 	/** @brief pointer to allocate function */
 	kernel_func_alloc allocator;
+	/** @brief pointer to free function */
+	kernel_func_free deallocator;
 };
 typedef struct t_kernels t_kernels;
 
