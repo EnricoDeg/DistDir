@@ -107,7 +107,11 @@ int example_basic3() {
 	}
 	p_map = extend_map_3d(p_map2d, NLEVS);
 
+#ifdef CUDA
+	distdir_hardware hw = GPU_NVIDIA;
+#else
 	distdir_hardware hw = CPU;
+#endif
 	// test exchange
 	{
 		t_exchanger *exchanger = new_exchanger(p_map, MPI_INT, hw);
@@ -119,7 +123,10 @@ int example_basic3() {
 				for (int i = 0; i < npoints_local; i++)
 					data[i+level*npoints_local] = i + level*npoints_local + npoints_local * NLEVS * world_rank;
 
+#pragma acc enter data copyin(data[0:npoints_local*NLEVS])
+#pragma acc host_data use_device(data)
 		exchanger_go(exchanger, data, data);
+#pragma acc update host(data[0:npoints_local*NLEVS])
 
 		printf("%d: ", world_rank);
 		for (int level = 0; level < NLEVS; level++)
@@ -127,6 +134,7 @@ int example_basic3() {
 				printf("%d ", data[i+level*npoints_local]);
 		printf("\n");
 
+#pragma acc exit data delete(data[0:npoints_local*NLEVS])
 		delete_exchanger(exchanger);
 	}
 

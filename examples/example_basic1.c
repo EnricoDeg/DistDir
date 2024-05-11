@@ -106,13 +106,13 @@ int example_basic1() {
 		p_map = new_map(p_idxlist_empty, p_idxlist, -1, MPI_COMM_WORLD);
 	}
 
+#ifdef CUDA
+	distdir_hardware hw = GPU_NVIDIA;
+#else
+	distdir_hardware hw = CPU;
+#endif
 	// test exchange
 	{
-#ifdef CUDA
-		distdir_hardware hw = GPU_NVIDIA;
-#else
-		distdir_hardware hw = CPU;
-#endif
 		t_exchanger *exchanger = new_exchanger(p_map, MPI_INT, hw);
 		int data[npoints_local];
 		// src MPI ranks fill data array
@@ -135,11 +135,6 @@ int example_basic1() {
 	}
 
 	{
-#ifdef CUDA
-		distdir_hardware hw = GPU_NVIDIA;
-#else
-		distdir_hardware hw = CPU;
-#endif
 		t_exchanger *exchanger = new_exchanger(p_map, MPI_DOUBLE, hw);
 		double data[npoints_local];
 		// src MPI ranks fill data array
