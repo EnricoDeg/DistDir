@@ -47,6 +47,7 @@
 static void select_un_pack_kernels(t_kernels *table_kernels, MPI_Datatype type, distdir_hardware hw) {
 
 	if (type == MPI_INT) {
+
 		/* Packing / Unpacking functions */
 		switch(hw) {
 		case CPU:
@@ -66,14 +67,42 @@ static void select_un_pack_kernels(t_kernels *table_kernels, MPI_Datatype type, 
 		table_kernels->irecv = (kernel_func_irecv)mpi_wrapper_irecv_int;
 		table_kernels->recv = (kernel_func_recv)mpi_wrapper_recv_int;
 	} else if (type == MPI_REAL) {
-		table_kernels->pack = (kernel_func_pack)pack_cpu_float;
-		table_kernels->unpack = (kernel_func_pack)unpack_cpu_float;
+
+		/* Packing / Unpacking functions */
+		switch(hw) {
+			case CPU:
+				table_kernels->pack = (kernel_func_pack)pack_cpu_float;
+				table_kernels->unpack = (kernel_func_pack)unpack_cpu_float;
+				break;
+#ifdef CUDA
+			case GPU_NVIDIA:
+				table_kernels->pack = (kernel_func_pack)pack_cuda_float;
+				table_kernels->unpack = (kernel_func_pack)unpack_cuda_float;
+				break;
+#endif
+		}
+
+		/* Communication functions */
 		table_kernels->isend = (kernel_func_isend)mpi_wrapper_isend_float;
 		table_kernels->irecv = (kernel_func_irecv)mpi_wrapper_irecv_float;
 		table_kernels->recv = (kernel_func_recv)mpi_wrapper_recv_float;
 	} else if (type == MPI_DOUBLE) {
-		table_kernels->pack = (kernel_func_pack)pack_cpu_double;
-		table_kernels->unpack = (kernel_func_pack)unpack_cpu_double;
+
+		/* Packing / Unpacking functions */
+		switch(hw) {
+			case CPU:
+				table_kernels->pack = (kernel_func_pack)pack_cpu_double;
+				table_kernels->unpack = (kernel_func_pack)unpack_cpu_double;
+				break;
+#ifdef CUDA
+			case GPU_NVIDIA:
+				table_kernels->pack = (kernel_func_pack)pack_cuda_double;
+				table_kernels->unpack = (kernel_func_pack)unpack_cuda_double;
+				break;
+#endif
+		}
+
+		/* Communication functions */
 		table_kernels->isend = (kernel_func_isend)mpi_wrapper_isend_double;
 		table_kernels->irecv = (kernel_func_irecv)mpi_wrapper_irecv_double;
 		table_kernels->recv = (kernel_func_recv)mpi_wrapper_recv_double;

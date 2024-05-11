@@ -45,7 +45,43 @@ __global__ void pack_int(int *buffer, int *data, int *buffer_idxlist, int buffer
 	}
 }
 
+__global__ void pack_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		buffer[offset+id] = data[data_idx];
+	}
+}
+
+__global__ void pack_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		buffer[offset+id] = data[data_idx];
+	}
+}
+
 __global__ void unpack_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		data[data_idx] = buffer[offset+id];
+	}
+}
+
+__global__ void unpack_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		data[data_idx] = buffer[offset+id];
+	}
+}
+
+__global__ void unpack_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
 
 	int id = blockDim.x * blockIdx.x + threadIdx.x;
 	if(id < buffer_size) {
@@ -68,6 +104,34 @@ extern "C" void pack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int b
 	}
 }
 
+extern "C" void pack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int thr_per_blk = 256;
+	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
+
+	pack_float<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+
+	cudaError_t err = cudaDeviceSynchronize();
+	if ( err != cudaSuccess ) {
+		fprintf(stderr, "CUDA error (pack_float): %s\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+}
+
+extern "C" void pack_cuda_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int thr_per_blk = 256;
+	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
+
+	pack_double<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+
+	cudaError_t err = cudaDeviceSynchronize();
+	if ( err != cudaSuccess ) {
+		fprintf(stderr, "CUDA error (pack_double): %s\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+}
+
 extern "C" void unpack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
 
 	int thr_per_blk = 256;
@@ -78,6 +142,34 @@ extern "C" void unpack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int
 	cudaError_t err = cudaDeviceSynchronize();
 	if ( err != cudaSuccess ) {
 		fprintf(stderr, "CUDA error (unpack_int): %s\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+}
+
+extern "C" void unpack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int thr_per_blk = 256;
+	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
+
+	unpack_float<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+
+	cudaError_t err = cudaDeviceSynchronize();
+	if ( err != cudaSuccess ) {
+		fprintf(stderr, "CUDA error (unpack_float): %s\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+}
+
+extern "C" void unpack_cuda_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int thr_per_blk = 256;
+	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
+
+	unpack_double<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+
+	cudaError_t err = cudaDeviceSynchronize();
+	if ( err != cudaSuccess ) {
+		fprintf(stderr, "CUDA error (unpack_double): %s\n", cudaGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
 }
