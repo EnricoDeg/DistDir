@@ -100,7 +100,11 @@ int example_basic5() {
 
 	p_map = new_map(p_src_idxlist, p_dst_idxlist, -1, MPI_COMM_WORLD);
 
+#ifdef CUDA
+	distdir_hardware hw = GPU_NVIDIA;
+#else
 	distdir_hardware hw = CPU;
+#endif
 	// test exchange
 	{
 		t_exchanger *exchanger = new_exchanger(p_map, MPI_INT, hw);
@@ -116,13 +120,17 @@ int example_basic5() {
 			printf("%d ", src_data[i]);
 		printf("\n");
 
+#pragma acc enter data copyin(src_data[0:npoints_local], dst_data[0:npoints_local])
+#pragma acc host_data use_device(src_data, dst_data)
 		exchanger_go(exchanger, src_data, dst_data);
+#pragma acc update host(src_data[0:npoints_local], dst_data[0:npoints_local])
 
 		printf("%d: ", world_rank);
 		for (int i = 0; i < npoints_local; i++)
 			printf("%d ", dst_data[i]);
 		printf("\n");
 
+#pragma acc exit data delete(src_data[0:npoints_local], dst_data[0:npoints_local])
 		delete_exchanger(exchanger);
 	}
 
