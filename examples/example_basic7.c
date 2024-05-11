@@ -223,10 +223,10 @@ int example_basic7() {
 			}
 		}
 
-#pragma acc enter data copyin(data[0:total_size-1])
+#pragma acc enter data copyin(data[0:total_size])
 #pragma acc host_data use_device(data)
 		exchanger_go(exchanger, data, data);
-#pragma acc update host(data[0:total_size-1])
+#pragma acc update host(data[0:total_size])
 
 		printf("%d: ", world_rank);
 		for (int level = 0; level < nlevs_local; level++)
@@ -234,7 +234,7 @@ int example_basic7() {
 				printf("%d ", data[i+level*npoints_local]);
 		printf("\n");
 
-#pragma acc exit data delete(data[0:total_size-1])
+#pragma acc exit data delete(data[0:total_size])
 		delete_exchanger(exchanger);
 	}
 
