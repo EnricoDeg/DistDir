@@ -44,11 +44,24 @@
 #include "backend_mpi.h"
 #include <stdio.h>
 
-static void select_un_pack_kernels(t_kernels *table_kernels, MPI_Datatype type) {
+static void select_un_pack_kernels(t_kernels *table_kernels, MPI_Datatype type, distdir_hardware hw) {
 
 	if (type == MPI_INT) {
-		table_kernels->pack = (kernel_func_pack)pack_cpu_int;
-		table_kernels->unpack = (kernel_func_pack)unpack_cpu_int;
+		/* Packing / Unpacking functions */
+		switch(hw) {
+		case CPU:
+			table_kernels->pack = (kernel_func_pack)pack_cpu_int;
+			table_kernels->unpack = (kernel_func_pack)unpack_cpu_int;
+			break;
+#ifdef CUDA
+		case GPU_NVIDIA:
+			table_kernels->pack = (kernel_func_pack)pack_cuda_int;
+			table_kernels->unpack = (kernel_func_pack)unpack_cuda_int;
+			break;
+#endif
+		}
+
+		/* Communication functions */
 		table_kernels->isend = (kernel_func_isend)mpi_wrapper_isend_int;
 		table_kernels->irecv = (kernel_func_irecv)mpi_wrapper_irecv_int;
 		table_kernels->recv = (kernel_func_recv)mpi_wrapper_recv_int;
@@ -122,7 +135,7 @@ static void exchanger_IsendIrecv(t_exchange *exch_send, t_exchange *exch_recv,
 
 		vtable->pack(exch_send->buffer,
 		             src_data,
-		             map->exch_send->buffer_idxlist,
+		             exch_send->buffer_idxlist,
 		             size,
 		             offset);
 
@@ -176,7 +189,7 @@ static void exchanger_IsendIrecv(t_exchange *exch_send, t_exchange *exch_recv,
 
 		vtable->unpack(exch_recv->buffer,
 		               dst_data,
-		               map->exch_recv->buffer_idxlist,
+		               exch_recv->buffer_idxlist,
 		               size, offset);
 	}
 }
@@ -208,7 +221,7 @@ static void exchanger_IsendRecv1(t_exchange *exch_send, t_exchange *exch_recv,
 
 		vtable->pack(exch_send->buffer,
 		                        src_data,
-		                        map->exch_send->buffer_idxlist,
+		                        exch_send->buffer_idxlist,
 		                        size, offset);
 
 		/* send the buffer */
@@ -257,7 +270,7 @@ static void exchanger_IsendRecv1(t_exchange *exch_send, t_exchange *exch_recv,
 
 		vtable->unpack(exch_recv->buffer,
 		               dst_data,
-		               map->exch_recv->buffer_idxlist,
+		               exch_recv->buffer_idxlist,
 		               size, offset);
 	}
 }
@@ -289,7 +302,7 @@ static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
 
 		vtable->pack(exch_send->buffer,
 		             src_data,
-		             map->exch_send->buffer_idxlist,
+		             exch_send->buffer_idxlist,
 		             size, offset);
 
 		/* send the buffer */
@@ -327,7 +340,7 @@ static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
 
 		vtable->unpack(exch_recv->buffer,
 		               dst_data,
-		               map->exch_recv->buffer_idxlist,
+		               exch_recv->buffer_idxlist,
 		               size, offset);
 	}
 }
@@ -354,7 +367,7 @@ t_exchanger* new_exchanger(t_map        *map  ,
 	exchanger->mpi_exchange = (t_mpi_exchange *)malloc(sizeof(t_mpi_exchange));
 
 	t_kernels* vtable_kernels = (t_kernels*)malloc(sizeof(t_kernels));
-	select_un_pack_kernels(vtable_kernels, type);
+	select_un_pack_kernels(vtable_kernels, type, hw);
 	exchanger->vtable = vtable_kernels;
 
 	exchanger->vtable_messages = (t_messages*)malloc(sizeof(t_messages));
@@ -364,17 +377,19 @@ t_exchanger* new_exchanger(t_map        *map  ,
 	switch (hw) {
 		case CPU:
 			exchanger->vtable->allocator = allocator_cpu;
+			exchanger->vtable->deallocator = deallocator_cpu;
+			exchanger->exch_send->buffer_idxlist = map->exch_send->buffer_idxlist;
+			exchanger->exch_recv->buffer_idxlist = map->exch_recv->buffer_idxlist;
 			break;
 #ifdef CUDA
 		case GPU_NVIDIA:
 			exchanger->vtable->allocator = allocator_cuda;
+			exchanger->vtable->deallocator = deallocator_cuda;
+			exchanger->exch_send->buffer_idxlist = map->exch_send->buffer_idxlist_gpu;
+			exchanger->exch_recv->buffer_idxlist = map->exch_recv->buffer_idxlist_gpu;
 			break;
 #endif
 	}
-
-#ifdef CUDA
-	int *test = (int*)allocator_cuda(5);
-#endif
 
 	exchanger->map = map;
 
@@ -476,10 +491,10 @@ void delete_exchanger(t_exchanger *exchanger) {
 
 	// free memory
 	if (exchanger->exch_send->buffer_size > 0)
-		free(exchanger->exch_send->buffer);
+		 exchanger->vtable->deallocator(exchanger->exch_send->buffer);
 
 	if (exchanger->exch_recv->buffer_size > 0)
-		free(exchanger->exch_recv->buffer);
+		 exchanger->vtable->deallocator(exchanger->exch_recv->buffer);
 
 	if (exchanger->exch_send->count > 0) {
 		free(exchanger->exch_send);
