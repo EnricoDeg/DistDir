@@ -406,6 +406,13 @@ t_map * extend_map_3d(t_map *map2d  ,
 				}
 			}
 		}
+
+#ifdef CUDA
+		map->exch_send->buffer_idxlist_gpu = (int *)allocator_cuda(map2d->exch_send->buffer_size*nlevels*sizeof(int));
+		memcpy_h2d(map->exch_send->buffer_idxlist_gpu,
+		           map->exch_send->buffer_idxlist,
+		           map2d->exch_send->buffer_size*nlevels);
+#endif
 	}
 
 	// fill info about each send message
@@ -454,6 +461,12 @@ t_map * extend_map_3d(t_map *map2d  ,
 				}
 			}
 		}
+#ifdef CUDA
+		map->exch_recv->buffer_idxlist_gpu = (int *)allocator_cuda(map2d->exch_recv->buffer_size*nlevels*sizeof(int));
+		memcpy_h2d(map->exch_recv->buffer_idxlist_gpu,
+		           map->exch_recv->buffer_idxlist,
+		           map2d->exch_recv->buffer_size*nlevels);
+#endif
 	}
 
 	// fill info about each recv message
