@@ -39,7 +39,15 @@ extern "C" {
 
 void pack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset);
 
+void pack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset);
+
+void pack_cuda_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset);
+
 void unpack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset);
+
+void unpack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset);
+
+void unpack_cuda_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset);
 
 void* allocator_cuda(size_t buffer_size);
 
