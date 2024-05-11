@@ -106,9 +106,13 @@ int example_basic1() {
 		p_map = new_map(p_idxlist_empty, p_idxlist, -1, MPI_COMM_WORLD);
 	}
 
-	distdir_hardware hw = CPU;
 	// test exchange
 	{
+#ifdef CUDA
+		distdir_hardware hw = GPU_NVIDIA;
+#else
+		distdir_hardware hw = CPU;
+#endif
 		t_exchanger *exchanger = new_exchanger(p_map, MPI_INT, hw);
 		int data[npoints_local];
 		// src MPI ranks fill data array
@@ -116,17 +120,22 @@ int example_basic1() {
 			for (int i = 0; i < npoints_local; i++)
 				data[i] = i + npoints_local * world_rank;
 
+#pragma acc enter data copyin(data[0:npoints_local])
+#pragma acc host_data use_device(data)
 		exchanger_go(exchanger, data, data);
+#pragma acc update host(data[0:npoints_local])
 
 		printf("%d: ", world_rank);
 		for (int i = 0; i < npoints_local; i++)
 			printf("%d ", data[i]);
 		printf("\n");
 
+#pragma acc exit data delete(data[0:npoints_local])
 		delete_exchanger(exchanger);
 	}
 
 	{
+		distdir_hardware hw = CPU;
 		t_exchanger *exchanger = new_exchanger(p_map, MPI_DOUBLE, hw);
 		double data[npoints_local];
 		// src MPI ranks fill data array
