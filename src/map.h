@@ -63,6 +63,8 @@ struct t_map_exch {
 	int buffer_size;
 	/** @brief idxlist to create the exchange buffer */
 	int *buffer_idxlist;
+	/** @brief idxlist to create the exchange buffer */
+	int *buffer_idxlist_gpu;
 	/** @brief offset for each exchange */
 	int *buffer_offset;
 };

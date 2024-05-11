@@ -39,6 +39,9 @@
 #include "mergesort.h"
 #include "bucket.h"
 #include "check.h"
+#ifdef CUDA
+#include "backend_cuda.h"
+#endif
 
 t_map * new_map(t_idxlist *src_idxlist ,
                 t_idxlist *dst_idxlist ,
@@ -263,6 +266,13 @@ t_map * new_map(t_idxlist *src_idxlist ,
 			int memory_position = map->exch_send->buffer_offset[count] + j - offset;
 			map->exch_send->buffer_idxlist[memory_position] = src_idxlist_local[j];
 		}
+
+#ifdef CUDA
+		map->exch_send->buffer_idxlist_gpu = (int *)allocator_cuda(src_idxlist->count*sizeof(int));
+		memcpy_h2d(map->exch_send->buffer_idxlist_gpu,
+		           map->exch_send->buffer_idxlist,
+		           src_idxlist->count);
+#endif
 	}
 
 	// number of procs the current rank has to send data to
@@ -316,6 +326,13 @@ t_map * new_map(t_idxlist *src_idxlist ,
 			int memory_position = map->exch_recv->buffer_offset[count] + j - offset;
 			map->exch_recv->buffer_idxlist[memory_position] = dst_idxlist_local[j];
 		}
+
+#ifdef CUDA
+		map->exch_recv->buffer_idxlist_gpu = (int *)allocator_cuda(dst_idxlist->count*sizeof(int));
+		memcpy_h2d(map->exch_recv->buffer_idxlist_gpu,
+		           map->exch_recv->buffer_idxlist,
+		           dst_idxlist->count);
+#endif
 	}
 
 	// free buckets memory
