@@ -50,4 +50,6 @@ void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int bu
 
 void* allocator_cpu(size_t buffer_size);
 
+void deallocator_cpu(void *buffer);
+
 #endif

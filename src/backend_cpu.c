@@ -79,12 +79,17 @@ void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int bu
 }
 
 void* allocator_cpu(size_t buffer_size) {
-    void *ptr = malloc(buffer_size);
+	void *ptr = malloc(buffer_size);
 
-    if (!ptr && (buffer_size > 0)) {
-      fprintf(stderr, "malloc failed!\n");
-      exit(EXIT_FAILURE);
-    }
+	if (!ptr && (buffer_size > 0)) {
+	  fprintf(stderr, "malloc failed!\n");
+	  exit(EXIT_FAILURE);
+	}
 
-    return ptr;
+	return ptr;
+}
+
+void deallocator_cpu(void *buffer) {
+
+	free(buffer);
 }
