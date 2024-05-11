@@ -288,20 +288,11 @@ static void exchanger_IsendRecv1(t_exchange *exch_send, t_exchange *exch_recv,
 	}
 
 	/* unpack all recv buffers */
-	for (int count = 0; count < map->exch_recv->count; count++) {
-		int offset = map->exch_recv->buffer_offset[count];
-
-		int upper_bound = count == map->exch_recv->count-1 ?
-		                           map->exch_recv->buffer_size :
-		                           map->exch_recv->buffer_offset[count + 1];
-
-		int size = upper_bound - map->exch_recv->buffer_offset[count];
-
-		vtable->unpack(exch_recv->buffer,
-		               dst_data,
-		               exch_recv->buffer_idxlist,
-		               size, offset);
-	}
+	vtable->unpack(exch_recv->buffer,
+	               dst_data,
+	               exch_recv->buffer_idxlist,
+	               map->exch_recv->buffer_size,
+	               0);
 }
 
 static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
