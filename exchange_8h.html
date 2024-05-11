@@ -74,6 +74,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="map_8h_source.html">map.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="setting_8h_source.html">setting.h</a>&quot;</code><br />
 </div>
 <p><a href="exchange_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -110,6 +111,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:a87f0cf2c8e97ea4f15cfc84789dccd73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e5abbed7ab04b570560c7832905821a"><td class="memItemLeft" align="right" valign="top">typedef void *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#a3e5abbed7ab04b570560c7832905821a">kernel_func_alloc</a>) (size_t)</td></tr>
 <tr class="separator:a3e5abbed7ab04b570560c7832905821a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83a9fb3c07a0e636b53609e6260c1f5f"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#a83a9fb3c07a0e636b53609e6260c1f5f">kernel_func_free</a>) (void *)</td></tr>
+<tr class="separator:a83a9fb3c07a0e636b53609e6260c1f5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afffa7c43db17f871b8a13bceaaa51711"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structt__kernels.html">t_kernels</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#afffa7c43db17f871b8a13bceaaa51711">t_kernels</a></td></tr>
 <tr class="separator:afffa7c43db17f871b8a13bceaaa51711"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16595c26121d5f096543425ec7ef166b"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#a16595c26121d5f096543425ec7ef166b">kernel_func_wait</a>) (<a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a> *)</td></tr>
@@ -125,9 +128,9 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga8f539cf760533b233ecec8ef892fa59e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structt__exchanger.html">t_exchanger</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__exchange.html#ga8f539cf760533b233ecec8ef892fa59e">new_exchanger</a> (<a class="el" href="structt__map.html">t_map</a> *map, MPI_Datatype type)</td></tr>
-<tr class="memdesc:ga8f539cf760533b233ecec8ef892fa59e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new <a class="el" href="structt__exchanger.html">t_exchanger</a> structure.  <a href="group__exchange.html#ga8f539cf760533b233ecec8ef892fa59e">More...</a><br /></td></tr>
-<tr class="separator:ga8f539cf760533b233ecec8ef892fa59e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7d58720459ca3e68fa767abf810f0b8c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structt__exchanger.html">t_exchanger</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__exchange.html#ga7d58720459ca3e68fa767abf810f0b8c">new_exchanger</a> (<a class="el" href="structt__map.html">t_map</a> *map, MPI_Datatype type, <a class="el" href="setting_8h.html#a88848da5c7ea10c738db173d5314c659">distdir_hardware</a> hw)</td></tr>
+<tr class="memdesc:ga7d58720459ca3e68fa767abf810f0b8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new <a class="el" href="structt__exchanger.html">t_exchanger</a> structure.  <a href="group__exchange.html#ga7d58720459ca3e68fa767abf810f0b8c">More...</a><br /></td></tr>
+<tr class="separator:ga7d58720459ca3e68fa767abf810f0b8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7de4537721ade98510c71e4ee56ba4dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__exchange.html#ga7de4537721ade98510c71e4ee56ba4dc">exchanger_go</a> (<a class="el" href="structt__exchanger.html">t_exchanger</a> *exchanger, void *src_data, void *dst_data)</td></tr>
 <tr class="memdesc:ga7de4537721ade98510c71e4ee56ba4dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arbitrary exchange given a map.  <a href="group__exchange.html#ga7de4537721ade98510c71e4ee56ba4dc">More...</a><br /></td></tr>
 <tr class="separator:ga7de4537721ade98510c71e4ee56ba4dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -158,6 +161,20 @@ Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">typedef void*(* kernel_func_alloc) (size_t)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a83a9fb3c07a0e636b53609e6260c1f5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83a9fb3c07a0e636b53609e6260c1f5f">&#9670;&nbsp;</a></span>kernel_func_free</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* kernel_func_free) (void *)</td>
         </tr>
       </table>
 </div><div class="memdoc">
