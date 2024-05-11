@@ -1,5 +1,11 @@
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DERROR_CHECK")
 
+if(CMAKE_C_COMPILER_ID STREQUAL "NVHPC")
+    if(ENABLE_CUDA)
+        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -acc=verystrict -Minfo=accel,inline -gpu=cc80 -DCUDA")
+    endif()
+endif()
+
 add_executable(example_basic1 example_basic1.c)
 target_link_libraries (example_basic1 distdir)
 target_include_directories(example_basic1 PRIVATE ${PROJECT_SOURCE_DIR})
