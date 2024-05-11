@@ -248,7 +248,7 @@ t_map * new_map(t_idxlist *src_idxlist ,
 					map->exch_send->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
 				map->exch_send->exch[count]->exch_rank = src_bucket->rank_exch[offset];
 				if (count + 1 < map->exch_send->count)
-					map->exch_send->buffer_offset[count+1] = buffer_size;
+					map->exch_send->buffer_offset[count+1] = buffer_size + map->exch_send->buffer_offset[count];
 				for (int j=offset; j<i; j++) {
 					int memory_position = map->exch_send->buffer_offset[count] + j - offset;
 					map->exch_send->buffer_idxlist[memory_position] = src_idxlist_local[j];
@@ -308,7 +308,7 @@ t_map * new_map(t_idxlist *src_idxlist ,
 					map->exch_recv->exch[count] = (t_map_exch_per_rank *)malloc(sizeof(t_map_exch_per_rank));
 				map->exch_recv->exch[count]->exch_rank = dst_bucket->rank_exch[offset];
 				if (count + 1 < map->exch_recv->count)
-					map->exch_recv->buffer_offset[count+1] = buffer_size;
+					map->exch_recv->buffer_offset[count+1] = buffer_size + map->exch_recv->buffer_offset[count];
 				for (int j=offset; j<i; j++) {
 					int memory_position = map->exch_recv->buffer_offset[count] + j - offset;
 					map->exch_recv->buffer_idxlist[memory_position] = dst_idxlist_local[j];
