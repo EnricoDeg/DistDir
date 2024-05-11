@@ -37,7 +37,15 @@
 extern "C" {
 #endif
 
+void pack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset);
+
+void unpack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset);
+
 void* allocator_cuda(size_t buffer_size);
+
+void deallocator_cuda(void *buffer);
+
+void memcpy_h2d(int *buffer_cuda, int *buffer_cpu, int buffer_size);
 
 #ifdef __cplusplus
 }

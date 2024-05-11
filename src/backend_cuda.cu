@@ -36,9 +36,79 @@
 #include <cuda.h>
 #include "backend_cuda.h"
 
+__global__ void pack_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		buffer[offset+id] = data[data_idx];
+	}
+}
+
+__global__ void unpack_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		data[data_idx] = buffer[offset+id];
+	}
+}
+
+extern "C" void pack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int thr_per_blk = 256;
+	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
+
+	pack_int<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+
+	cudaError_t err = cudaDeviceSynchronize();
+	if ( err != cudaSuccess ) {
+		fprintf(stderr, "CUDA error (pack_int): %s\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+}
+
+extern "C" void unpack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
+
+	int thr_per_blk = 256;
+	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
+
+	unpack_int<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+
+	cudaError_t err = cudaDeviceSynchronize();
+	if ( err != cudaSuccess ) {
+		fprintf(stderr, "CUDA error (unpack_int): %s\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+}
+
 extern "C" void* allocator_cuda(size_t buffer_size) {
 
 	void *p;
-	if (cudaMalloc(&p, buffer_size) == cudaSuccess) return p;
-	return NULL;
+
+	cudaError_t err = cudaMalloc(&p, buffer_size);
+	if (err == cudaSuccess) {
+		return p;
+	} else {
+		fprintf(stderr, "CUDA error (cudaMalloc): %s\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+}
+
+extern "C" void deallocator_cuda(void *buffer) {
+
+	cudaError_t err = cudaFree ( buffer );
+	if ( err != cudaSuccess ) {
+		fprintf(stderr, "CUDA error (cudaFree): %s\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+}
+
+extern "C" void memcpy_h2d(int *buffer_cuda, int *buffer_cpu, int buffer_size) {
+
+	cudaError_t err = cudaMemcpy ( buffer_cuda, buffer_cpu, (size_t)buffer_size*sizeof(int), cudaMemcpyHostToDevice );
+	if ( err != cudaSuccess ) {
+		fprintf(stderr, "CUDA error (cudaMemcpy): %s\n", cudaGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
 }
