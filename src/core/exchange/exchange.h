@@ -37,6 +37,10 @@
 #include "src/core/algorithm/map.h"
 #include "src/setup/setting.h"
 #include "src/core/exchange/backend_communication/backend_mpi.h"
+#include "src/core/exchange/backend_hardware/backend_cpu.h"
+#ifdef CUDA
+#include "src/core/exchange/backend_hardware/backend_cuda.h"
+#endif
 
 /** @struct t_map_exch
  * 
@@ -54,29 +58,6 @@ struct t_exchange {
 	int *buffer_idxlist;
 };
 typedef struct t_exchange t_exchange;
-
-typedef void (*kernel_func_pack) ( void*, void*, int*, int, int );
-
-typedef void* (*kernel_func_alloc) (size_t);
-
-typedef void  (*kernel_func_free) (void *);
-
-/** @struct xt_un_pack_kernels
- * 
- *  @brief The structure contains pointer to pack and unpack functions
- * 
- */
-struct t_kernels {
-	/** @brief pointer to pack function */
-	kernel_func_pack pack;
-	/** @brief pointer to unpack function */
-	kernel_func_pack unpack;
-	/** @brief pointer to allocate function */
-	kernel_func_alloc allocator;
-	/** @brief pointer to free function */
-	kernel_func_free deallocator;
-};
-typedef struct t_kernels t_kernels;
 
 typedef void (*backend_func_wait) (t_mpi_exchange*);
 

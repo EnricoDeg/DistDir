@@ -37,6 +37,19 @@
 extern "C" {
 #endif
 
+#include "src/core/exchange/backend_hardware/backend_hw.h"
+
+/**
+ * @brief Create new t_kernels data structure
+ * 
+ * @param[in] type MPI datatype of the exchanged fields
+ * 
+ * @return pointer to t_kernels structure
+ * 
+ * @ingroup backend_cuda
+ */
+t_kernels * new_vtable_cuda(MPI_Datatype type);
+
 /**
  * @brief Packing function for int arrays.
  * 

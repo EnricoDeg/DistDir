@@ -90,6 +90,32 @@ __global__ void unpack_double(double *buffer, double *data, int *buffer_idxlist,
 	}
 }
 
+extern "C" t_kernels * new_vtable_cuda(MPI_Datatype type) {
+
+	t_kernels * table_kernels = (t_kernels *)malloc(sizeof(t_kernels));
+
+	/* Malloc / Free functions */
+	table_kernels->allocator = allocator_cuda;
+	table_kernels->deallocator = deallocator_cuda;
+
+	if (type == MPI_INT) {
+
+		/* Packing / Unpacking functions */
+		table_kernels->pack = (kernel_func_pack)pack_cuda_int;
+		table_kernels->unpack = (kernel_func_pack)unpack_cuda_int;
+	} else if (type == MPI_REAL) {
+
+		/* Packing / Unpacking functions */
+		table_kernels->pack = (kernel_func_pack)pack_cuda_float;
+		table_kernels->unpack = (kernel_func_pack)unpack_cuda_float;
+	} else if (type == MPI_DOUBLE) {
+
+		/* Packing / Unpacking functions */
+		table_kernels->pack = (kernel_func_pack)pack_cuda_double;
+		table_kernels->unpack = (kernel_func_pack)unpack_cuda_double;
+	}
+}
+
 extern "C" void pack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
 
 	int thr_per_blk = 256;

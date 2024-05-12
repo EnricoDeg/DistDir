@@ -36,6 +36,37 @@
 #include "src/core/exchange/backend_hardware/backend_cpu.h"
 #include "src/utils/check.h"
 
+t_kernels * new_vtable_cpu(MPI_Datatype type) {
+
+	t_kernels * table_kernels = (t_kernels *)malloc(sizeof(t_kernels));
+
+	/* Malloc / Free functions */
+	table_kernels->allocator = allocator_cpu;
+	table_kernels->deallocator = deallocator_cpu;
+
+	if (type == MPI_INT) {
+
+		/* Packing / Unpacking functions */
+		table_kernels->pack = (kernel_func_pack)pack_cpu_int;
+		table_kernels->unpack = (kernel_func_pack)unpack_cpu_int;
+	} else if (type == MPI_REAL) {
+
+		/* Packing / Unpacking functions */
+		table_kernels->pack = (kernel_func_pack)pack_cpu_float;
+		table_kernels->unpack = (kernel_func_pack)unpack_cpu_float;
+	} else if (type == MPI_DOUBLE) {
+
+		/* Packing / Unpacking functions */
+		table_kernels->pack = (kernel_func_pack)pack_cpu_double;
+		table_kernels->unpack = (kernel_func_pack)unpack_cpu_double;
+	}
+}
+
+void delete_vtable(t_kernels *vtable) {
+
+	free(vtable);
+}
+
 void pack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
 	for (int i = 0; i < buffer_size; i++) {
 		int data_idx = buffer_idxlist[offset+i];

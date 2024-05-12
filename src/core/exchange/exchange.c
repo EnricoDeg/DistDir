@@ -44,56 +44,6 @@
 #include "src/core/exchange/backend_communication/backend_mpi.h"
 #include <stdio.h>
 
-static void select_un_pack_kernels(t_kernels *table_kernels, MPI_Datatype type, distdir_hardware hw) {
-
-	if (type == MPI_INT) {
-
-		/* Packing / Unpacking functions */
-		switch(hw) {
-		case CPU:
-			table_kernels->pack = (kernel_func_pack)pack_cpu_int;
-			table_kernels->unpack = (kernel_func_pack)unpack_cpu_int;
-			break;
-#ifdef CUDA
-		case GPU_NVIDIA:
-			table_kernels->pack = (kernel_func_pack)pack_cuda_int;
-			table_kernels->unpack = (kernel_func_pack)unpack_cuda_int;
-			break;
-#endif
-		}
-	} else if (type == MPI_REAL) {
-
-		/* Packing / Unpacking functions */
-		switch(hw) {
-			case CPU:
-				table_kernels->pack = (kernel_func_pack)pack_cpu_float;
-				table_kernels->unpack = (kernel_func_pack)unpack_cpu_float;
-				break;
-#ifdef CUDA
-			case GPU_NVIDIA:
-				table_kernels->pack = (kernel_func_pack)pack_cuda_float;
-				table_kernels->unpack = (kernel_func_pack)unpack_cuda_float;
-				break;
-#endif
-		}
-	} else if (type == MPI_DOUBLE) {
-
-		/* Packing / Unpacking functions */
-		switch(hw) {
-			case CPU:
-				table_kernels->pack = (kernel_func_pack)pack_cpu_double;
-				table_kernels->unpack = (kernel_func_pack)unpack_cpu_double;
-				break;
-#ifdef CUDA
-			case GPU_NVIDIA:
-				table_kernels->pack = (kernel_func_pack)pack_cuda_double;
-				table_kernels->unpack = (kernel_func_pack)unpack_cuda_double;
-				break;
-#endif
-		}
-	}
-}
-
 static void exchanger_waitall(t_mpi_exchange* mpi_exchange) {
 
 	if ((mpi_exchange->nreq_send + mpi_exchange->nreq_recv) > 0)
@@ -440,23 +390,17 @@ t_exchanger* new_exchanger(t_map        *map  ,
 	exchanger->exch_recv->count = map->exch_recv->count;
 	exchanger->exch_recv->buffer_size = map->exch_recv->buffer_size;
 
-	t_kernels* vtable_kernels = (t_kernels*)malloc(sizeof(t_kernels));
-	select_un_pack_kernels(vtable_kernels, type, hw);
-	exchanger->vtable = vtable_kernels;
-
 	exchanger->vtable_wait = (t_wait*)malloc(sizeof(t_wait));
 
 	switch (hw) {
 		case CPU:
-			exchanger->vtable->allocator = allocator_cpu;
-			exchanger->vtable->deallocator = deallocator_cpu;
+			exchanger->vtable = new_vtable_cpu(type);
 			exchanger->exch_send->buffer_idxlist = map->exch_send->buffer_idxlist;
 			exchanger->exch_recv->buffer_idxlist = map->exch_recv->buffer_idxlist;
 			break;
 #ifdef CUDA
 		case GPU_NVIDIA:
-			exchanger->vtable->allocator = allocator_cuda;
-			exchanger->vtable->deallocator = deallocator_cuda;
+			exchanger->vtable = new_vtable_cuda(type);
 			exchanger->exch_send->buffer_idxlist = map->exch_send->buffer_idxlist_gpu;
 			exchanger->exch_recv->buffer_idxlist = map->exch_recv->buffer_idxlist_gpu;
 			break;
@@ -579,10 +523,12 @@ void delete_exchanger(t_exchanger *exchanger) {
 		free(exchanger->exch_recv);
 	}
 
-	free(exchanger->vtable);
+	delete_vtable(exchanger->vtable);
+
 	free(exchanger->vtable_wait);
 
 	delete_mpi_exchanger(exchanger->mpi_exchange);
 
 	free(exchanger);
+
 }

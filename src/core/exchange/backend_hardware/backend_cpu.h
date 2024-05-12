@@ -35,6 +35,28 @@
 #define BACKEND_CPU_H
 
 #include <stdlib.h>
+#include "mpi.h"
+#include "src/core/exchange/backend_hardware/backend_hw.h"
+
+/**
+ * @brief Create new t_kernels data structure
+ * 
+ * @param[in] type MPI datatype of the exchanged fields
+ * 
+ * @return pointer to t_kernels structure
+ * 
+ * @ingroup backend_cpu
+ */
+t_kernels * new_vtable_cpu(MPI_Datatype type);
+
+/**
+ * @brief Delete t_kernels data structure
+ * 
+ * @param[inout] vtable pointer to t_kernels structure
+ * 
+ * @ingroup backend_cpu
+ */
+void delete_vtable_cpu(t_kernels *vtable);
 
 /**
  * @brief Packing function for int arrays.
