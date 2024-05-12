@@ -36,20 +36,114 @@
 
 #include <stdlib.h>
 
+/**
+ * @brief Packing function for int arrays.
+ * 
+ * @details Pack array data into a buffer using the buffer_idxlist
+ *  
+ * @param[out] buffer         integer array to be filled
+ * @param[in]  data           integer array with the data
+ * @param[in]  buffer_idxlist integer array with the information to fill the buffer
+ * @param[in]  buffer_size    size of the buffer to be filled (it can be a subset of the buffer array)
+ * @param[in]  offset         buffer offset to start the filling of the buffer array
+ * 
+ * @ingroup backend_cpu
+ */
 void pack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset);
 
+/**
+ * @brief Unpacking function for int arrays.
+ * 
+ * @details Unpack beffer into array data using the buffer_idxlist
+ *  
+ * @param[in]  buffer         integer array with the data
+ * @param[out] data           integer array to be filled
+ * @param[in]  buffer_idxlist integer array with the information to fill the data array
+ * @param[in]  buffer_size    size of the buffer to unpack (it can be a subset of the buffer array)
+ * @param[in]  offset         buffer offset to start the unpacking of the buffer array
+ * 
+ * @ingroup backend_cpu
+ */
 void unpack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset);
 
+/**
+ * @brief Packing function for float arrays.
+ * 
+ * @details Pack array data into a buffer using the buffer_idxlist
+ *  
+ * @param[out] buffer         float array to be filled
+ * @param[in]  data           float array with the data
+ * @param[in]  buffer_idxlist integer array with the information to fill the buffer
+ * @param[in]  buffer_size    size of the buffer to be filled (it can be a subset of the buffer array)
+ * @param[in]  offset         buffer offset to start the filling of the buffer array
+ * 
+ * @ingroup backend_cpu
+ */
 void pack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset);
 
+/**
+ * @brief Unpacking function for float arrays.
+ * 
+ * @details Unpack beffer into array data using the buffer_idxlist
+ *  
+ * @param[in]  buffer         float array with the data
+ * @param[out] data           float array to be filled
+ * @param[in]  buffer_idxlist integer array with the information to fill the data array
+ * @param[in]  buffer_size    size of the buffer to unpack (it can be a subset of the buffer array)
+ * @param[in]  offset         buffer offset to start the unpacking of the buffer array
+ * 
+ * @ingroup backend_cpu
+ */
 void unpack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset);
 
+/**
+ * @brief Packing function for double arrays.
+ * 
+ * @details Pack array data into a buffer using the buffer_idxlist
+ *  
+ * @param[out] buffer         double array to be filled
+ * @param[in]  data           double array with the data
+ * @param[in]  buffer_idxlist integer array with the information to fill the buffer
+ * @param[in]  buffer_size    size of the buffer to be filled (it can be a subset of the buffer array)
+ * @param[in]  offset         buffer offset to start the filling of the buffer array
+ * 
+ * @ingroup backend_cpu
+ */
 void pack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset);
 
+/**
+ * @brief Unpacking function for double arrays.
+ * 
+ * @details Unpack beffer into array data using the buffer_idxlist
+ *  
+ * @param[in]  buffer         double array with the data
+ * @param[out] data           double array to be filled
+ * @param[in]  buffer_idxlist integer array with the information to fill the data array
+ * @param[in]  buffer_size    size of the buffer to unpack (it can be a subset of the buffer array)
+ * @param[in]  offset         buffer offset to start the unpacking of the buffer array
+ * 
+ * @ingroup backend_cpu
+ */
 void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset);
 
+/**
+ * @brief Allocate array.
+ *  
+ * @param[in]  buffer_size byte size of the array to be allocated
+ *
+ * @return pointer to the allocated memory
+ * 
+ * @ingroup backend_cpu
+ */
 void* allocator_cpu(size_t buffer_size);
 
+/**
+ * @brief Deallocate array.
+ *  
+ * @param[inout] buffer Pointer to the memory to be deallocated
+ * 
+ * @ingroup backend_cpu
+ */
 void deallocator_cpu(void *buffer);
 
 #endif
