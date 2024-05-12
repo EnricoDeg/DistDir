@@ -63,7 +63,6 @@ cdef extern from "distdir.h":
 
 	void distdir_initialize()
 	void distdir_finalize()
-	void set_config_hardware(int hardware_type)
 	void set_config_exchanger(int exchanger_type)
 	void set_config_verbose(int verbose_type)
 
@@ -139,7 +138,7 @@ cdef extern from "distdir.h":
 		t_map *map
 		t_mpi_exchange *mpi_exchange
 
-	t_exchanger* new_exchanger(t_map *map, libmpi.MPI_Datatype type)
+	t_exchanger* new_exchanger(t_map *map, libmpi.MPI_Datatype type, distdir_hardware hw)
 	void exchanger_go(t_exchanger* exchanger, void *src_data, void* dst_data)
 	void delete_exchanger(t_exchanger * exchanger)
 
@@ -147,15 +146,17 @@ class pydistdir_verbose(IntEnum):
 	verbose_true = 0
 	verbose_false = 1
 
+class pydistdir_hardware(IntEnum):
+	CPU = 0
+	GPU_NVIDIA = 1
+	GPU_AMD = 2
+
 cdef class distdir:
 	def __init__(self):
 		distdir_initialize()
 
 	def __del__(self):
 		pass
-
-	def hardware(self, hardware_type):
-		set_config_hardware(hardware_type)
 
 	def exchanger(self, exchanger_type):
 		set_config_exchanger(exchanger_type)
@@ -223,9 +224,10 @@ cdef class map:
 cdef class exchanger:
 	cdef t_exchanger *_exchanger
 
-	def __init__(self, p_map):
+	def __init__(self, p_map, hw):
+		cdef distdir_hardware hardware_type = hw
 		cdef MPI.Datatype type = MPI.DOUBLE
-		self._exchanger = new_exchanger((<map?>p_map)._map, type.ob_mpi)
+		self._exchanger = new_exchanger((<map?>p_map)._map, type.ob_mpi, hardware_type)
 
 	def __del__(self):
 		self.cleanup()
