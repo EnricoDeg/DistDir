@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DistDir: /home/runner/work/DistDir/DistDir/src/map.h Source File</title>
+<title>DistDir: /home/runner/work/DistDir/DistDir/src/core/algorithm/map.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_aebb8dcc11953d78e620bbef0b9e2183.html">core</a></li><li class="navelem"><a class="el" href="dir_a0ab8eea4bce9642800cccb3c6c197b5.html">algorithm</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -107,7 +107,7 @@ $(function() {
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &quot;mpi.h&quot;</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="idxlist_8h.html">idxlist.h</a>&quot;</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="idxlist_8h.html">src/core/indices/idxlist.h</a>&quot;</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="structt__map__exch__per__rank.html">   46</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structt__map__exch__per__rank.html">t_map_exch_per_rank</a> {</div>
 <div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="structt__map__exch__per__rank.html#a4a3e0a52d9604896969ba6ca0e253b82">   48</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structt__map__exch__per__rank.html#a4a3e0a52d9604896969ba6ca0e253b82">exch_rank</a>;</div>
@@ -149,7 +149,7 @@ $(function() {
 <div class="ttc" id="astructt__idxlist_html"><div class="ttname"><a href="structt__idxlist.html">t_idxlist</a></div><div class="ttdoc">The structure contains information about an index list.</div><div class="ttdef"><b>Definition:</b> idxlist.h:42</div></div>
 <div class="ttc" id="astructt__map__exch__per__rank_html"><div class="ttname"><a href="structt__map__exch__per__rank.html">t_map_exch_per_rank</a></div><div class="ttdoc">The structure contains information about each exchange.</div><div class="ttdef"><b>Definition:</b> map.h:46</div></div>
 <div class="ttc" id="astructt__map__exch__per__rank_html_a4a3e0a52d9604896969ba6ca0e253b82"><div class="ttname"><a href="structt__map__exch__per__rank.html#a4a3e0a52d9604896969ba6ca0e253b82">t_map_exch_per_rank::exch_rank</a></div><div class="ttdeci">int exch_rank</div><div class="ttdoc">rank to send/recv data to/from</div><div class="ttdef"><b>Definition:</b> map.h:48</div></div>
-<div class="ttc" id="astructt__map__exch_html"><div class="ttname"><a href="structt__map__exch.html">t_map_exch</a></div><div class="ttdoc">The structure contains all buffers in one direction.</div><div class="ttdef"><b>Definition:</b> map.h:57</div></div>
+<div class="ttc" id="astructt__map__exch_html"><div class="ttname"><a href="structt__map__exch.html">t_map_exch</a></div><div class="ttdoc">The structure contains information about all the exchanges in one direction.</div><div class="ttdef"><b>Definition:</b> map.h:57</div></div>
 <div class="ttc" id="astructt__map__exch_html_a011cdad4e48c82558822cf2ea7b8bd18"><div class="ttname"><a href="structt__map__exch.html#a011cdad4e48c82558822cf2ea7b8bd18">t_map_exch::count</a></div><div class="ttdeci">int count</div><div class="ttdoc">number of exchanges</div><div class="ttdef"><b>Definition:</b> map.h:59</div></div>
 <div class="ttc" id="astructt__map__exch_html_a20914633a3aeeaa5d05f752b4203c8b8"><div class="ttname"><a href="structt__map__exch.html#a20914633a3aeeaa5d05f752b4203c8b8">t_map_exch::buffer_idxlist</a></div><div class="ttdeci">int * buffer_idxlist</div><div class="ttdoc">idxlist to create the exchange buffer</div><div class="ttdef"><b>Definition:</b> map.h:65</div></div>
 <div class="ttc" id="astructt__map__exch_html_a29e028963cce644ce8fac04bae477c26"><div class="ttname"><a href="structt__map__exch.html#a29e028963cce644ce8fac04bae477c26">t_map_exch::buffer_idxlist_gpu</a></div><div class="ttdeci">int * buffer_idxlist_gpu</div><div class="ttdoc">idxlist to create the exchange buffer</div><div class="ttdef"><b>Definition:</b> map.h:67</div></div>
