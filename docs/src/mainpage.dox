@@ -33,6 +33,15 @@ Enrico Degregori
 @defgroup backend
           Implementation of distributed directory algorithm
 
+@defgroup backend_mpi
+          Communication backend using MPI library
+
+@defgroup backend_cpu
+          CPU specific implementation
+
+@defgroup backend_cuda
+          CUDA specific implementation
+
 @defgroup sorting
           Sorting algorithms used internally by DistDir library
 
