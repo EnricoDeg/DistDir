@@ -73,8 +73,25 @@ struct t_mpi_exchange {
 };
 typedef struct t_mpi_exchange t_mpi_exchange;
 
+/**
+ * @brief Create t_mpi_exchange object.
+ *  
+ * @param[in] type MPI type
+ * @param[in] size size of MPI requests and statuses
+ * 
+ * @return pointer to t_mpi_exchange object
+ * 
+ * @ingroup backend_mpi
+ */
 t_mpi_exchange * new_mpi_exchanger(MPI_Datatype  type, int size);
 
+/**
+ * @brief Free memory of t_mpi_exchange object.
+ *  
+ * @param[inout] mpi_exchange pointer to t_mpi_exchange object
+ * 
+ * @ingroup backend_mpi
+ */
 void delete_mpi_exchanger(t_mpi_exchange *mpi_exchange);
 
 /**
