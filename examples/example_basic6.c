@@ -31,6 +31,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include "mpi.h"
+#include "src/distdir.h"
+
+#define I_SRC 0
+#define I_DST 1
+#define NCOLS 4
+#define NROWS 4
+#define NLEVS 2
+
 /**
  * @brief Basic example of exchange between two 3D domain decomposition each using 2 MPI processes.
  * 
@@ -57,18 +68,6 @@
  * 
  * @ingroup examples
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include "mpi.h"
-#include "src/distdir.h"
-
-#define I_SRC 0
-#define I_DST 1
-#define NCOLS 4
-#define NROWS 4
-#define NLEVS 2
-
 int example_basic6() {
 
 	distdir_initialize();
