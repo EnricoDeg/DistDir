@@ -135,7 +135,7 @@ static void exchanger_waitall_recv(t_mpi_exchange *mpi_exchange) {
 		                       mpi_exchange->req, mpi_exchange->stat);
 }
 
-static void exchanger_IsendIrecv(t_exchange *exch_send, t_exchange *exch_recv,
+static void exchanger_IsendIrecv1(t_exchange *exch_send, t_exchange *exch_recv,
                                  t_map *map, t_kernels *vtable, t_mpi_exchange* mpi_exchange,
                                  t_wait *vtable_wait,
                                  void *src_data, void *dst_data) {
@@ -167,6 +167,84 @@ static void exchanger_IsendIrecv(t_exchange *exch_send, t_exchange *exch_recv,
 		             exch_send->buffer_idxlist,
 		             size,
 		             offset);
+
+		/* send the buffer */
+		vtable->isend(exch_send->buffer,
+		              size,
+		              mpi_exchange->type,
+		              map->exch_send->exch[count]->exch_rank,
+		              world_rank + world_size * (map->exch_send->exch[count]->exch_rank + 1),
+		              map->comm, mpi_exchange->req + nreq,
+		              offset);
+		mpi_exchange->nreq_send++;
+		nreq++;
+	}
+
+	// recv step
+	for (int count = 0; count < map->exch_recv->count; count++) {
+
+		int offset = map->exch_recv->buffer_offset[count];
+
+		int upper_bound = count == map->exch_recv->count-1 ?
+		                           map->exch_recv->buffer_size :
+		                           map->exch_recv->buffer_offset[count + 1];
+
+		int size = upper_bound - map->exch_recv->buffer_offset[count];
+
+		vtable->irecv(exch_recv->buffer,
+		              size,
+		              mpi_exchange->type,
+		              map->exch_recv->exch[count]->exch_rank,
+		              map->exch_recv->exch[count]->exch_rank + world_size * (world_rank + 1),
+		              map->comm, mpi_exchange->req + nreq,
+		              offset);
+		mpi_exchange->nreq_recv++;
+		nreq++;
+	}
+
+	/* wait for all messages */
+	vtable_wait->post_wait(mpi_exchange);
+
+	/* unpack all recv buffers */
+	vtable->unpack(exch_recv->buffer,
+	               dst_data,
+	               exch_recv->buffer_idxlist,
+	               map->exch_recv->buffer_size,
+	               0);
+}
+
+static void exchanger_IsendIrecv2(t_exchange *exch_send, t_exchange *exch_recv,
+                                 t_map *map, t_kernels *vtable, t_mpi_exchange* mpi_exchange,
+                                 t_wait *vtable_wait,
+                                 void *src_data, void *dst_data) {
+
+	int world_size;
+	check_mpi( MPI_Comm_size(map->comm, &world_size) );
+	int world_rank;
+	check_mpi( MPI_Comm_rank(map->comm, &world_rank) );
+
+	vtable_wait->pre_wait(mpi_exchange);
+
+	mpi_exchange->nreq_send = 0;
+	mpi_exchange->nreq_recv = 0;
+	int nreq = 0;
+
+	vtable->pack(exch_send->buffer,
+		         src_data,
+		         exch_send->buffer_idxlist,
+		         map->exch_send->buffer_size,
+		         0);
+
+	for (int count = 0; count < map->exch_send->count; count++) {
+
+		/* pack the buffer */
+		int offset = map->exch_send->buffer_offset[count];
+
+		int upper_bound = count == map->exch_send->count-1 ?
+		                           map->exch_send->buffer_size :
+		                           map->exch_send->buffer_offset[count + 1];
+
+		int size = upper_bound - map->exch_send->buffer_offset[count];
 
 		/* send the buffer */
 		vtable->isend(exch_send->buffer,
@@ -426,12 +504,21 @@ t_exchanger* new_exchanger(t_map        *map  ,
 
 	int exchanger_type = get_config_exchanger();
 	switch (exchanger_type) {
-		case IsendIrecv:
+		case IsendIrecv1:
 			exchanger->mpi_exchange->req = (MPI_Request *)malloc((exchanger->map->exch_send->count +
 			                                        exchanger->map->exch_recv->count) * sizeof(MPI_Request));
 			exchanger->mpi_exchange->stat = (MPI_Status *)malloc((exchanger->map->exch_send->count + 
 			                                        exchanger->map->exch_recv->count) * sizeof(MPI_Status));
-			exchanger->vtable_messages->send_recv = exchanger_IsendIrecv;
+			exchanger->vtable_messages->send_recv = exchanger_IsendIrecv1;
+			exchanger->vtable_wait->pre_wait = exchanger_waitall_dummy;
+			exchanger->vtable_wait->post_wait = exchanger_waitall;
+			break;
+		case IsendIrecv2:
+			exchanger->mpi_exchange->req = (MPI_Request *)malloc((exchanger->map->exch_send->count +
+			                                        exchanger->map->exch_recv->count) * sizeof(MPI_Request));
+			exchanger->mpi_exchange->stat = (MPI_Status *)malloc((exchanger->map->exch_send->count + 
+			                                        exchanger->map->exch_recv->count) * sizeof(MPI_Status));
+			exchanger->vtable_messages->send_recv = exchanger_IsendIrecv2;
 			exchanger->vtable_wait->pre_wait = exchanger_waitall_dummy;
 			exchanger->vtable_wait->post_wait = exchanger_waitall;
 			break;
@@ -449,14 +536,25 @@ t_exchanger* new_exchanger(t_map        *map  ,
 			exchanger->vtable_wait->pre_wait = exchanger_waitall_dummy;
 			exchanger->vtable_wait->post_wait = exchanger_waitall;
 			break;
-		case IsendIrecvNoWait:
+		case IsendIrecv1NoWait:
 			/* This exchange type can be used only with one direction exchange */
 			assert(exchanger->map->exch_send->count == 0 || exchanger->map->exch_recv->count == 0);
 			exchanger->mpi_exchange->req = (MPI_Request *)malloc((exchanger->map->exch_send->count +
 			                                        exchanger->map->exch_recv->count) * sizeof(MPI_Request));
 			exchanger->mpi_exchange->stat = (MPI_Status *)malloc((exchanger->map->exch_send->count + 
 			                                        exchanger->map->exch_recv->count) * sizeof(MPI_Status));
-			exchanger->vtable_messages->send_recv = exchanger_IsendIrecv;
+			exchanger->vtable_messages->send_recv = exchanger_IsendIrecv1;
+			exchanger->vtable_wait->pre_wait = exchanger_waitall_send;
+			exchanger->vtable_wait->post_wait = exchanger_waitall_recv;
+			break;
+		case IsendIrecv2NoWait:
+			/* This exchange type can be used only with one direction exchange */
+			assert(exchanger->map->exch_send->count == 0 || exchanger->map->exch_recv->count == 0);
+			exchanger->mpi_exchange->req = (MPI_Request *)malloc((exchanger->map->exch_send->count +
+			                                        exchanger->map->exch_recv->count) * sizeof(MPI_Request));
+			exchanger->mpi_exchange->stat = (MPI_Status *)malloc((exchanger->map->exch_send->count + 
+			                                        exchanger->map->exch_recv->count) * sizeof(MPI_Status));
+			exchanger->vtable_messages->send_recv = exchanger_IsendIrecv2;
 			exchanger->vtable_wait->pre_wait = exchanger_waitall_send;
 			exchanger->vtable_wait->post_wait = exchanger_waitall_recv;
 			break;

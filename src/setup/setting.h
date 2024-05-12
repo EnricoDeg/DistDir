@@ -41,12 +41,14 @@ typedef enum {
 } distdir_hardware ;
 
 enum distdir_exchanger {
-	IsendIrecv = 0,
-	IsendRecv1 = 1,
-	IsendRecv2 = 2,
-	IsendIrecvNoWait = 3,
-	IsendRecv1NoWait = 4,
-	IsendRecv2NoWait = 5
+	IsendIrecv1 = 0,
+	IsendIrecv2 = 1,
+	IsendRecv1 = 2,
+	IsendRecv2 = 3,
+	IsendIrecv1NoWait = 4,
+	IsendIrecv2NoWait = 5,
+	IsendRecv1NoWait = 6,
+	IsendRecv2NoWait = 7
 };
 
 enum distdir_verbose {

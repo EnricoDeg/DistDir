@@ -54,7 +54,7 @@ static int get_env_variable(const char* variable_name) {
 
 static void set_default_config(t_config *config) {
 
-	config->exchanger = IsendIrecv;
+	config->exchanger = IsendIrecv1;
 	config->verbose = verbose_false;
 }
 
