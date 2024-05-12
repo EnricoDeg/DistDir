@@ -36,6 +36,47 @@
 
 #include "mpi.h"
 
+typedef void (*kernel_backend_func_wait) (int, MPI_Request *, MPI_Status *);
+
+typedef void (*kernel_func_isendirecv) ( void *, int , MPI_Datatype, int, int,
+                                    MPI_Comm, MPI_Request *, int ) ;
+
+typedef void (*kernel_func_recv)  ( void *, int, MPI_Datatype, int, int,
+                                    MPI_Comm, MPI_Status * , int) ;
+
+/** @struct t_mpi_exchange
+ * 
+ *  @brief The structure contains information about MPI backend.
+ * 
+ */
+struct t_mpi_exchange {
+	/** @brief MPI datatype used for the exchange */
+	MPI_Datatype type;
+	/** @brief Size of the MPI datatype used for the exchange */
+	MPI_Aint type_size;
+	/** @brief array of message requests */
+	MPI_Request *req;
+	/** @brief array of message status */
+	MPI_Status *stat;
+	/** @brief number of send message requests */
+	int nreq_send;
+	/** @brief number of recv message requests */
+	int nreq_recv;
+	/** @brief communication library wait function */
+	kernel_backend_func_wait wait;
+	/** @brief communication library non blocking send function */
+	kernel_func_isendirecv isend;
+	/** @brief communication library non blocking recv function */
+	kernel_func_isendirecv irecv;
+	/** @brief communication library recv function */
+	kernel_func_recv recv;
+};
+typedef struct t_mpi_exchange t_mpi_exchange;
+
+t_mpi_exchange * new_mpi_exchanger(MPI_Datatype  type, int size);
+
+void delete_mpi_exchanger(t_mpi_exchange *mpi_exchange);
+
 /**
  * @brief Lightweight wrapper around MPI_Isend for integer buffers.
  *  

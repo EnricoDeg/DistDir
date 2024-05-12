@@ -34,6 +34,47 @@
 #include "src/core/exchange/backend_communication/backend_mpi.h"
 #include "src/utils/check.h"
 
+t_mpi_exchange * new_mpi_exchanger(MPI_Datatype  type, int size) {
+
+	t_mpi_exchange *mpi_exchange = (t_mpi_exchange *)malloc(sizeof(t_mpi_exchange));
+	if (type == MPI_INT) {
+		mpi_exchange->isend = (kernel_func_isendirecv)mpi_wrapper_isend_int;
+		mpi_exchange->irecv = (kernel_func_isendirecv)mpi_wrapper_irecv_int;
+		mpi_exchange->recv  = (kernel_func_recv      )mpi_wrapper_recv_int ;
+	} else if (type == MPI_REAL) {
+		mpi_exchange->isend = (kernel_func_isendirecv)mpi_wrapper_isend_float;
+		mpi_exchange->irecv = (kernel_func_isendirecv)mpi_wrapper_irecv_float;
+		mpi_exchange->recv  = (kernel_func_recv      )mpi_wrapper_recv_float ;
+	} else if (type == MPI_DOUBLE) {
+		mpi_exchange->isend = (kernel_func_isendirecv)mpi_wrapper_isend_double;
+		mpi_exchange->irecv = (kernel_func_isendirecv)mpi_wrapper_irecv_double;
+		mpi_exchange->recv  = (kernel_func_recv      )mpi_wrapper_recv_double ;
+	}
+
+
+	mpi_exchange->req = (MPI_Request *)malloc(size * sizeof(MPI_Request));
+	mpi_exchange->stat = (MPI_Status *)malloc(size * sizeof(MPI_Status));
+
+	MPI_Aint type_size;
+	MPI_Aint type_lb;
+	check_mpi( MPI_Type_get_extent(type, &type_lb, &type_size) );
+
+	mpi_exchange->type_size = type_size;
+	mpi_exchange->type = type;
+	mpi_exchange->nreq_send = 0;
+	mpi_exchange->nreq_recv = 0;
+	mpi_exchange->wait = mpi_wrapper_waitall;
+
+	return mpi_exchange;
+}
+
+void delete_mpi_exchanger(t_mpi_exchange *mpi_exchange) {
+
+	free(mpi_exchange->req);
+	free(mpi_exchange->stat);
+	free(mpi_exchange);
+}
+
 void mpi_wrapper_isend_int(int *buffer, int count, MPI_Datatype datatype, int dest, int tag,
                            MPI_Comm comm, MPI_Request *request, int offset) {
 

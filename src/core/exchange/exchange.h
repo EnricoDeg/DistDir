@@ -36,6 +36,7 @@
 
 #include "src/core/algorithm/map.h"
 #include "src/setup/setting.h"
+#include "src/core/exchange/backend_communication/backend_mpi.h"
 
 /** @struct t_map_exch
  * 
@@ -54,36 +55,7 @@ struct t_exchange {
 };
 typedef struct t_exchange t_exchange;
 
-typedef void (*kernel_backend_func_wait) (int, MPI_Request *, MPI_Status *);
-
-struct t_mpi_exchange {
-	/** @brief MPI datatype used for the exchange */
-	MPI_Datatype type;
-	/** @brief Size of the MPI datatype used for the exchange */
-	MPI_Aint type_size;
-	/** @brief array of message requests */
-	MPI_Request *req;
-	/** @brief array of message status */
-	MPI_Status *stat;
-	/** @brief number of send message requests */
-	int nreq_send;
-	/** @brief number of recv message requests */
-	int nreq_recv;
-	/** @brief communication library wait function */
-	kernel_backend_func_wait wait;
-};
-typedef struct t_mpi_exchange t_mpi_exchange;
-
 typedef void (*kernel_func_pack) ( void*, void*, int*, int, int );
-
-typedef void (*kernel_func_isend) ( void *, int , MPI_Datatype, int, int,
-                                    MPI_Comm, MPI_Request *, int ) ;
-
-typedef void (*kernel_func_irecv) ( void *, int, MPI_Datatype, int, int,
-                                    MPI_Comm, MPI_Request *, int ) ;
-
-typedef void (*kernel_func_recv)  ( void *, int, MPI_Datatype, int, int,
-                                    MPI_Comm, MPI_Status * , int) ;
 
 typedef void* (*kernel_func_alloc) (size_t);
 
@@ -99,12 +71,6 @@ struct t_kernels {
 	kernel_func_pack pack;
 	/** @brief pointer to unpack function */
 	kernel_func_pack unpack;
-	/** @brief pointer to isend function */
-	kernel_func_isend isend;
-	/** @brief pointer to irecv function */
-	kernel_func_irecv irecv;
-	/** @brief pointer to recv function */
-	kernel_func_recv recv;
 	/** @brief pointer to allocate function */
 	kernel_func_alloc allocator;
 	/** @brief pointer to free function */
@@ -112,21 +78,22 @@ struct t_kernels {
 };
 typedef struct t_kernels t_kernels;
 
-typedef void (*kernel_func_wait) (t_mpi_exchange*);
+typedef void (*backend_func_wait) (t_mpi_exchange*);
 
+/** @struct t_wait
+ * 
+ *  @brief The structure contains pointers to waiting functions
+ * 
+ */
 struct t_wait {
-	kernel_func_wait pre_wait;
-	kernel_func_wait post_wait;
+	/** @brief pointer to backend_func_wait function to wait before the exchange */
+	backend_func_wait pre_wait;
+	/** @brief pointer to backend_func_wait function to wait after the exchange  */
+	backend_func_wait post_wait;
 };
 typedef struct t_wait t_wait;
 
-typedef void (*kernel_func_go) (t_exchange *, t_exchange*,  t_map*, t_kernels*, t_mpi_exchange*, t_wait*, void*, void *);
-
-struct t_messages {
-	/** @brief pointer to backend send/recv function */
-	kernel_func_go send_recv;
-};
-typedef struct t_messages t_messages;
+typedef void (*backend_func_go) (t_exchange *, t_exchange*,  t_map*, t_kernels*, t_mpi_exchange*, t_wait*, void*, void *);
 
 /** @struct t_map_exch
  * 
@@ -141,7 +108,7 @@ struct t_exchanger {
 	/** @brief pointer to pack and unpack functions */
 	t_kernels* vtable;
 	/** @brief pointer to pack and unpack functions */
-	t_messages* vtable_messages;
+	backend_func_go go;
 	/** @brief pointer to wait functions */
 	t_wait* vtable_wait;
 	/** @brief pointer to map object */
@@ -156,9 +123,9 @@ typedef struct t_exchanger t_exchanger;
  * 
  * @details Create an exchanger given a map object and a datatype
  * 
- * @param[in] map      pointer to a t_map structure
- * @param[in] type     type of the data in the form of MPI datatype
- * @param[in] hw       hardware location of the data on the MPI process
+ * @param[in] map  pointer to a t_map structure
+ * @param[in] type type of the data in the form of MPI datatype
+ * @param[in] hw   hardware location of the data on the MPI process
  * 
  * @ingroup exchange
  */
