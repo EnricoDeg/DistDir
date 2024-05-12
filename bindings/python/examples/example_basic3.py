@@ -32,7 +32,8 @@ map2d = pydistdir.map(src_idxlist=src_idxlist, dst_idxlist=dst_idxlist, comm=MPI
 
 map = pydistdir.map(map2d=map2d, nlevels=2)
 
-exchanger = pydistdir.exchanger(map)
+hw = pydistdir.pydistdir_hardware.CPU
+exchanger = pydistdir.exchanger(map, hw)
 
 exchanger.go(data, data)
 

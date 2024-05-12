@@ -24,7 +24,8 @@ else:
 
 map = pydistdir.map(src_idxlist=src_idxlist, dst_idxlist=dst_idxlist, comm=MPI.COMM_WORLD)
 
-exchanger = pydistdir.exchanger(map)
+hw = pydistdir.pydistdir_hardware.CPU
+exchanger = pydistdir.exchanger(map, hw)
 
 exchanger.go(src_data, rcv_data)
 
