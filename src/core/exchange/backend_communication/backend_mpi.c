@@ -31,8 +31,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "backend_mpi.h"
-#include "check.h"
+#include "src/core/exchange/backend_communication/backend_mpi.h"
+#include "src/utils/check.h"
 
 void mpi_wrapper_isend_int(int *buffer, int count, MPI_Datatype datatype, int dest, int tag,
                            MPI_Comm comm, MPI_Request *request, int offset) {

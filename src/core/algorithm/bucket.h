@@ -35,7 +35,7 @@
 #define BUCKET_H
 
 #include "mpi.h"
-#include "idxlist.h"
+#include "src/core/indices/idxlist.h"
 
 /** @struct t_bucket
  * 

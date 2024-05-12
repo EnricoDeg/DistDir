@@ -34,8 +34,8 @@
 #ifndef EXCHANGE_H
 #define EXCHANGE_H
 
-#include "map.h"
-#include "setting.h"
+#include "src/core/algorithm/map.h"
+#include "src/setup/setting.h"
 
 /** @struct t_map_exch
  * 

@@ -35,12 +35,12 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "map.h"
-#include "mergesort.h"
-#include "bucket.h"
-#include "check.h"
+#include "src/core/algorithm/map.h"
+#include "src/sort/mergesort.h"
+#include "src/core/algorithm/bucket.h"
+#include "src/utils/check.h"
 #ifdef CUDA
-#include "backend_cuda.h"
+#include "src/core/exchange/backend_hardware/backend_cuda.h"
 #endif
 
 t_map * new_map(t_idxlist *src_idxlist ,

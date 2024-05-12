@@ -34,14 +34,14 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "exchange.h"
-#include "check.h"
-#include "setting.h"
-#include "backend_cpu.h"
+#include "src/core/exchange/exchange.h"
+#include "src/utils/check.h"
+#include "src/setup/setting.h"
+#include "src/core/exchange/backend_hardware/backend_cpu.h"
 #ifdef CUDA
-#include "backend_cuda.h"
+#include "src/core/exchange/backend_hardware/backend_cuda.h"
 #endif
-#include "backend_mpi.h"
+#include "src/core/exchange/backend_communication/backend_mpi.h"
 #include <stdio.h>
 
 static void select_un_pack_kernels(t_kernels *table_kernels, MPI_Datatype type, distdir_hardware hw) {

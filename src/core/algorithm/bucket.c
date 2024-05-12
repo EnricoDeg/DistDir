@@ -35,10 +35,10 @@
 #include <stdio.h>
 #include "mpi.h"
 
-#include "bucket.h"
-#include "backend.h"
-#include "mergesort.h"
-#include "check.h"
+#include "src/core/algorithm/bucket.h"
+#include "src/core/algorithm/backend/backend.h"
+#include "src/sort/mergesort.h"
+#include "src/utils/check.h"
 
 void map_idxlist_to_RD_decomp(t_bucket  *bucket       ,
                               t_idxlist *idxlist      ,

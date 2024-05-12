@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <cuda.h>
-#include "backend_cuda.h"
+#include "src/core/exchange/backend_hardware/backend_cuda.h"
 
 __global__ void pack_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
 

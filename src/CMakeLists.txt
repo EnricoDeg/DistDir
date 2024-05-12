@@ -7,26 +7,27 @@ if(ENABLE_CUDA)
     endif()
     SET(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -lineinfo -DCUDA ")
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DCUDA")
-    SET(SOURCE_CUDA backend_cuda.cu)
+    SET(SOURCE_CUDA core/exchange/backend_hardware/backend_cuda.cu)
 endif()
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DERROR_CHECK")
 
 set(SOURCE_EXE  ${SOURCE_CUDA}
-                check.c
-	        setting.c
-	        quicksort.c
-                mergesort.c
-                group.c
-                idxlist.c
-		backend.c
-                bucket.c
-                map.c
-		backend_cpu.c
-		backend_mpi.c
-                exchange.c)
+                utils/check.c
+	        setup/setting.c
+	        sort/quicksort.c
+                sort/mergesort.c
+                setup/group.c
+                core/indices/idxlist.c
+		core/algorithm/backend/backend.c
+                core/algorithm/bucket.c
+                core/algorithm/map.c
+		core/exchange/backend_hardware/backend_cpu.c
+		core/exchange/backend_communication/backend_mpi.c
+                core/exchange/exchange.c)
 
 add_library(distdir SHARED ${SOURCE_EXE})
+target_include_directories(distdir PRIVATE ${PROJECT_SOURCE_DIR})
 if(ENABLE_CUDA)
     target_link_libraries(distdir ${CUDA_LIBRARIES})
     set_property(TARGET distdir PROPERTY CUDA_SEPARABLE_COMPILATION ON)

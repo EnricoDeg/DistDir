@@ -1,5 +1,5 @@
 /*
- * @file idxlist.c
+ * @file check.c
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -31,35 +31,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <string.h>
 
-#include "idxlist.h"
+#include "src/utils/check.h"
 
-t_idxlist * new_idxlist(int *idx_array  ,
-                        int  num_indices) {
+void check_mpi(int error_code) {
 
-	t_idxlist *idxlist;
-	idxlist = (t_idxlist *)malloc(sizeof(t_idxlist));
-	idxlist->count = num_indices;
-	if (idxlist->count > 0)
-		idxlist->list = (int *)malloc(idxlist->count * sizeof(int));
-	for (int i = 0; i < idxlist->count; i++)
-		idxlist->list[i] = idx_array[i];
-	return idxlist;
-}
+	int rank;
+	MPI_Comm comm = MPI_COMM_WORLD;
+	char error_string[MPI_MAX_ERROR_STRING];
+	int length_of_error_string, error_class;
 
-t_idxlist * new_idxlist_empty() {
-
-	t_idxlist *idxlist;
-	idxlist = (t_idxlist *)malloc(sizeof(t_idxlist));
-	idxlist->count = 0;
-	idxlist->list = NULL;
-	return idxlist;
-}
-
-void delete_idxlist(t_idxlist *idxlist) {
-
-	if (idxlist->count > 0)
-		free(idxlist->list);
-	free(idxlist);
+	if (error_code != MPI_SUCCESS) {
+		MPI_Comm_rank(comm, &rank);
+		MPI_Error_class(error_code, &error_class);
+		MPI_Error_string(error_class, error_string, &length_of_error_string);
+		fprintf(stderr, "%3d: %s\n", rank, error_string);
+		MPI_Error_string(error_code, error_string, &length_of_error_string);
+		fprintf(stderr, "%3d: %s\n", rank, error_string);
+		MPI_Abort(comm, error_code);
+	}
 }

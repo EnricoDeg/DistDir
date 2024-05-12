@@ -35,9 +35,9 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "backend.h"
-#include "mergesort.h"
-#include "check.h"
+#include "src/core/algorithm/backend/backend.h"
+#include "src/sort/mergesort.h"
+#include "src/utils/check.h"
 
 void assign_idxlist_elements_to_buckets(      int *bucket_idxlist,
                                         const int *idxlist       ,

@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "mergesort.h"
+#include "src/sort/mergesort.h"
 
 // Merges two subarrays of arr[].
 // First subarray is arr[l..m]

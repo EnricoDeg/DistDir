@@ -34,10 +34,10 @@
 #ifndef DIST_DIR_H
 #define DIST_DIR_H
 
-#include "idxlist.h"
-#include "map.h"
-#include "exchange.h"
-#include "group.h"
-#include "setting.h"
+#include "src/core/indices/idxlist.h"
+#include "src/core/algorithm/map.h"
+#include "src/core/exchange/exchange.h"
+#include "src/setup/group.h"
+#include "src/setup/setting.h"
 
 #endif

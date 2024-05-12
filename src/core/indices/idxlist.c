@@ -1,5 +1,5 @@
 /*
- * @file backend_cpu.c
+ * @file idxlist.c
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -32,64 +32,34 @@
  */
 
 #include <stdlib.h>
-#include <stdio.h>
-#include "backend_cpu.h"
-#include "check.h"
 
-void pack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		buffer[offset+i] = data[data_idx];
-	}
+#include "src/core/indices/idxlist.h"
+
+t_idxlist * new_idxlist(int *idx_array  ,
+                        int  num_indices) {
+
+	t_idxlist *idxlist;
+	idxlist = (t_idxlist *)malloc(sizeof(t_idxlist));
+	idxlist->count = num_indices;
+	if (idxlist->count > 0)
+		idxlist->list = (int *)malloc(idxlist->count * sizeof(int));
+	for (int i = 0; i < idxlist->count; i++)
+		idxlist->list[i] = idx_array[i];
+	return idxlist;
 }
 
-void unpack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		data[data_idx] = buffer[offset+i];
-	}
+t_idxlist * new_idxlist_empty() {
+
+	t_idxlist *idxlist;
+	idxlist = (t_idxlist *)malloc(sizeof(t_idxlist));
+	idxlist->count = 0;
+	idxlist->list = NULL;
+	return idxlist;
 }
 
-void pack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		buffer[offset+i] = data[data_idx];
-	}
-}
+void delete_idxlist(t_idxlist *idxlist) {
 
-void unpack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		data[data_idx] = buffer[offset+i];
-	}
-}
-
-void pack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		buffer[offset+i] = data[data_idx];
-	}
-}
-
-void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		data[data_idx] = buffer[offset+i];
-	}
-}
-
-void* allocator_cpu(size_t buffer_size) {
-	void *ptr = malloc(buffer_size);
-
-	if (!ptr && (buffer_size > 0)) {
-	  fprintf(stderr, "malloc failed!\n");
-	  exit(EXIT_FAILURE);
-	}
-
-	return ptr;
-}
-
-void deallocator_cpu(void *buffer) {
-
-	free(buffer);
+	if (idxlist->count > 0)
+		free(idxlist->list);
+	free(idxlist);
 }

@@ -1,5 +1,5 @@
 /*
- * @file num_procs_send_to_each_bucket_tests.c
+ * @file backend_cpu.c
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -31,72 +31,65 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdarg.h>
-#include <setjmp.h>
-#include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "src/core/exchange/backend_hardware/backend_cpu.h"
+#include "src/utils/check.h"
 
-#include "src/core/algorithm/backend/backend.h"
-
-/**
- * @brief test01 for num_procs_send_to_each_bucket function
- * 
- * @details The test is run with 4 MPI ranks which define the following
- *          bucket_idxlist based on the following idxlist:
- *          
- *           - Rank 0: 0, 4, 8 , 12
- *           - Rank 1: 1, 5, 9 , 13
- *           - Rank 2: 2, 6, 10, 14
- *           - Rank 4: 3, 7, 11, 15
- *          
- *          Each rank owns a bucket and it is expected to receive indices
- *          information from 4 MPI ranks.
- * 
- * @ingroup backend_tests
- */
-static int num_procs_send_to_each_bucket_test01(MPI_Comm comm) {
-
-	const int num_points = 16;
-
-	// Get the number of processes
-	int world_size;
-	MPI_Comm_size(comm, &world_size);
-
-	// Get the rank of the process
-	int world_rank;
-	MPI_Comm_rank(comm, &world_rank);
-
-	int *bucket_idxlist = (int *)malloc(num_points/world_size*sizeof(int));
-
-	// buckets where the idxlist point belong
-	for (int i=0; i<num_points/world_size; i++) {
-		bucket_idxlist[i] = (world_rank + world_size * i) / world_size;
+void pack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[offset+i];
+		buffer[offset+i] = data[data_idx];
 	}
-
-	// each rank (bucket) gets the number of process to receive message from
-	int num_procs = num_procs_send_to_each_bucket(bucket_idxlist, world_size , num_points/world_size , MPI_COMM_WORLD );
-	
-	// check result
-	int error = 0;
-	if (num_procs != 4)
-		error = 1;
-
-	free(bucket_idxlist);
-
-	return error;
 }
 
-int main() {
+void unpack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[offset+i];
+		data[data_idx] = buffer[offset+i];
+	}
+}
 
-	// Initialize the MPI environment
-	MPI_Init(NULL, NULL);
+void pack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[offset+i];
+		buffer[offset+i] = data[data_idx];
+	}
+}
 
-	int error = 0;
+void unpack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[offset+i];
+		data[data_idx] = buffer[offset+i];
+	}
+}
 
-	error += num_procs_send_to_each_bucket_test01(MPI_COMM_WORLD);
+void pack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[offset+i];
+		buffer[offset+i] = data[data_idx];
+	}
+}
 
-	// Finalize the MPI environment.
-	MPI_Finalize();
-	return error;
+void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
+	for (int i = 0; i < buffer_size; i++) {
+		int data_idx = buffer_idxlist[offset+i];
+		data[data_idx] = buffer[offset+i];
+	}
+}
+
+void* allocator_cpu(size_t buffer_size) {
+	void *ptr = malloc(buffer_size);
+
+	if (!ptr && (buffer_size > 0)) {
+	  fprintf(stderr, "malloc failed!\n");
+	  exit(EXIT_FAILURE);
+	}
+
+	return ptr;
+}
+
+void deallocator_cpu(void *buffer) {
+
+	free(buffer);
 }

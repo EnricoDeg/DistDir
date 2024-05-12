@@ -1,4 +1,13 @@
 INPUT                  = "@DOXYGEN_INPUT_DIR@/src" \
+                         "@DOXYGEN_INPUT_DIR@/src/sort" \
+                         "@DOXYGEN_INPUT_DIR@/src/setup" \
+                         "@DOXYGEN_INPUT_DIR@/src/core/algorithm/backend" \
+                         "@DOXYGEN_INPUT_DIR@/src/core/algorithm" \
+                         "@DOXYGEN_INPUT_DIR@/src/core/exchange" \
+                         "@DOXYGEN_INPUT_DIR@/src/core/exchange/backend_hardware" \
+                         "@DOXYGEN_INPUT_DIR@/src/core/exchange/backend_communication" \
+                         "@DOXYGEN_INPUT_DIR@/src/core/indices" \
+                         "@DOXYGEN_INPUT_DIR@/src/utils" \
                          "@DOXYGEN_INPUT_DIR@/docs/src" \
                          "@DOXYGEN_INPUT_DIR@/examples" \
                          "@DOXYGEN_INPUT_DIR@/tests"

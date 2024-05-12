@@ -36,7 +36,7 @@
 
 #include "mpi.h"
 
-#include "idxlist.h"
+#include "src/core/indices/idxlist.h"
 
 /** @struct t_map_exch_per_rank
  * 

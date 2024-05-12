@@ -31,8 +31,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "group.h"
-#include "check.h"
+#include "src/setup/group.h"
+#include "src/utils/check.h"
 
 void new_group(MPI_Comm *new_comm ,
                MPI_Comm  work_comm,

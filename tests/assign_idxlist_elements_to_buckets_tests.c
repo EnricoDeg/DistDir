@@ -37,7 +37,7 @@
 #include <cmocka.h>
 #include <stdlib.h>
 
-#include "src/backend.h"
+#include "src/core/algorithm/backend/backend.h"
 
 #define num_indices 5
 

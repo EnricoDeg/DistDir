@@ -42,7 +42,7 @@ from enum import IntEnum
 cdef extern from "Python.h":
 	int Py_AtExit(void (*)())
 
-cdef extern from "distdir.h":
+cdef extern from "src/distdir.h":
 
 	ctypedef enum distdir_hardware:
 		CPU = 0,

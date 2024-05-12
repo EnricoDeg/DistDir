@@ -33,8 +33,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "setting.h"
-#include "check.h"
+#include "src/setup/setting.h"
+#include "src/utils/check.h"
 
 static t_config *config;
 
