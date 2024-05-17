@@ -15,6 +15,11 @@ target_compile_features(assign_idxlist_elements_to_buckets_tests PRIVATE c_std_9
 target_link_libraries(assign_idxlist_elements_to_buckets_tests PRIVATE cmocka-static distdir)
 target_include_directories(assign_idxlist_elements_to_buckets_tests PRIVATE ${PROJECT_SOURCE_DIR})
 
+add_executable(num_indices_to_send_to_each_bucket_tests num_indices_to_send_to_each_bucket_tests.c)
+target_compile_features(num_indices_to_send_to_each_bucket_tests PRIVATE c_std_99)
+target_link_libraries(num_indices_to_send_to_each_bucket_tests PRIVATE cmocka-static distdir)
+target_include_directories(num_indices_to_send_to_each_bucket_tests PRIVATE ${PROJECT_SOURCE_DIR})
+
 #############
 # MPI tests #
 #############
@@ -43,6 +48,7 @@ enable_testing()
 
 add_test(NAME idxlist_tests COMMAND idxlist_tests)
 add_test(NAME assign_idxlist_elements_to_buckets_tests COMMAND assign_idxlist_elements_to_buckets_tests)
+add_test(NAME num_indices_to_send_to_each_bucket_tests COMMAND num_indices_to_send_to_each_bucket_tests)
 
 add_test(NAME hello_world_tests COMMAND hello_world_tests)
 add_test(NAME backend_MPI_tests COMMAND backend_MPI_tests)
