@@ -68,41 +68,54 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p>The structure contains pointers to waiting functions.  
+ <a href="structt__wait.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="exchange_8h_source.html">exchange.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a8bb2b964c62bfdb4d57283989166decd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="exchange_8h.html#a16595c26121d5f096543425ec7ef166b">kernel_func_wait</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__wait.html#a8bb2b964c62bfdb4d57283989166decd">pre_wait</a></td></tr>
-<tr class="separator:a8bb2b964c62bfdb4d57283989166decd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f56cd60e9c04ec1ccb24bbfac1b1e35"><td class="memItemLeft" align="right" valign="top"><a class="el" href="exchange_8h.html#a16595c26121d5f096543425ec7ef166b">kernel_func_wait</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__wait.html#a8f56cd60e9c04ec1ccb24bbfac1b1e35">post_wait</a></td></tr>
-<tr class="separator:a8f56cd60e9c04ec1ccb24bbfac1b1e35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0848c4da2ffbf8f66dfef354b6dc6146"><td class="memItemLeft" align="right" valign="top"><a class="el" href="exchange_8h.html#a4079aed638c43d18671f964ee2d0ed08">backend_func_wait</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__wait.html#a0848c4da2ffbf8f66dfef354b6dc6146">pre_wait</a></td></tr>
+<tr class="memdesc:a0848c4da2ffbf8f66dfef354b6dc6146"><td class="mdescLeft">&#160;</td><td class="mdescRight">pointer to backend_func_wait function to wait before the exchange  <a href="structt__wait.html#a0848c4da2ffbf8f66dfef354b6dc6146">More...</a><br /></td></tr>
+<tr class="separator:a0848c4da2ffbf8f66dfef354b6dc6146"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a786e836a00c48df6b1de9e4c2dd5247e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="exchange_8h.html#a4079aed638c43d18671f964ee2d0ed08">backend_func_wait</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__wait.html#a786e836a00c48df6b1de9e4c2dd5247e">post_wait</a></td></tr>
+<tr class="memdesc:a786e836a00c48df6b1de9e4c2dd5247e"><td class="mdescLeft">&#160;</td><td class="mdescRight">pointer to backend_func_wait function to wait after the exchange <br  />
+  <a href="structt__wait.html#a786e836a00c48df6b1de9e4c2dd5247e">More...</a><br /></td></tr>
+<tr class="separator:a786e836a00c48df6b1de9e4c2dd5247e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Field Documentation</h2>
-<a id="a8f56cd60e9c04ec1ccb24bbfac1b1e35"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f56cd60e9c04ec1ccb24bbfac1b1e35">&#9670;&nbsp;</a></span>post_wait</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The structure contains pointers to waiting functions. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="a786e836a00c48df6b1de9e4c2dd5247e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a786e836a00c48df6b1de9e4c2dd5247e">&#9670;&nbsp;</a></span>post_wait</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="exchange_8h.html#a16595c26121d5f096543425ec7ef166b">kernel_func_wait</a> t_wait::post_wait</td>
+          <td class="memname"><a class="el" href="exchange_8h.html#a4079aed638c43d18671f964ee2d0ed08">backend_func_wait</a> t_wait::post_wait</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>pointer to backend_func_wait function to wait after the exchange <br  />
+ </p>
+
 </div>
 </div>
-<a id="a8bb2b964c62bfdb4d57283989166decd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8bb2b964c62bfdb4d57283989166decd">&#9670;&nbsp;</a></span>pre_wait</h2>
+<a id="a0848c4da2ffbf8f66dfef354b6dc6146"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0848c4da2ffbf8f66dfef354b6dc6146">&#9670;&nbsp;</a></span>pre_wait</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="exchange_8h.html#a16595c26121d5f096543425ec7ef166b">kernel_func_wait</a> t_wait::pre_wait</td>
+          <td class="memname"><a class="el" href="exchange_8h.html#a4079aed638c43d18671f964ee2d0ed08">backend_func_wait</a> t_wait::pre_wait</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>pointer to backend_func_wait function to wait before the exchange </p>
 
 </div>
 </div>

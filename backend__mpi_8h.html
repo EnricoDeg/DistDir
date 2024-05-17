@@ -66,6 +66,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">backend_mpi.h File Reference</div>  </div>
@@ -75,8 +77,31 @@ $(function() {
 </div>
 <p><a href="backend__mpi_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The structure contains information about MPI backend.  <a href="structt__mpi__exchange.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a12dca8e44b2383add309b1b23a1a6cf0"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="backend__mpi_8h.html#a12dca8e44b2383add309b1b23a1a6cf0">kernel_backend_func_wait</a>) (int, MPI_Request *, MPI_Status *)</td></tr>
+<tr class="separator:a12dca8e44b2383add309b1b23a1a6cf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a7ecd7d1308b90902fa9f970534b70d"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="backend__mpi_8h.html#a9a7ecd7d1308b90902fa9f970534b70d">kernel_func_isendirecv</a>) (void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Request *, int)</td></tr>
+<tr class="separator:a9a7ecd7d1308b90902fa9f970534b70d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87f0cf2c8e97ea4f15cfc84789dccd73"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="backend__mpi_8h.html#a87f0cf2c8e97ea4f15cfc84789dccd73">kernel_func_recv</a>) (void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status *, int)</td></tr>
+<tr class="separator:a87f0cf2c8e97ea4f15cfc84789dccd73"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11486e654574187bd3a8cec1ecf46d20"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="backend__mpi_8h.html#a11486e654574187bd3a8cec1ecf46d20">t_mpi_exchange</a></td></tr>
+<tr class="separator:a11486e654574187bd3a8cec1ecf46d20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ga7d8096b5715b332f2cc1b4e808a532d6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__mpi.html#ga7d8096b5715b332f2cc1b4e808a532d6">new_mpi_exchanger</a> (MPI_Datatype type, int size)</td></tr>
+<tr class="memdesc:ga7d8096b5715b332f2cc1b4e808a532d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create <a class="el" href="structt__mpi__exchange.html" title="The structure contains information about MPI backend.">t_mpi_exchange</a> object.  <a href="group__backend__mpi.html#ga7d8096b5715b332f2cc1b4e808a532d6">More...</a><br /></td></tr>
+<tr class="separator:ga7d8096b5715b332f2cc1b4e808a532d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga467982d31394d3bd1ccadd2d6ee00475"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__mpi.html#ga467982d31394d3bd1ccadd2d6ee00475">delete_mpi_exchanger</a> (<a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a> *mpi_exchange)</td></tr>
+<tr class="memdesc:ga467982d31394d3bd1ccadd2d6ee00475"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free memory of <a class="el" href="structt__mpi__exchange.html" title="The structure contains information about MPI backend.">t_mpi_exchange</a> object.  <a href="group__backend__mpi.html#ga467982d31394d3bd1ccadd2d6ee00475">More...</a><br /></td></tr>
+<tr class="separator:ga467982d31394d3bd1ccadd2d6ee00475"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac1404fe4bf7183593b59953ec049a745"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__mpi.html#gac1404fe4bf7183593b59953ec049a745">mpi_wrapper_isend_int</a> (int *buffer, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request, int offset)</td></tr>
 <tr class="memdesc:gac1404fe4bf7183593b59953ec049a745"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lightweight wrapper around MPI_Isend for integer buffers.  <a href="group__backend__mpi.html#gac1404fe4bf7183593b59953ec049a745">More...</a><br /></td></tr>
 <tr class="separator:gac1404fe4bf7183593b59953ec049a745"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -108,6 +133,63 @@ Functions</h2></td></tr>
 <tr class="memdesc:ga815a8536cdce94e67ca484d82b139b54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lightweight wrapper around MPI_Waitall.  <a href="group__backend__mpi.html#ga815a8536cdce94e67ca484d82b139b54">More...</a><br /></td></tr>
 <tr class="separator:ga815a8536cdce94e67ca484d82b139b54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Typedef Documentation</h2>
+<a id="a12dca8e44b2383add309b1b23a1a6cf0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12dca8e44b2383add309b1b23a1a6cf0">&#9670;&nbsp;</a></span>kernel_backend_func_wait</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* kernel_backend_func_wait) (int, MPI_Request *, MPI_Status *)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9a7ecd7d1308b90902fa9f970534b70d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a7ecd7d1308b90902fa9f970534b70d">&#9670;&nbsp;</a></span>kernel_func_isendirecv</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* kernel_func_isendirecv) (void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Request *, int)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a87f0cf2c8e97ea4f15cfc84789dccd73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87f0cf2c8e97ea4f15cfc84789dccd73">&#9670;&nbsp;</a></span>kernel_func_recv</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void(* kernel_func_recv) (void *, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status *, int)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a11486e654574187bd3a8cec1ecf46d20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11486e654574187bd3a8cec1ecf46d20">&#9670;&nbsp;</a></span>t_mpi_exchange</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef struct <a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a> <a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

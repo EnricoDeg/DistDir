@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['pack_381',['pack',['../structt__kernels.html#aa4c388969fcd59eeceeec31ec8088ab3',1,'t_kernels']]],
-  ['post_5fwait_382',['post_wait',['../structt__wait.html#a8f56cd60e9c04ec1ccb24bbfac1b1e35',1,'t_wait']]],
-  ['pre_5fwait_383',['pre_wait',['../structt__wait.html#a8bb2b964c62bfdb4d57283989166decd',1,'t_wait']]]
+  ['nreq_5frecv_394',['nreq_recv',['../structt__mpi__exchange.html#a1566b5f70fe24e476b180dde06426f5f',1,'t_mpi_exchange']]],
+  ['nreq_5fsend_395',['nreq_send',['../structt__mpi__exchange.html#ab2ace40e2fe07341932573d9a1f03207',1,'t_mpi_exchange']]]
 ];

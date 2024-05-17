@@ -72,11 +72,19 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &quot;mpi.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="backend__hw_8h_source.html">src/core/exchange/backend_hardware/backend_hw.h</a>&quot;</code><br />
 </div>
 <p><a href="backend__cpu_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:gaa43e51b1f362963804df1a3c4e37973b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structt__kernels.html">t_kernels</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__cpu.html#gaa43e51b1f362963804df1a3c4e37973b">new_vtable_cpu</a> (MPI_Datatype type)</td></tr>
+<tr class="memdesc:gaa43e51b1f362963804df1a3c4e37973b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create new <a class="el" href="structt__kernels.html">t_kernels</a> data structure.  <a href="group__backend__cpu.html#gaa43e51b1f362963804df1a3c4e37973b">More...</a><br /></td></tr>
+<tr class="separator:gaa43e51b1f362963804df1a3c4e37973b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga16fb0fa687c80e60f40a5f97001d987d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__cpu.html#ga16fb0fa687c80e60f40a5f97001d987d">delete_vtable_cpu</a> (<a class="el" href="structt__kernels.html">t_kernels</a> *vtable)</td></tr>
+<tr class="memdesc:ga16fb0fa687c80e60f40a5f97001d987d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete <a class="el" href="structt__kernels.html">t_kernels</a> data structure.  <a href="group__backend__cpu.html#ga16fb0fa687c80e60f40a5f97001d987d">More...</a><br /></td></tr>
+<tr class="separator:ga16fb0fa687c80e60f40a5f97001d987d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5b21ebfef39d7f056c21977f3d708b86"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__cpu.html#ga5b21ebfef39d7f056c21977f3d708b86">pack_cpu_int</a> (int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset)</td></tr>
 <tr class="memdesc:ga5b21ebfef39d7f056c21977f3d708b86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packing function for int arrays.  <a href="group__backend__cpu.html#ga5b21ebfef39d7f056c21977f3d708b86">More...</a><br /></td></tr>
 <tr class="separator:ga5b21ebfef39d7f056c21977f3d708b86"><td class="memSeparator" colspan="2">&#160;</td></tr>

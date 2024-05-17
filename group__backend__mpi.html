@@ -70,6 +70,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ga7d8096b5715b332f2cc1b4e808a532d6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__mpi.html#ga7d8096b5715b332f2cc1b4e808a532d6">new_mpi_exchanger</a> (MPI_Datatype type, int size)</td></tr>
+<tr class="memdesc:ga7d8096b5715b332f2cc1b4e808a532d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create <a class="el" href="structt__mpi__exchange.html" title="The structure contains information about MPI backend.">t_mpi_exchange</a> object.  <a href="group__backend__mpi.html#ga7d8096b5715b332f2cc1b4e808a532d6">More...</a><br /></td></tr>
+<tr class="separator:ga7d8096b5715b332f2cc1b4e808a532d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga467982d31394d3bd1ccadd2d6ee00475"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__mpi.html#ga467982d31394d3bd1ccadd2d6ee00475">delete_mpi_exchanger</a> (<a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a> *mpi_exchange)</td></tr>
+<tr class="memdesc:ga467982d31394d3bd1ccadd2d6ee00475"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free memory of <a class="el" href="structt__mpi__exchange.html" title="The structure contains information about MPI backend.">t_mpi_exchange</a> object.  <a href="group__backend__mpi.html#ga467982d31394d3bd1ccadd2d6ee00475">More...</a><br /></td></tr>
+<tr class="separator:ga467982d31394d3bd1ccadd2d6ee00475"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac1404fe4bf7183593b59953ec049a745"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__mpi.html#gac1404fe4bf7183593b59953ec049a745">mpi_wrapper_isend_int</a> (int *buffer, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request, int offset)</td></tr>
 <tr class="memdesc:gac1404fe4bf7183593b59953ec049a745"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lightweight wrapper around MPI_Isend for integer buffers.  <a href="group__backend__mpi.html#gac1404fe4bf7183593b59953ec049a745">More...</a><br /></td></tr>
 <tr class="separator:gac1404fe4bf7183593b59953ec049a745"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -104,6 +110,32 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Communication backend using MPI library </p>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ga467982d31394d3bd1ccadd2d6ee00475"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga467982d31394d3bd1ccadd2d6ee00475">&#9670;&nbsp;</a></span>delete_mpi_exchanger()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void delete_mpi_exchanger </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a> *&#160;</td>
+          <td class="paramname"><em>mpi_exchange</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Free memory of <a class="el" href="structt__mpi__exchange.html" title="The structure contains information about MPI backend.">t_mpi_exchange</a> object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">mpi_exchange</td><td>pointer to <a class="el" href="structt__mpi__exchange.html" title="The structure contains information about MPI backend.">t_mpi_exchange</a> object </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ga54ef149357d3147280d45c41e53d74e8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga54ef149357d3147280d45c41e53d74e8">&#9670;&nbsp;</a></span>mpi_wrapper_irecv_double()</h2>
 
@@ -856,6 +888,44 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ga7d8096b5715b332f2cc1b4e808a532d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7d8096b5715b332f2cc1b4e808a532d6">&#9670;&nbsp;</a></span>new_mpi_exchanger()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a>* new_mpi_exchanger </td>
+          <td>(</td>
+          <td class="paramtype">MPI_Datatype&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create <a class="el" href="structt__mpi__exchange.html" title="The structure contains information about MPI backend.">t_mpi_exchange</a> object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">type</td><td>MPI type </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">size</td><td>size of MPI requests and statuses</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to <a class="el" href="structt__mpi__exchange.html" title="The structure contains information about MPI backend.">t_mpi_exchange</a> object </dd></dl>
 
 </div>
 </div>

@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['rank_5fexch_384',['rank_exch',['../structt__bucket.html#aafd2486bdebd02b8b60fb561db4fea80',1,'t_bucket']]],
-  ['ranks_385',['ranks',['../structt__bucket.html#a481914c6b568967daa4b3976a09cf667',1,'t_bucket']]],
-  ['recv_386',['recv',['../structt__kernels.html#a58564306b36a4405aead62f410e52ecc',1,'t_kernels']]],
-  ['req_387',['req',['../structt__mpi__exchange.html#a8331e0a95b60564db10686cb2f1f932a',1,'t_mpi_exchange']]]
+  ['pack_396',['pack',['../structt__kernels.html#aa4c388969fcd59eeceeec31ec8088ab3',1,'t_kernels']]],
+  ['post_5fwait_397',['post_wait',['../structt__wait.html#a786e836a00c48df6b1de9e4c2dd5247e',1,'t_wait']]],
+  ['pre_5fwait_398',['pre_wait',['../structt__wait.html#a0848c4da2ffbf8f66dfef354b6dc6146',1,'t_wait']]]
 ];

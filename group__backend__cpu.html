@@ -70,6 +70,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:gaa43e51b1f362963804df1a3c4e37973b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structt__kernels.html">t_kernels</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__cpu.html#gaa43e51b1f362963804df1a3c4e37973b">new_vtable_cpu</a> (MPI_Datatype type)</td></tr>
+<tr class="memdesc:gaa43e51b1f362963804df1a3c4e37973b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create new <a class="el" href="structt__kernels.html">t_kernels</a> data structure.  <a href="group__backend__cpu.html#gaa43e51b1f362963804df1a3c4e37973b">More...</a><br /></td></tr>
+<tr class="separator:gaa43e51b1f362963804df1a3c4e37973b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga16fb0fa687c80e60f40a5f97001d987d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__cpu.html#ga16fb0fa687c80e60f40a5f97001d987d">delete_vtable_cpu</a> (<a class="el" href="structt__kernels.html">t_kernels</a> *vtable)</td></tr>
+<tr class="memdesc:ga16fb0fa687c80e60f40a5f97001d987d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete <a class="el" href="structt__kernels.html">t_kernels</a> data structure.  <a href="group__backend__cpu.html#ga16fb0fa687c80e60f40a5f97001d987d">More...</a><br /></td></tr>
+<tr class="separator:ga16fb0fa687c80e60f40a5f97001d987d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5b21ebfef39d7f056c21977f3d708b86"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__cpu.html#ga5b21ebfef39d7f056c21977f3d708b86">pack_cpu_int</a> (int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset)</td></tr>
 <tr class="memdesc:ga5b21ebfef39d7f056c21977f3d708b86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Packing function for int arrays.  <a href="group__backend__cpu.html#ga5b21ebfef39d7f056c21977f3d708b86">More...</a><br /></td></tr>
 <tr class="separator:ga5b21ebfef39d7f056c21977f3d708b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -148,6 +154,59 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ga16fb0fa687c80e60f40a5f97001d987d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga16fb0fa687c80e60f40a5f97001d987d">&#9670;&nbsp;</a></span>delete_vtable_cpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void delete_vtable_cpu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structt__kernels.html">t_kernels</a> *&#160;</td>
+          <td class="paramname"><em>vtable</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Delete <a class="el" href="structt__kernels.html">t_kernels</a> data structure. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">vtable</td><td>pointer to <a class="el" href="structt__kernels.html">t_kernels</a> structure </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="gaa43e51b1f362963804df1a3c4e37973b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa43e51b1f362963804df1a3c4e37973b">&#9670;&nbsp;</a></span>new_vtable_cpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structt__kernels.html">t_kernels</a>* new_vtable_cpu </td>
+          <td>(</td>
+          <td class="paramtype">MPI_Datatype&#160;</td>
+          <td class="paramname"><em>type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create new <a class="el" href="structt__kernels.html">t_kernels</a> data structure. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">type</td><td>MPI datatype of the exchanged fields</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to <a class="el" href="structt__kernels.html">t_kernels</a> structure </dd></dl>
 
 </div>
 </div>

@@ -68,7 +68,10 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="exchange_8h_source.html">exchange.h</a>&gt;</code></p>
+<p>The structure contains information about MPI backend.  
+ <a href="structt__mpi__exchange.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="backend__mpi_8h_source.html">backend_mpi.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
@@ -90,11 +93,54 @@ Data Fields</h2></td></tr>
 <tr class="memitem:a1566b5f70fe24e476b180dde06426f5f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__mpi__exchange.html#a1566b5f70fe24e476b180dde06426f5f">nreq_recv</a></td></tr>
 <tr class="memdesc:a1566b5f70fe24e476b180dde06426f5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">number of recv message requests  <a href="structt__mpi__exchange.html#a1566b5f70fe24e476b180dde06426f5f">More...</a><br /></td></tr>
 <tr class="separator:a1566b5f70fe24e476b180dde06426f5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cc97213f49ac1930bc3977ce25cbfee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="exchange_8h.html#a12dca8e44b2383add309b1b23a1a6cf0">kernel_backend_func_wait</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__mpi__exchange.html#a5cc97213f49ac1930bc3977ce25cbfee">wait</a></td></tr>
+<tr class="memitem:a5cc97213f49ac1930bc3977ce25cbfee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="backend__mpi_8h.html#a12dca8e44b2383add309b1b23a1a6cf0">kernel_backend_func_wait</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__mpi__exchange.html#a5cc97213f49ac1930bc3977ce25cbfee">wait</a></td></tr>
 <tr class="memdesc:a5cc97213f49ac1930bc3977ce25cbfee"><td class="mdescLeft">&#160;</td><td class="mdescRight">communication library wait function  <a href="structt__mpi__exchange.html#a5cc97213f49ac1930bc3977ce25cbfee">More...</a><br /></td></tr>
 <tr class="separator:a5cc97213f49ac1930bc3977ce25cbfee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adef95237289ee814b8473cd251f29f47"><td class="memItemLeft" align="right" valign="top"><a class="el" href="backend__mpi_8h.html#a9a7ecd7d1308b90902fa9f970534b70d">kernel_func_isendirecv</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__mpi__exchange.html#adef95237289ee814b8473cd251f29f47">isend</a></td></tr>
+<tr class="memdesc:adef95237289ee814b8473cd251f29f47"><td class="mdescLeft">&#160;</td><td class="mdescRight">communication library non blocking send function  <a href="structt__mpi__exchange.html#adef95237289ee814b8473cd251f29f47">More...</a><br /></td></tr>
+<tr class="separator:adef95237289ee814b8473cd251f29f47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa692d7fbd64c9d0113c631830e676f5e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="backend__mpi_8h.html#a9a7ecd7d1308b90902fa9f970534b70d">kernel_func_isendirecv</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__mpi__exchange.html#aa692d7fbd64c9d0113c631830e676f5e">irecv</a></td></tr>
+<tr class="memdesc:aa692d7fbd64c9d0113c631830e676f5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">communication library non blocking recv function  <a href="structt__mpi__exchange.html#aa692d7fbd64c9d0113c631830e676f5e">More...</a><br /></td></tr>
+<tr class="separator:aa692d7fbd64c9d0113c631830e676f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dc8e8b88bb2edaead9b774860ae9c9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="backend__mpi_8h.html#a87f0cf2c8e97ea4f15cfc84789dccd73">kernel_func_recv</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__mpi__exchange.html#a1dc8e8b88bb2edaead9b774860ae9c9a">recv</a></td></tr>
+<tr class="memdesc:a1dc8e8b88bb2edaead9b774860ae9c9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">communication library recv function  <a href="structt__mpi__exchange.html#a1dc8e8b88bb2edaead9b774860ae9c9a">More...</a><br /></td></tr>
+<tr class="separator:a1dc8e8b88bb2edaead9b774860ae9c9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Field Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>The structure contains information about MPI backend. </p>
+</div><h2 class="groupheader">Field Documentation</h2>
+<a id="aa692d7fbd64c9d0113c631830e676f5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa692d7fbd64c9d0113c631830e676f5e">&#9670;&nbsp;</a></span>irecv</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="backend__mpi_8h.html#a9a7ecd7d1308b90902fa9f970534b70d">kernel_func_isendirecv</a> t_mpi_exchange::irecv</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>communication library non blocking recv function </p>
+
+</div>
+</div>
+<a id="adef95237289ee814b8473cd251f29f47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adef95237289ee814b8473cd251f29f47">&#9670;&nbsp;</a></span>isend</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="backend__mpi_8h.html#a9a7ecd7d1308b90902fa9f970534b70d">kernel_func_isendirecv</a> t_mpi_exchange::isend</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>communication library non blocking send function </p>
+
+</div>
+</div>
 <a id="a1566b5f70fe24e476b180dde06426f5f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1566b5f70fe24e476b180dde06426f5f">&#9670;&nbsp;</a></span>nreq_recv</h2>
 
@@ -124,6 +170,22 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 
 <p>number of send message requests </p>
+
+</div>
+</div>
+<a id="a1dc8e8b88bb2edaead9b774860ae9c9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1dc8e8b88bb2edaead9b774860ae9c9a">&#9670;&nbsp;</a></span>recv</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="backend__mpi_8h.html#a87f0cf2c8e97ea4f15cfc84789dccd73">kernel_func_recv</a> t_mpi_exchange::recv</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>communication library recv function </p>
 
 </div>
 </div>
@@ -198,7 +260,7 @@ Data Fields</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="exchange_8h.html#a12dca8e44b2383add309b1b23a1a6cf0">kernel_backend_func_wait</a> t_mpi_exchange::wait</td>
+          <td class="memname"><a class="el" href="backend__mpi_8h.html#a12dca8e44b2383add309b1b23a1a6cf0">kernel_backend_func_wait</a> t_mpi_exchange::wait</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -208,7 +270,7 @@ Data Fields</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>/home/runner/work/DistDir/DistDir/src/core/exchange/<a class="el" href="exchange_8h_source.html">exchange.h</a></li>
+<li>/home/runner/work/DistDir/DistDir/src/core/exchange/backend_communication/<a class="el" href="backend__mpi_8h_source.html">backend_mpi.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -1,5 +1,9 @@
 var searchData=
 [
-  ['type_395',['type',['../structt__mpi__exchange.html#af01977d32fc95574dedde58240e5f6df',1,'t_mpi_exchange']]],
-  ['type_5fsize_396',['type_size',['../structt__mpi__exchange.html#a3886831390dac89a7202b1f3a79b363b',1,'t_mpi_exchange']]]
+  ['size_403',['size',['../structt__bucket.html#ac5c8a7fae9670d64ff401b4b0354a46b',1,'t_bucket']]],
+  ['size_5franks_404',['size_ranks',['../structt__bucket.html#a8b5c0394014dfc1a2aafbf33f63d7689',1,'t_bucket']]],
+  ['size_5fstride_405',['size_stride',['../structt__bucket.html#a145a357377247cfc28772d69f0e348dc',1,'t_bucket']]],
+  ['src_5frecv_406',['src_recv',['../structt__bucket.html#ab062cc8af391a97d5498705d06a03913',1,'t_bucket']]],
+  ['stat_407',['stat',['../structt__mpi__exchange.html#a4d4e1b4d5f749066bd8e131f588e9346',1,'t_mpi_exchange']]],
+  ['stride_408',['stride',['../structt__bucket.html#a94fb3a7a56f0b8e42905918a98741f9b',1,'t_bucket']]]
 ];

@@ -1,15 +1,9 @@
 var searchData=
 [
-  ['t_5fbucket_412',['t_bucket',['../bucket_8h.html#a40a881e0ae220f5d9615b14791b2fa23',1,'bucket.h']]],
-  ['t_5fconfig_413',['t_config',['../setting_8h.html#a819a6d83c42d472bd577d51900445d32',1,'setting.h']]],
-  ['t_5fexchange_414',['t_exchange',['../exchange_8h.html#acbdb54c52fb06c1cec17ed16ea4c57ef',1,'exchange.h']]],
-  ['t_5fexchanger_415',['t_exchanger',['../exchange_8h.html#ad542906fd94f7e9c2e68c0c9165acd24',1,'exchange.h']]],
-  ['t_5fidxlist_416',['t_idxlist',['../idxlist_8h.html#a6da643e7f6ab9fd77ca1fc0b28a62d9b',1,'idxlist.h']]],
-  ['t_5fkernels_417',['t_kernels',['../exchange_8h.html#afffa7c43db17f871b8a13bceaaa51711',1,'exchange.h']]],
-  ['t_5fmap_418',['t_map',['../map_8h.html#a3955b9e71f087712956fa58f24b7535c',1,'map.h']]],
-  ['t_5fmap_5fexch_419',['t_map_exch',['../map_8h.html#a6ad2fa43c8f728190edb4a533da1584a',1,'map.h']]],
-  ['t_5fmap_5fexch_5fper_5frank_420',['t_map_exch_per_rank',['../map_8h.html#a9fe4a8e81453861457ff99988593596d',1,'map.h']]],
-  ['t_5fmessages_421',['t_messages',['../exchange_8h.html#ad48914afc74babcfa49161e84c99ef31',1,'exchange.h']]],
-  ['t_5fmpi_5fexchange_422',['t_mpi_exchange',['../exchange_8h.html#a11486e654574187bd3a8cec1ecf46d20',1,'exchange.h']]],
-  ['t_5fwait_423',['t_wait',['../exchange_8h.html#a41d38459aa99db36c5d8b5177ce951cd',1,'exchange.h']]]
+  ['kernel_5fbackend_5ffunc_5fwait_418',['kernel_backend_func_wait',['../backend__mpi_8h.html#a12dca8e44b2383add309b1b23a1a6cf0',1,'backend_mpi.h']]],
+  ['kernel_5ffunc_5falloc_419',['kernel_func_alloc',['../backend__hw_8h.html#a3e5abbed7ab04b570560c7832905821a',1,'backend_hw.h']]],
+  ['kernel_5ffunc_5ffree_420',['kernel_func_free',['../backend__hw_8h.html#a83a9fb3c07a0e636b53609e6260c1f5f',1,'backend_hw.h']]],
+  ['kernel_5ffunc_5fisendirecv_421',['kernel_func_isendirecv',['../backend__mpi_8h.html#a9a7ecd7d1308b90902fa9f970534b70d',1,'backend_mpi.h']]],
+  ['kernel_5ffunc_5fpack_422',['kernel_func_pack',['../backend__hw_8h.html#a539b9be5594c4189f3c3afd5bb10f681',1,'backend_hw.h']]],
+  ['kernel_5ffunc_5frecv_423',['kernel_func_recv',['../backend__mpi_8h.html#a87f0cf2c8e97ea4f15cfc84789dccd73',1,'backend_mpi.h']]]
 ];
