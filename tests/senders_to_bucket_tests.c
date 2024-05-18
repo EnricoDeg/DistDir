@@ -1,5 +1,5 @@
 /*
- * @file backend_MPI_tests.c
+ * @file senders_to_bucket_tests.c
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -34,27 +34,78 @@
 #include <stdarg.h>
 #include <setjmp.h>
 #include <stddef.h>
-#include <cmocka.h>
 #include <stdlib.h>
+#include <stdio.h>
 
-static void test_num_procs_send_to_each_bucket(void **state __attribute__((unused))) {
+#include "src/core/algorithm/backend/backend.h"
 
-	int err = system("mpirun --allow-run-as-root -n 4 ./num_procs_send_to_each_bucket_tests");
-	assert_int_equal(err, 0);
-}
+/**
+ * @brief test01 for senders_to_bucket function
+ * 
+ * @details 
+ * 
+ * @ingroup backend_tests
+ */
+static int senders_to_bucket_test01(MPI_Comm comm) {
 
-static void test_senders_to_bucket(void **state __attribute__((unused))) {
+	const int num_points = 16;
 
-	int err = system("mpirun --allow-run-as-root -n 4 ./senders_to_bucket_tests");
-	assert_int_equal(err, 0);
+	// Get the number of processes
+	int world_size;
+	MPI_Comm_size(comm, &world_size);
+
+	// Get the rank of the process
+	int world_rank;
+	MPI_Comm_rank(comm, &world_rank);
+
+	int bucket_max_size = 10;
+	int idxlist_size = world_size;
+	int n_procs_sending_to_bucket = 0;
+	if (world_rank == 0)
+		n_procs_sending_to_bucket = world_size;
+
+	int *n_idx_each_bucket = (int *)malloc(world_size*sizeof(int));
+	int *senders_to_bucket_array;
+	if (world_rank == 0)
+		senders_to_bucket_array = (int *)malloc(n_procs_sending_to_bucket*sizeof(int));
+
+	// buckets where the idxlist point belong
+	n_idx_each_bucket[0] = world_size - world_rank;
+	for (int i=1; i<world_size; i++)
+		n_idx_each_bucket[i] = 0;
+
+	// 
+	senders_to_bucket( senders_to_bucket_array  ,
+	                   n_idx_each_bucket        , 
+	                   n_procs_sending_to_bucket,
+	                   bucket_max_size          ,
+	                   idxlist_size             ,
+	                   comm                     );
+
+	// check result
+	int error = 0;
+	if (world_rank == 0)
+		for (int i=0; i<n_procs_sending_to_bucket; i++)
+			if (senders_to_bucket_array[i] != i)
+				error = 1;
+
+	free(n_idx_each_bucket);
+	if (world_rank == 0)
+		free(senders_to_bucket_array);
+
+	return error;
 }
 
 int main() {
 
-	const struct CMUnitTest tests[] =
-	{
-		cmocka_unit_test(test_num_procs_send_to_each_bucket),
-		cmocka_unit_test(test_senders_to_bucket),
-	};
-	return cmocka_run_group_tests(tests, NULL, NULL);
+	// Initialize the MPI environment
+	MPI_Init(NULL, NULL);
+
+	int error = 0;
+
+	error += senders_to_bucket_test01(MPI_COMM_WORLD);
+
+	// Finalize the MPI environment.
+	MPI_Finalize();
+	return error;
 }

@@ -37,6 +37,10 @@ add_executable(num_procs_send_to_each_bucket_tests num_procs_send_to_each_bucket
 target_link_libraries (num_procs_send_to_each_bucket_tests distdir)
 target_include_directories(num_procs_send_to_each_bucket_tests PRIVATE ${PROJECT_SOURCE_DIR})
 
+add_executable(senders_to_bucket_tests senders_to_bucket_tests.c)
+target_link_libraries(senders_to_bucket_tests distdir)
+target_include_directories(senders_to_bucket_tests PRIVATE ${PROJECT_SOURCE_DIR})
+
 add_executable(backend_MPI_tests backend_MPI_tests.c)
 target_compile_features(backend_MPI_tests PRIVATE c_std_99)
 target_link_libraries(backend_MPI_tests PRIVATE cmocka-static)
