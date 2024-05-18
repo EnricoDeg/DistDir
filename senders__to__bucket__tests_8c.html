@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DistDir: /home/runner/work/DistDir/DistDir/tests/backend_MPI_tests.c File Reference</title>
+<title>DistDir: /home/runner/work/DistDir/DistDir/tests/senders_to_bucket_tests.c File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -68,22 +68,22 @@ $(function() {
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<div class="title">backend_MPI_tests.c File Reference</div>  </div>
+<div class="title">senders_to_bucket_tests.c File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;stdarg.h&gt;</code><br />
 <code>#include &lt;setjmp.h&gt;</code><br />
 <code>#include &lt;stddef.h&gt;</code><br />
-<code>#include &lt;cmocka.h&gt;</code><br />
 <code>#include &lt;stdlib.h&gt;</code><br />
+<code>#include &lt;stdio.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="backend_8h_source.html">src/core/algorithm/backend/backend.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7c7a7a90d8cfb1fb7b2dc754fc4a5854"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="backend__MPI__tests_8c.html#a7c7a7a90d8cfb1fb7b2dc754fc4a5854">test_num_procs_send_to_each_bucket</a> (void **state __attribute__((unused)))</td></tr>
-<tr class="separator:a7c7a7a90d8cfb1fb7b2dc754fc4a5854"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3eb281071e1191570da27fe359379037"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="backend__MPI__tests_8c.html#a3eb281071e1191570da27fe359379037">test_senders_to_bucket</a> (void **state __attribute__((unused)))</td></tr>
-<tr class="separator:a3eb281071e1191570da27fe359379037"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="backend__MPI__tests_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
+<tr class="memitem:gae14de531cb34e968de877f2e64d875c5"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__backend__tests.html#gae14de531cb34e968de877f2e64d875c5">senders_to_bucket_test01</a> (MPI_Comm comm)</td></tr>
+<tr class="memdesc:gae14de531cb34e968de877f2e64d875c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">test01 for senders_to_bucket function  <a href="group__backend__tests.html#gae14de531cb34e968de877f2e64d875c5">More...</a><br /></td></tr>
+<tr class="separator:gae14de531cb34e968de877f2e64d875c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="senders__to__bucket__tests_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main</a> ()</td></tr>
 <tr class="separator:ae66f6b31b5ad750f1fe042a706a4e3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
@@ -101,58 +101,6 @@ Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7c7a7a90d8cfb1fb7b2dc754fc4a5854"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c7a7a90d8cfb1fb7b2dc754fc4a5854">&#9670;&nbsp;</a></span>test_num_procs_send_to_each_bucket()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void test_num_procs_send_to_each_bucket </td>
-          <td>(</td>
-          <td class="paramtype">void **state &#160;</td>
-          <td class="paramname"><em>__attribute__</em>(unused)</td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3eb281071e1191570da27fe359379037"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3eb281071e1191570da27fe359379037">&#9670;&nbsp;</a></span>test_senders_to_bucket()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void test_senders_to_bucket </td>
-          <td>(</td>
-          <td class="paramtype">void **state &#160;</td>
-          <td class="paramname"><em>__attribute__</em>(unused)</td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
