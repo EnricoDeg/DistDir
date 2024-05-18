@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['quicksort_189',['quickSort',['../group__sorting.html#ga27a3c56330b0f5797ec2d0e4d88247c3',1,'quicksort.h']]],
-  ['quicksort_2eh_190',['quicksort.h',['../quicksort_8h.html',1,'']]]
+  ['rank_5fexch_177',['rank_exch',['../structt__bucket.html#aafd2486bdebd02b8b60fb561db4fea80',1,'t_bucket']]],
+  ['ranks_178',['ranks',['../structt__bucket.html#a481914c6b568967daa4b3976a09cf667',1,'t_bucket']]],
+  ['rationale_179',['Rationale',['../rationale.html',1,'']]],
+  ['recv_180',['recv',['../structt__mpi__exchange.html#a1dc8e8b88bb2edaead9b774860ae9c9a',1,'t_mpi_exchange']]],
+  ['req_181',['req',['../structt__mpi__exchange.html#a8331e0a95b60564db10686cb2f1f932a',1,'t_mpi_exchange']]]
 ];

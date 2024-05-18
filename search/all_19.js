@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['unpack_226',['unpack',['../structt__kernels.html#aabc9818012e29ceaf3740a382830d08b',1,'t_kernels']]],
-  ['unpack_5fcpu_5fdouble_227',['unpack_cpu_double',['../group__backend__cpu.html#gaa1ec36ea601383146e9bd299083b8b93',1,'backend_cpu.h']]],
-  ['unpack_5fcpu_5ffloat_228',['unpack_cpu_float',['../group__backend__cpu.html#gac51f98570717ea664d86762476e152b5',1,'backend_cpu.h']]],
-  ['unpack_5fcpu_5fint_229',['unpack_cpu_int',['../group__backend__cpu.html#ga56f3c034ddfb6da8552407caa7f36503',1,'backend_cpu.h']]],
-  ['unpack_5fcuda_5fdouble_230',['unpack_cuda_double',['../group__backend__cuda.html#ga09d5a9069e0210872c026551495fb5f3',1,'backend_cuda.h']]],
-  ['unpack_5fcuda_5ffloat_231',['unpack_cuda_float',['../group__backend__cuda.html#gae936674b0cd5b5f70de57fd322f1833b',1,'backend_cuda.h']]],
-  ['unpack_5fcuda_5fint_232',['unpack_cuda_int',['../group__backend__cuda.html#gad027d85355d5d412172e0085e95d97a3',1,'backend_cuda.h']]]
+  ['verbose_214',['verbose',['../structt__config.html#a3862a85a40d757fb8895d53e07e24fd5',1,'t_config']]],
+  ['verbose_5ffalse_215',['verbose_false',['../setting_8h.html#a872750440db9c977dd1af46abd1b0509a435bde354474f5af5c7ef6c4623e25f8',1,'setting.h']]],
+  ['verbose_5ftrue_216',['verbose_true',['../setting_8h.html#a872750440db9c977dd1af46abd1b0509aeea48180a46e04382c732e23e6e8dbf8',1,'setting.h']]],
+  ['vtable_217',['vtable',['../structt__exchanger.html#a1e173139a7a5751bd4f53df0f4ebad46',1,'t_exchanger']]],
+  ['vtable_5fwait_218',['vtable_wait',['../structt__exchanger.html#acd07a4837906fe70dd92f1a45c9ab532',1,'t_exchanger']]]
 ];
