@@ -161,7 +161,8 @@ void senders_to_bucket(      int      *senders_to_bucket        ,
 	check_mpi( MPI_Waitall(nreq, req, stat) );
 
 	// sort by process number
-	mergeSort(senders_to_bucket, 0, n_procs_sending_to_bucket-1);
+	if (senders_to_bucket != NULL)
+		mergeSort(senders_to_bucket, 0, n_procs_sending_to_bucket-1);
 }
 
 void num_indices_to_bucket_from_each_rank(      int      *bucket_msg_size_senders     ,
