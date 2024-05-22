@@ -41,6 +41,10 @@ add_executable(senders_to_bucket_tests core/algorithm/backend/senders_to_bucket_
 target_link_libraries(senders_to_bucket_tests distdir)
 target_include_directories(senders_to_bucket_tests PRIVATE ${PROJECT_SOURCE_DIR})
 
+add_executable(num_indices_to_bucket_from_each_rank_tests core/algorithm/backend/num_indices_to_bucket_from_each_rank_tests.c)
+target_link_libraries(num_indices_to_bucket_from_each_rank_tests PRIVATE distdir)
+target_include_directories(num_indices_to_bucket_from_each_rank_tests PRIVATE ${PROJECT_SOURCE_DIR})
+
 add_executable(backend_MPI_tests core/algorithm/backend/backend_MPI_tests.c)
 target_compile_features(backend_MPI_tests PRIVATE c_std_99)
 target_link_libraries(backend_MPI_tests PRIVATE cmocka-static)

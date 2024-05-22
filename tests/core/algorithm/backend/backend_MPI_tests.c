@@ -49,12 +49,19 @@ static void test_senders_to_bucket(void **state __attribute__((unused))) {
 	assert_int_equal(err, 0);
 }
 
+static void test_num_indices_to_bucket_from_each_rank(void **state __attribute__((unused))) {
+
+	int err = system("mpirun --allow-run-as-root -n 4 ./num_indices_to_bucket_from_each_rank_tests");
+	assert_int_equal(err, 0);
+}
+
 int main() {
 
 	const struct CMUnitTest tests[] =
 	{
 		cmocka_unit_test(test_num_procs_send_to_each_bucket),
 		cmocka_unit_test(test_senders_to_bucket),
+		cmocka_unit_test(test_num_indices_to_bucket_from_each_rank),
 	};
 	return cmocka_run_group_tests(tests, NULL, NULL);
 }
