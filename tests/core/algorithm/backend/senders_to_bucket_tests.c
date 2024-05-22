@@ -42,7 +42,9 @@
 /**
  * @brief test01 for senders_to_bucket function
  * 
- * @details 
+ * @details 4 processes send indices to bucket (rank) 0.
+ *          The senders_to_bucket array is only allocated on 
+ *          rank 0 and it has the values 0,1,2,3.
  * 
  * @ingroup backend_tests
  */
