@@ -55,6 +55,12 @@ static void test_num_indices_to_bucket_from_each_rank(void **state __attribute__
 	assert_int_equal(err, 0);
 }
 
+static void test_bucket_idxlist_procs(void **state __attribute__((unused))) {
+
+	int err = system("mpirun --allow-run-as-root -n 4 ./bucket_idxlist_procs_tests");
+	assert_int_equal(err, 0);
+}
+
 int main() {
 
 	const struct CMUnitTest tests[] =
@@ -62,6 +68,7 @@ int main() {
 		cmocka_unit_test(test_num_procs_send_to_each_bucket),
 		cmocka_unit_test(test_senders_to_bucket),
 		cmocka_unit_test(test_num_indices_to_bucket_from_each_rank),
+		cmocka_unit_test(test_bucket_idxlist_procs),
 	};
 	return cmocka_run_group_tests(tests, NULL, NULL);
 }
