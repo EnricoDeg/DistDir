@@ -1,0 +1,2 @@
+set(HEADERS_CXX distdir.hpp)
+install(FILES ${HEADERS_CXX} DESTINATION ${PROJECT_SOURCE_DIR}/include)

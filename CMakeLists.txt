@@ -18,9 +18,15 @@ include(cmake/FetchCMocka.cmake)
 
 add_subdirectory(src)
 add_subdirectory(examples)
-add_subdirectory(bindings/C++/examples)
+
+if(ENABLE_CXX)
+    add_subdirectory(bindings/C++)
+    add_subdirectory(bindings/C++/examples)
+endif()
+
 add_subdirectory(tests)
 add_subdirectory(docs)
+
 if(ENABLE_PYTHON)
     add_subdirectory(bindings/python)
 endif()
