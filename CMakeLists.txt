@@ -4,7 +4,11 @@ if(ENABLE_CUDA)
     set(LANG_CUDA CUDA)
 endif()
 
-project(distdir C ${LANG_CUDA})
+if(ENABLE_CXX)
+    set(LANG_CXX CXX)
+endif()
+
+project(distdir C ${LANG_CXX} ${LANG_CUDA})
 
 if(ENABLE_CUDA)
     find_package(CUDA QUIET REQUIRED)
@@ -14,6 +18,7 @@ include(cmake/FetchCMocka.cmake)
 
 add_subdirectory(src)
 add_subdirectory(examples)
+add_subdirectory(bindings/C++/examples)
 add_subdirectory(tests)
 add_subdirectory(docs)
 if(ENABLE_PYTHON)
