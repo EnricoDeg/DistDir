@@ -56,7 +56,7 @@ t_kernels * new_vtable_cpu(MPI_Datatype type);
  * 
  * @ingroup backend_cpu
  */
-void delete_vtable_cpu(t_kernels *vtable);
+void delete_vtable(t_kernels *vtable);
 
 /**
  * @brief Packing function for int arrays.
