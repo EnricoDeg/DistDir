@@ -139,13 +139,20 @@ int example_basic8() {
 						data[k+level*nproma+block*NLEVELS*nproma] = k + level * npoints_local + block * nproma +
 						                                            npoints_local * NLEVELS * world_rank;
 
-#pragma acc enter data copyin(data[0:npoints_local*NLEVELS], transform[0:npoints_local*NLEVELS])
+		if (world_role == I_SRC) {
+#pragma acc enter data copyin(transform[0:npoints_local*NLEVELS])
+#pragma acc enter data copyin(data[0:npoints_local*NLEVELS])
 #pragma acc host_data use_device(data, transform)
-		if (world_role == I_SRC)
 			exchanger_go_with_transform(exchanger, data, data, transform, NULL);
-		else
-			exchanger_go(exchanger, data, data);
 #pragma acc update host(data[0:npoints_local*NLEVELS], transform[0:npoints_local*NLEVELS])
+#pragma acc exit data delete(data[0:npoints_local*NLEVELS], transform[0:npoints_local*NLEVELS])
+		} else {
+#pragma acc enter data copyin(data[0:npoints_local*NLEVELS])
+#pragma acc host_data use_device(data)
+			exchanger_go(exchanger, data, data);
+#pragma acc update host(data[0:npoints_local*NLEVELS])
+#pragma acc exit data delete(data[0:npoints_local*NLEVELS])
+		}
 
 		if (world_role == I_SRC) {
 
@@ -164,7 +171,6 @@ int example_basic8() {
 			printf("\n");
 		}
 
-#pragma acc exit data delete(data[0:npoints_local*NLEVELS], transform[0:npoints_local*NLEVELS])
 		delete_exchanger(exchanger);
 	}
 
