@@ -34,7 +34,7 @@
 #ifndef BACKEND_HW_H
 #define BACKEND_HW_H
 
-typedef void (*kernel_func_pack) ( void*, void*, int*, int, int );
+typedef void (*kernel_func_pack) ( void*, void*, int*, int, int, int* );
 
 typedef void* (*kernel_func_alloc) (size_t);
 

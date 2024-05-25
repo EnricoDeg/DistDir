@@ -67,49 +67,116 @@ void delete_vtable(t_kernels *vtable) {
 	free(vtable);
 }
 
-void pack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		buffer[offset+i] = data[data_idx];
+void pack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset, int *transform) {
+
+	if (transform == NULL) {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			buffer[offset+i] = data[data_idx];
+		}
+	} else {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			int data_idx_transform = transform[data_idx];
+			buffer[offset+i] = data[data_idx_transform];
+		}
 	}
 }
 
-void unpack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		data[data_idx] = buffer[offset+i];
+void unpack_cpu_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset, int *transform) {
+
+	if (transform == NULL) {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			data[data_idx] = buffer[offset+i];
+		}
+	} else {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			int data_idx_transform = transform[data_idx];
+			data[data_idx_transform] = buffer[offset+i];
+		}
 	}
 }
 
-void pack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		buffer[offset+i] = data[data_idx];
+void pack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset, int *transform) {
+
+	if (transform == NULL) {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			buffer[offset+i] = data[data_idx];
+		}
+	} else {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			int data_idx_transform = transform[data_idx];
+			buffer[offset+i] = data[data_idx_transform];
+		}
 	}
 }
 
-void unpack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		data[data_idx] = buffer[offset+i];
+void unpack_cpu_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset, int *transform) {
+
+	if (transform == NULL) {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			data[data_idx] = buffer[offset+i];
+		}
+	} else {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			int data_idx_transform = transform[data_idx];
+			data[data_idx_transform] = buffer[offset+i];
+		}
 	}
 }
 
-void pack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		buffer[offset+i] = data[data_idx];
+void pack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset, int *transform) {
+
+	if (transform == NULL) {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			buffer[offset+i] = data[data_idx];
+		}
+	} else {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			int data_idx_transform = transform[data_idx];
+			buffer[offset+i] = data[data_idx_transform];
+		}
 	}
 }
 
-void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
-	for (int i = 0; i < buffer_size; i++) {
-		int data_idx = buffer_idxlist[offset+i];
-		data[data_idx] = buffer[offset+i];
+void unpack_cpu_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset, int *transform) {
+
+	if (transform == NULL) {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			data[data_idx] = buffer[offset+i];
+		}
+	} else {
+
+		for (int i = 0; i < buffer_size; i++) {
+			int data_idx = buffer_idxlist[offset+i];
+			int data_idx_transform = transform[data_idx];
+			data[data_idx_transform] = buffer[offset+i];
+		}
 	}
 }
 
 void* allocator_cpu(size_t buffer_size) {
+
 	void *ptr = malloc(buffer_size);
 
 	if (!ptr && (buffer_size > 0)) {

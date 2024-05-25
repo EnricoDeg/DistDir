@@ -73,7 +73,8 @@ static void exchanger_waitall_recv(t_mpi_exchange *mpi_exchange) {
 static void exchanger_IsendIrecv1(t_exchange *exch_send, t_exchange *exch_recv,
                                  t_map *map, t_kernels *vtable, t_mpi_exchange* mpi_exchange,
                                  t_wait *vtable_wait,
-                                 void *src_data, void *dst_data) {
+                                 void *src_data, void *dst_data,
+                                 int *transform_src, int *transform_dst) {
 
 	int world_size;
 	check_mpi( MPI_Comm_size(map->comm, &world_size) );
@@ -101,7 +102,8 @@ static void exchanger_IsendIrecv1(t_exchange *exch_send, t_exchange *exch_recv,
 		             src_data,
 		             exch_send->buffer_idxlist,
 		             size,
-		             offset);
+		             offset,
+		             transform_src);
 
 		/* send the buffer */
 		mpi_exchange->isend(exch_send->buffer,
@@ -145,13 +147,15 @@ static void exchanger_IsendIrecv1(t_exchange *exch_send, t_exchange *exch_recv,
 	               dst_data,
 	               exch_recv->buffer_idxlist,
 	               map->exch_recv->buffer_size,
-	               0);
+	               0,
+	               transform_dst);
 }
 
 static void exchanger_IsendIrecv2(t_exchange *exch_send, t_exchange *exch_recv,
                                  t_map *map, t_kernels *vtable, t_mpi_exchange* mpi_exchange,
                                  t_wait *vtable_wait,
-                                 void *src_data, void *dst_data) {
+                                 void *src_data, void *dst_data,
+                                 int *transform_src, int *transform_dst) {
 
 	int world_size;
 	check_mpi( MPI_Comm_size(map->comm, &world_size) );
@@ -168,7 +172,8 @@ static void exchanger_IsendIrecv2(t_exchange *exch_send, t_exchange *exch_recv,
 		         src_data,
 		         exch_send->buffer_idxlist,
 		         map->exch_send->buffer_size,
-		         0);
+		         0,
+	             transform_src);
 
 	for (int count = 0; count < map->exch_send->count; count++) {
 
@@ -223,13 +228,15 @@ static void exchanger_IsendIrecv2(t_exchange *exch_send, t_exchange *exch_recv,
 	               dst_data,
 	               exch_recv->buffer_idxlist,
 	               map->exch_recv->buffer_size,
-	               0);
+	               0,
+	               transform_dst);
 }
 
 static void exchanger_IsendRecv1(t_exchange *exch_send, t_exchange *exch_recv,
                                  t_map *map, t_kernels *vtable, t_mpi_exchange* mpi_exchange,
                                  t_wait *vtable_wait,
-                                 void *src_data, void *dst_data) {
+                                 void *src_data, void *dst_data,
+                                 int *transform_src, int *transform_dst) {
 
 	int world_size;
 	check_mpi( MPI_Comm_size(map->comm, &world_size) );
@@ -254,7 +261,7 @@ static void exchanger_IsendRecv1(t_exchange *exch_send, t_exchange *exch_recv,
 		vtable->pack(exch_send->buffer,
 		             src_data,
 		             exch_send->buffer_idxlist,
-		             size, offset);
+		             size, offset, transform_src);
 
 		/* send the buffer */
 		mpi_exchange->isend(exch_send->buffer,
@@ -295,13 +302,14 @@ static void exchanger_IsendRecv1(t_exchange *exch_send, t_exchange *exch_recv,
 	               dst_data,
 	               exch_recv->buffer_idxlist,
 	               map->exch_recv->buffer_size,
-	               0);
+	               0, transform_dst);
 }
 
 static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
                                  t_map *map, t_kernels *vtable, t_mpi_exchange* mpi_exchange,
                                  t_wait *vtable_wait,
-                                 void *src_data, void *dst_data) {
+                                 void *src_data, void *dst_data,
+                                 int *transform_src, int *transform_dst) {
 
 	int world_size;
 	check_mpi( MPI_Comm_size(map->comm, &world_size) );
@@ -326,7 +334,7 @@ static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
 		vtable->pack(exch_send->buffer,
 		             src_data,
 		             exch_send->buffer_idxlist,
-		             size, offset);
+		             size, offset, transform_src);
 
 		/* send the buffer */
 		mpi_exchange->isend(exch_send->buffer,
@@ -364,7 +372,7 @@ static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
 		vtable->unpack(exch_recv->buffer,
 		               dst_data,
 		               exch_recv->buffer_idxlist,
-		               size, offset);
+		               size, offset, transform_dst);
 	}
 }
 
@@ -490,9 +498,9 @@ t_exchanger* new_exchanger(t_map        *map  ,
 	return exchanger;
 }
 
-void exchanger_go(t_exchanger  *exchanger ,
-                  void         *src_data  ,
-                  void         *dst_data  ) {
+void exchanger_go(t_exchanger  *exchanger    ,
+                  void         *src_data     ,
+                  void         *dst_data     ) {
 
 	exchanger->go(exchanger->exch_send,
 	              exchanger->exch_recv,
@@ -500,7 +508,24 @@ void exchanger_go(t_exchanger  *exchanger ,
 	              exchanger->vtable,
 	              exchanger->mpi_exchange,
 	              exchanger->vtable_wait,
-	              src_data, dst_data);
+	              src_data, dst_data,
+	              NULL, NULL);
+}
+
+void exchanger_go_with_transform(t_exchanger  *exchanger    ,
+                                 void         *src_data     ,
+                                 void         *dst_data     ,
+                                 int          *transform_src,
+                                 int          *transform_dst) {
+
+	exchanger->go(exchanger->exch_send,
+	              exchanger->exch_recv,
+	              exchanger->map,
+	              exchanger->vtable,
+	              exchanger->mpi_exchange,
+	              exchanger->vtable_wait,
+	              src_data, dst_data,
+	              transform_src, transform_dst);
 }
 
 void delete_exchanger(t_exchanger *exchanger) {

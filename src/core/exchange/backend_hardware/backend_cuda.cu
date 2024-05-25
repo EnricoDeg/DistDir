@@ -45,12 +45,34 @@ __global__ void pack_int(int *buffer, int *data, int *buffer_idxlist, int buffer
 	}
 }
 
+__global__ void pack_int_transform(int *buffer, int *data, int *buffer_idxlist,
+                                   int buffer_size, int offset, int *transform) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		int data_idx_transform = transform[data_idx];
+		buffer[offset+id] = data[data_idx_transform];
+	}
+}
+
 __global__ void pack_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
 
 	int id = blockDim.x * blockIdx.x + threadIdx.x;
 	if(id < buffer_size) {
 		int data_idx = buffer_idxlist[offset+id];
 		buffer[offset+id] = data[data_idx];
+	}
+}
+
+__global__ void pack_float_transform(float *buffer, float *data, int *buffer_idxlist,
+                                     int buffer_size, int offset, int *transform) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		int data_idx_transform = transform[data_idx];
+		buffer[offset+id] = data[data_idx_transform];
 	}
 }
 
@@ -63,12 +85,34 @@ __global__ void pack_double(double *buffer, double *data, int *buffer_idxlist, i
 	}
 }
 
+__global__ void pack_double_transform(double *buffer, double *data, int *buffer_idxlist,
+                                      int buffer_size, int offset, int *transform) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		int data_idx_transform = transform[data_idx];
+		buffer[offset+id] = data[data_idx_transform];
+	}
+}
+
 __global__ void unpack_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
 
 	int id = blockDim.x * blockIdx.x + threadIdx.x;
 	if(id < buffer_size) {
 		int data_idx = buffer_idxlist[offset+id];
 		data[data_idx] = buffer[offset+id];
+	}
+}
+
+__global__ void unpack_int_transform(int *buffer, int *data, int *buffer_idxlist,
+                                     int buffer_size, int offset, int *transform) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		int data_idx_transform = transform[data_idx];
+		data[data_idx_transform] = buffer[offset+id];
 	}
 }
 
@@ -81,6 +125,17 @@ __global__ void unpack_float(float *buffer, float *data, int *buffer_idxlist, in
 	}
 }
 
+__global__ void unpack_float_transform(float *buffer, float *data, int *buffer_idxlist,
+                                       int buffer_size, int offset, int *transform) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		int data_idx_transform = transform[data_idx];
+		data[data_idx_transform] = buffer[offset+id];
+	}
+}
+
 __global__ void unpack_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
 
 	int id = blockDim.x * blockIdx.x + threadIdx.x;
@@ -89,6 +144,18 @@ __global__ void unpack_double(double *buffer, double *data, int *buffer_idxlist,
 		data[data_idx] = buffer[offset+id];
 	}
 }
+
+__global__ void unpack_double_transform(double *buffer, double *data, int *buffer_idxlist,
+                                        int buffer_size, int offset, int *transform) {
+
+	int id = blockDim.x * blockIdx.x + threadIdx.x;
+	if(id < buffer_size) {
+		int data_idx = buffer_idxlist[offset+id];
+		int data_idx_transform = transform[data_idx];
+		data[data_idx_transform] = buffer[offset+id];
+	}
+}
+
 
 extern "C" t_kernels * new_vtable_cuda(MPI_Datatype type) {
 
@@ -116,12 +183,17 @@ extern "C" t_kernels * new_vtable_cuda(MPI_Datatype type) {
 	}
 }
 
-extern "C" void pack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
+extern "C" void pack_cuda_int(int *buffer, int *data, int *buffer_idxlist,
+                              int buffer_size, int offset, int *transform) {
 
 	int thr_per_blk = 256;
 	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
 
-	pack_int<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	if (transform == NULL)
+		pack_int<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	else
+		pack_int_transform<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist,
+		                                                   buffer_size, offset, transform);
 
 	cudaError_t err = cudaDeviceSynchronize();
 	if ( err != cudaSuccess ) {
@@ -130,12 +202,17 @@ extern "C" void pack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int b
 	}
 }
 
-extern "C" void pack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
+extern "C" void pack_cuda_float(float *buffer, float *data, int *buffer_idxlist,
+                                int buffer_size, int offset, int *transform) {
 
 	int thr_per_blk = 256;
 	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
 
-	pack_float<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	if (transform == NULL)
+		pack_float<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	else
+		pack_float_transform<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist,
+		                                                     buffer_size, offset, transform);
 
 	cudaError_t err = cudaDeviceSynchronize();
 	if ( err != cudaSuccess ) {
@@ -144,12 +221,17 @@ extern "C" void pack_cuda_float(float *buffer, float *data, int *buffer_idxlist,
 	}
 }
 
-extern "C" void pack_cuda_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
+extern "C" void pack_cuda_double(double *buffer, double *data, int *buffer_idxlist,
+                                 int buffer_size, int offset, int *transform) {
 
 	int thr_per_blk = 256;
 	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
 
-	pack_double<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	if (transform == NULL)
+		pack_double<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	else
+		pack_double_transform<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist,
+		                                                      buffer_size, offset, transform);
 
 	cudaError_t err = cudaDeviceSynchronize();
 	if ( err != cudaSuccess ) {
@@ -158,12 +240,17 @@ extern "C" void pack_cuda_double(double *buffer, double *data, int *buffer_idxli
 	}
 }
 
-extern "C" void unpack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset) {
+extern "C" void unpack_cuda_int(int *buffer, int *data, int *buffer_idxlist,
+                                int buffer_size, int offset, int *transform) {
 
 	int thr_per_blk = 256;
 	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
 
-	unpack_int<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	if (transform == NULL)
+		unpack_int<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	else
+		unpack_int_transform<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist,
+		                                                     buffer_size, offset, transform);
 
 	cudaError_t err = cudaDeviceSynchronize();
 	if ( err != cudaSuccess ) {
@@ -172,12 +259,17 @@ extern "C" void unpack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int
 	}
 }
 
-extern "C" void unpack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset) {
+extern "C" void unpack_cuda_float(float *buffer, float *data, int *buffer_idxlist,
+                                  int buffer_size, int offset, int *transform) {
 
 	int thr_per_blk = 256;
 	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
 
-	unpack_float<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	if (transform == NULL)
+		unpack_float<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	else
+		unpack_float_transform<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist,
+		                                                       buffer_size, offset, transform);
 
 	cudaError_t err = cudaDeviceSynchronize();
 	if ( err != cudaSuccess ) {
@@ -186,12 +278,17 @@ extern "C" void unpack_cuda_float(float *buffer, float *data, int *buffer_idxlis
 	}
 }
 
-extern "C" void unpack_cuda_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset) {
+extern "C" void unpack_cuda_double(double *buffer, double *data, int *buffer_idxlist,
+                                   int buffer_size, int offset, int *transform) {
 
 	int thr_per_blk = 256;
 	int blk_in_grid = ceil( float(buffer_size) / thr_per_blk );
 
-	unpack_double<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	if (transform == NULL)
+		unpack_double<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist, buffer_size, offset);
+	else
+		unpack_double_transform<<< blk_in_grid, thr_per_blk >>>(buffer, data, buffer_idxlist,
+		                                                        buffer_size, offset, transform);
 
 	cudaError_t err = cudaDeviceSynchronize();
 	if ( err != cudaSuccess ) {

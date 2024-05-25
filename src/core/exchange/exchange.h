@@ -74,7 +74,8 @@ struct t_wait {
 };
 typedef struct t_wait t_wait;
 
-typedef void (*backend_func_go) (t_exchange *, t_exchange*,  t_map*, t_kernels*, t_mpi_exchange*, t_wait*, void*, void *);
+typedef void (*backend_func_go) (t_exchange *, t_exchange*,  t_map*, t_kernels*,
+                                 t_mpi_exchange*, t_wait*, void*, void *, int *, int*);
 
 /** @struct t_map_exch
  * 
@@ -120,15 +121,36 @@ t_exchanger* new_exchanger(t_map        *map  ,
  * @details Execute the MPI exchange given a previously generated exchanger.
  *          The source and destination buffers contain the data before and after the exchange
  * 
- * @param[in] exchanger pointer to a t_exchanger structure
- * @param[in] src_data  pointer to the data to be sent
- * @param[in] dst_data  pointer to the data to be received
+ * @param[in] exchanger     pointer to a t_exchanger structure
+ * @param[in] src_data      pointer to the data to be sent
+ * @param[in] dst_data      pointer to the data to be received
  * 
  * @ingroup exchange
  */
-void exchanger_go(t_exchanger  *exchanger,
-                  void         *src_data ,
-                  void         *dst_data );
+void exchanger_go(t_exchanger  *exchanger    ,
+                  void         *src_data     ,
+                  void         *dst_data     );
+
+/**
+ * @brief Arbitrary exchange given a map with transformation of memory layout
+ * 
+ * @details Execute the MPI exchange given a previously generated exchanger.
+ *          The source and destination buffers contain the data before and after the exchange.
+ *          A transformation array can be provided for source and destination.
+ * 
+ * @param[in] exchanger     pointer to a t_exchanger structure
+ * @param[in] src_data      pointer to the data to be sent
+ * @param[in] dst_data      pointer to the data to be received
+ * @param[in] transform_src array of indices to define a memory layout transformation of the src_data
+ * @param[in] transform_dst array of indices to define a memory layout transformation of the dst_data
+ * 
+ * @ingroup exchange
+ */
+void exchanger_go_with_transform(t_exchanger  *exchanger    ,
+                                 void         *src_data     ,
+                                 void         *dst_data     ,
+                                 int          *transform_src,
+                                 int          *transform_dst);
 
 /**
  * @brief Clean memory of a t_exchanger structure

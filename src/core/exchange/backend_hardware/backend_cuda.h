@@ -60,10 +60,11 @@ t_kernels * new_vtable_cuda(MPI_Datatype type);
  * @param[in]  buffer_idxlist integer array with the information to fill the buffer
  * @param[in]  buffer_size    size of the buffer to be filled (it can be a subset of the buffer array)
  * @param[in]  offset         buffer offset to start the filling of the buffer array
+ * @param[in]  transform      array of indices to transform the memory layout
  * 
  * @ingroup backend_cuda
  */
-void pack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset);
+void pack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset, int *transform);
 
 /**
  * @brief Packing function for float arrays.
@@ -75,10 +76,11 @@ void pack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size,
  * @param[in]  buffer_idxlist integer array with the information to fill the buffer
  * @param[in]  buffer_size    size of the buffer to be filled (it can be a subset of the buffer array)
  * @param[in]  offset         buffer offset to start the filling of the buffer array
+ * @param[in]  transform      array of indices to transform the memory layout
  * 
  * @ingroup backend_cuda
  */
-void pack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset);
+void pack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset, int *transform);
 
 /**
  * @brief Packing function for double arrays.
@@ -90,10 +92,11 @@ void pack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buffer
  * @param[in]  buffer_idxlist integer array with the information to fill the buffer
  * @param[in]  buffer_size    size of the buffer to be filled (it can be a subset of the buffer array)
  * @param[in]  offset         buffer offset to start the filling of the buffer array
+ * @param[in]  transform      array of indices to transform the memory layout
  * 
  * @ingroup backend_cuda
  */
-void pack_cuda_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset);
+void pack_cuda_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset, int *transform);
 
 /**
  * @brief Unpacking function for int arrays.
@@ -105,10 +108,11 @@ void pack_cuda_double(double *buffer, double *data, int *buffer_idxlist, int buf
  * @param[in]  buffer_idxlist integer array with the information to fill the data array
  * @param[in]  buffer_size    size of the buffer to unpack (it can be a subset of the buffer array)
  * @param[in]  offset         buffer offset to start the unpacking of the buffer array
+ * @param[in]  transform      array of indices to transform the memory layout
  * 
  * @ingroup backend_cuda
  */
-void unpack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset);
+void unpack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_size, int offset, int *transform);
 
 /**
  * @brief Unpacking function for float arrays.
@@ -120,10 +124,11 @@ void unpack_cuda_int(int *buffer, int *data, int *buffer_idxlist, int buffer_siz
  * @param[in]  buffer_idxlist integer array with the information to fill the data array
  * @param[in]  buffer_size    size of the buffer to unpack (it can be a subset of the buffer array)
  * @param[in]  offset         buffer offset to start the unpacking of the buffer array
+ * @param[in]  transform      array of indices to transform the memory layout
  * 
  * @ingroup backend_cuda
  */
-void unpack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset);
+void unpack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buffer_size, int offset, int *transform);
 
 /**
  * @brief Unpacking function for double arrays.
@@ -135,10 +140,11 @@ void unpack_cuda_float(float *buffer, float *data, int *buffer_idxlist, int buff
  * @param[in]  buffer_idxlist integer array with the information to fill the data array
  * @param[in]  buffer_size    size of the buffer to unpack (it can be a subset of the buffer array)
  * @param[in]  offset         buffer offset to start the unpacking of the buffer array
+ * @param[in]  transform      array of indices to transform the memory layout
  * 
  * @ingroup backend_cuda
  */
-void unpack_cuda_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset);
+void unpack_cuda_double(double *buffer, double *data, int *buffer_idxlist, int buffer_size, int offset, int *transform);
 
 /**
  * @brief Allocate array.
