@@ -4,9 +4,9 @@ from Cython.Build import cythonize
 
 ext_modules = [Extension(name="pydistdir",
                sources=["${CMAKE_CURRENT_SOURCE_DIR}/pydistdir.pyx"],
-               include_dirs=["${PROJECT_SOURCE_DIR}"],
-               library_dirs=["${CMAKE_BINARY_DIR}/src"],
-               libraries=["distdir"],
+               include_dirs=["${PROJECT_SOURCE_DIR}", "${MPI_C_INCLUDE_DIRS}"],
+               library_dirs=["${CMAKE_BINARY_DIR}/src", "${MPI_C_LIBRARIES}"],
+               libraries=["distdir", "mpi"],
                language='c')]
 
 setup(
