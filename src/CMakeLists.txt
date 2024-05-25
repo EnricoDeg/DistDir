@@ -1,5 +1,5 @@
 # Find MPI library
-find_package(MPI REQUIRED COMPONENTS C)
+find_package(MPI REQUIRED)
 
 if(ENABLE_CUDA)
     if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
@@ -28,6 +28,8 @@ set(SOURCE_EXE  ${SOURCE_CUDA}
 
 add_library(distdir SHARED ${SOURCE_EXE})
 target_include_directories(distdir PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(distdir PRIVATE ${MPI_C_INCLUDE_DIRS})
+target_link_libraries(distdir ${MPI_C_LIBRARIES})
 if(ENABLE_CUDA)
     target_link_libraries(distdir ${CUDA_LIBRARIES})
     set_property(TARGET distdir PROPERTY CUDA_SEPARABLE_COMPILATION ON)
