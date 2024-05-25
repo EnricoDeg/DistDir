@@ -98,8 +98,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:a4079aed638c43d18671f964ee2d0ed08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41d38459aa99db36c5d8b5177ce951cd"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structt__wait.html">t_wait</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#a41d38459aa99db36c5d8b5177ce951cd">t_wait</a></td></tr>
 <tr class="separator:a41d38459aa99db36c5d8b5177ce951cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afab9c2a465893bd5018563568deeda9a"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#afab9c2a465893bd5018563568deeda9a">backend_func_go</a>) (<a class="el" href="structt__exchange.html">t_exchange</a> *, <a class="el" href="structt__exchange.html">t_exchange</a> *, <a class="el" href="structt__map.html">t_map</a> *, <a class="el" href="structt__kernels.html">t_kernels</a> *, <a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a> *, <a class="el" href="structt__wait.html">t_wait</a> *, void *, void *)</td></tr>
-<tr class="separator:afab9c2a465893bd5018563568deeda9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4046b4f5c7a52151cdee2fe7c51e734"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#ad4046b4f5c7a52151cdee2fe7c51e734">backend_func_go</a>) (<a class="el" href="structt__exchange.html">t_exchange</a> *, <a class="el" href="structt__exchange.html">t_exchange</a> *, <a class="el" href="structt__map.html">t_map</a> *, <a class="el" href="structt__kernels.html">t_kernels</a> *, <a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a> *, <a class="el" href="structt__wait.html">t_wait</a> *, void *, void *, int *, int *)</td></tr>
+<tr class="separator:ad4046b4f5c7a52151cdee2fe7c51e734"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad542906fd94f7e9c2e68c0c9165acd24"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structt__exchanger.html">t_exchanger</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="exchange_8h.html#ad542906fd94f7e9c2e68c0c9165acd24">t_exchanger</a></td></tr>
 <tr class="separator:ad542906fd94f7e9c2e68c0c9165acd24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -111,19 +111,22 @@ Functions</h2></td></tr>
 <tr class="memitem:ga7de4537721ade98510c71e4ee56ba4dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__exchange.html#ga7de4537721ade98510c71e4ee56ba4dc">exchanger_go</a> (<a class="el" href="structt__exchanger.html">t_exchanger</a> *exchanger, void *src_data, void *dst_data)</td></tr>
 <tr class="memdesc:ga7de4537721ade98510c71e4ee56ba4dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arbitrary exchange given a map.  <a href="group__exchange.html#ga7de4537721ade98510c71e4ee56ba4dc">More...</a><br /></td></tr>
 <tr class="separator:ga7de4537721ade98510c71e4ee56ba4dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga647a2ae5dbf27d93453dd6b2c2cd57ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__exchange.html#ga647a2ae5dbf27d93453dd6b2c2cd57ca">exchanger_go_with_transform</a> (<a class="el" href="structt__exchanger.html">t_exchanger</a> *exchanger, void *src_data, void *dst_data, int *transform_src, int *transform_dst)</td></tr>
+<tr class="memdesc:ga647a2ae5dbf27d93453dd6b2c2cd57ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arbitrary exchange given a map with transformation of memory layout.  <a href="group__exchange.html#ga647a2ae5dbf27d93453dd6b2c2cd57ca">More...</a><br /></td></tr>
+<tr class="separator:ga647a2ae5dbf27d93453dd6b2c2cd57ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6eca3b7ee320a010d0143b5747350153"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__exchange.html#ga6eca3b7ee320a010d0143b5747350153">delete_exchanger</a> (<a class="el" href="structt__exchanger.html">t_exchanger</a> *exchanger)</td></tr>
 <tr class="memdesc:ga6eca3b7ee320a010d0143b5747350153"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clean memory of a <a class="el" href="structt__exchanger.html">t_exchanger</a> structure.  <a href="group__exchange.html#ga6eca3b7ee320a010d0143b5747350153">More...</a><br /></td></tr>
 <tr class="separator:ga6eca3b7ee320a010d0143b5747350153"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
-<a id="afab9c2a465893bd5018563568deeda9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afab9c2a465893bd5018563568deeda9a">&#9670;&nbsp;</a></span>backend_func_go</h2>
+<a id="ad4046b4f5c7a52151cdee2fe7c51e734"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4046b4f5c7a52151cdee2fe7c51e734">&#9670;&nbsp;</a></span>backend_func_go</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(* backend_func_go) (<a class="el" href="structt__exchange.html">t_exchange</a> *, <a class="el" href="structt__exchange.html">t_exchange</a> *, <a class="el" href="structt__map.html">t_map</a> *, <a class="el" href="structt__kernels.html">t_kernels</a> *, <a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a> *, <a class="el" href="structt__wait.html">t_wait</a> *, void *, void *)</td>
+          <td class="memname">typedef void(* backend_func_go) (<a class="el" href="structt__exchange.html">t_exchange</a> *, <a class="el" href="structt__exchange.html">t_exchange</a> *, <a class="el" href="structt__map.html">t_map</a> *, <a class="el" href="structt__kernels.html">t_kernels</a> *, <a class="el" href="structt__mpi__exchange.html">t_mpi_exchange</a> *, <a class="el" href="structt__wait.html">t_wait</a> *, void *, void *, int *, int *)</td>
         </tr>
       </table>
 </div><div class="memdoc">

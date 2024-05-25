@@ -76,6 +76,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga7de4537721ade98510c71e4ee56ba4dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__exchange.html#ga7de4537721ade98510c71e4ee56ba4dc">exchanger_go</a> (<a class="el" href="structt__exchanger.html">t_exchanger</a> *exchanger, void *src_data, void *dst_data)</td></tr>
 <tr class="memdesc:ga7de4537721ade98510c71e4ee56ba4dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arbitrary exchange given a map.  <a href="group__exchange.html#ga7de4537721ade98510c71e4ee56ba4dc">More...</a><br /></td></tr>
 <tr class="separator:ga7de4537721ade98510c71e4ee56ba4dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga647a2ae5dbf27d93453dd6b2c2cd57ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__exchange.html#ga647a2ae5dbf27d93453dd6b2c2cd57ca">exchanger_go_with_transform</a> (<a class="el" href="structt__exchanger.html">t_exchanger</a> *exchanger, void *src_data, void *dst_data, int *transform_src, int *transform_dst)</td></tr>
+<tr class="memdesc:ga647a2ae5dbf27d93453dd6b2c2cd57ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Arbitrary exchange given a map with transformation of memory layout.  <a href="group__exchange.html#ga647a2ae5dbf27d93453dd6b2c2cd57ca">More...</a><br /></td></tr>
+<tr class="separator:ga647a2ae5dbf27d93453dd6b2c2cd57ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6eca3b7ee320a010d0143b5747350153"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__exchange.html#ga6eca3b7ee320a010d0143b5747350153">delete_exchanger</a> (<a class="el" href="structt__exchanger.html">t_exchanger</a> *exchanger)</td></tr>
 <tr class="memdesc:ga6eca3b7ee320a010d0143b5747350153"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clean memory of a <a class="el" href="structt__exchanger.html">t_exchanger</a> structure.  <a href="group__exchange.html#ga6eca3b7ee320a010d0143b5747350153">More...</a><br /></td></tr>
 <tr class="separator:ga6eca3b7ee320a010d0143b5747350153"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -149,6 +152,65 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">exchanger</td><td>pointer to a <a class="el" href="structt__exchanger.html">t_exchanger</a> structure </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">src_data</td><td>pointer to the data to be sent </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">dst_data</td><td>pointer to the data to be received </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga647a2ae5dbf27d93453dd6b2c2cd57ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga647a2ae5dbf27d93453dd6b2c2cd57ca">&#9670;&nbsp;</a></span>exchanger_go_with_transform()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void exchanger_go_with_transform </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structt__exchanger.html">t_exchanger</a> *&#160;</td>
+          <td class="paramname"><em>exchanger</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>src_data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>dst_data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>transform_src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>transform_dst</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Arbitrary exchange given a map with transformation of memory layout. </p>
+<p>Execute the MPI exchange given a previously generated exchanger. The source and destination buffers contain the data before and after the exchange. A transformation array can be provided for source and destination.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">exchanger</td><td>pointer to a <a class="el" href="structt__exchanger.html">t_exchanger</a> structure </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">src_data</td><td>pointer to the data to be sent </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">dst_data</td><td>pointer to the data to be received </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">transform_src</td><td>array of indices to define a memory layout transformation of the src_data </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">transform_dst</td><td>array of indices to define a memory layout transformation of the dst_data </td></tr>
   </table>
   </dd>
 </dl>
