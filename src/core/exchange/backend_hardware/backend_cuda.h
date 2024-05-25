@@ -37,6 +37,7 @@
 extern "C" {
 #endif
 
+#include "mpi.h"
 #include "src/core/exchange/backend_hardware/backend_hw.h"
 
 /**
