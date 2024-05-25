@@ -35,12 +35,43 @@
 
 #include <vector>
 #include <memory>
-#include <iostream>
 extern "C" {
 	#include "src/distdir.h"
 }
 
 namespace distdir {
+
+class distdir {
+
+	public:
+
+		typedef std::shared_ptr<distdir> Ptr;
+
+		distdir() {
+			distdir_initialize();
+		}
+
+		~distdir() {
+			distdir_finalize();
+		}
+
+		void set_exchanger(int exchanger_type) {
+			set_config_exchanger(exchanger_type);
+		}
+
+		void set_verbose(int verbose_type) {
+			set_config_verbose(verbose_type);
+		}
+
+		int get_exchanger() {
+			return get_config_exchanger();
+		}
+
+		int get_verbose() {
+			return get_config_verbose();
+		}
+
+};
 
 class idxlist {
 
@@ -95,6 +126,26 @@ class map {
 
 	private:
 		t_map *m_map;
+};
+
+template<class T>
+class exchanger {
+
+	public:
+		typedef std::shared_ptr<exchanger<T>> Ptr;
+		exchanger(map::Ptr map, MPI_Datatype type, distdir_hardware hw=CPU) {
+			m_exchanger = new_exchanger(map->get(), type, hw);
+		}
+
+		void go(std::vector<T>& src_data, std::vector<T>& dst_data) {
+			exchanger_go(m_exchanger, src_data.data(), dst_data.data());
+		}
+
+		~exchanger() {
+			delete_exchanger(m_exchanger);
+		}
+	private:
+		t_exchanger *m_exchanger;
 };
 
 }
