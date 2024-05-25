@@ -96,6 +96,12 @@ int example_basic1() {
 	distdir::idxlist::Ptr idxlist_empty( new distdir::idxlist() );
 	distdir::idxlist::Ptr idxlist( new distdir::idxlist(list) );
 
+	distdir::map::Ptr map( new distdir::map(world_role == I_SRC ? idxlist : idxlist_empty,
+	                                        world_role == I_SRC ? idxlist_empty : idxlist,
+	                                        MPI_COMM_WORLD) );
+
+
+	map.reset();
 	idxlist.reset();
 	idxlist_empty.reset();
 

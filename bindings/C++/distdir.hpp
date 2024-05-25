@@ -68,6 +68,35 @@ class idxlist {
 		t_idxlist *m_idxlist;
 };
 
+class map {
+
+	public:
+		typedef std::shared_ptr<map> Ptr;
+
+		map(idxlist::Ptr src_idxlist, idxlist::Ptr dst_idxlist, MPI_Comm comm) {
+			m_map = new_map(src_idxlist->get(), dst_idxlist->get(), -1, comm);
+		}
+
+		map(idxlist::Ptr src_idxlist, idxlist::Ptr dst_idxlist, int stride, MPI_Comm comm) {
+			m_map = new_map(src_idxlist->get(), dst_idxlist->get(), stride, comm);
+		}
+
+		map(map::Ptr map2d, int nlevels) {
+			m_map = extend_map_3d(map2d->get(), nlevels);
+		}
+
+		t_map * get() {
+			return m_map;
+		}
+
+		~map() {
+			delete_map(m_map);
+		}
+
+	private:
+		t_map *m_map;
+};
+
 }
 
 #endif
