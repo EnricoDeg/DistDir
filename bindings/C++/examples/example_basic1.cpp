@@ -31,6 +31,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <iostream>
 #include <vector>
 #include "mpi.h"
 #include "bindings/C++/distdir.hpp"
@@ -66,7 +67,7 @@
  */
 int example_basic1() {
 
-	distdir_initialize();
+	distdir::distdir::Ptr distdir( new distdir::distdir() );
 
 	int world_rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
@@ -100,12 +101,27 @@ int example_basic1() {
 	                                        world_role == I_SRC ? idxlist_empty : idxlist,
 	                                        MPI_COMM_WORLD) );
 
+	distdir::exchanger<int>::Ptr exchanger ( new distdir::exchanger<int>(map, MPI_INT) );
 
+	std::vector<int> data;
+	data.resize(npoints_local);
+	// src MPI ranks fill data array
+	if (world_role == I_SRC)
+		for (int i = 0; i < npoints_local; i++)
+			data[i] = i + npoints_local * world_rank;
+
+	exchanger->go(data, data);
+
+	std::cout << world_rank << ": ";
+	for (int i = 0; i < npoints_local; i++)
+		std::cout << data[i] << " ";
+	std::cout << std::endl;
+
+	exchanger.reset();
 	map.reset();
 	idxlist.reset();
 	idxlist_empty.reset();
-
-	distdir_finalize();
+	distdir.reset();
 
 	return 0;
 }
