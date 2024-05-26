@@ -8,7 +8,11 @@ if(ENABLE_CXX)
     set(LANG_CXX CXX)
 endif()
 
-project(distdir C ${LANG_CXX} ${LANG_CUDA})
+if(ENABLE_FORTRAN)
+    set(LANG_FC Fortran)
+endif()
+
+project(distdir C ${LANG_CXX} ${LANG_CUDA} ${LANG_FC})
 
 if(ENABLE_CUDA)
     find_package(CUDA QUIET REQUIRED)
@@ -22,6 +26,10 @@ add_subdirectory(examples)
 if(ENABLE_CXX)
     add_subdirectory(bindings/C++)
     add_subdirectory(bindings/C++/examples)
+endif()
+
+if(ENABLE_FORTRAN)
+    add_subdirectory(bindings/Fortran/examples)
 endif()
 
 add_subdirectory(tests)

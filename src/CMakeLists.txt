@@ -1,6 +1,12 @@
 # Find MPI library
 find_package(MPI REQUIRED)
 
+if(ENABLE_FORTRAN)
+    set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/modules)
+    set(SOURCE_FORTRAN ../bindings/Fortran/distdir_mod.f90)
+    SET(CMAKE_Fortran_FLAGS "-cpp ${CMAKE_Fortran_FLAGS}")
+endif()
+
 if(ENABLE_CUDA)
     if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
         set(CMAKE_CUDA_ARCHITECTURES 80)
@@ -24,7 +30,9 @@ set(SOURCE_EXE  ${SOURCE_CUDA}
                 core/algorithm/map.c
 		core/exchange/backend_hardware/backend_cpu.c
 		core/exchange/backend_communication/backend_mpi.c
-                core/exchange/exchange.c)
+                core/exchange/exchange.c
+                utils/distdir_f2c.c
+                ${SOURCE_FORTRAN})
 
 add_library(distdir SHARED ${SOURCE_EXE})
 target_include_directories(distdir PRIVATE ${PROJECT_SOURCE_DIR})
@@ -42,3 +50,8 @@ install (
 
 set(HEADERS_C distdir.h)
 install(FILES ${HEADERS_C} DESTINATION ${PROJECT_SOURCE_DIR}/include)
+
+# Install the library Fortran module
+if(ENABLE_FORTRAN)
+    install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY} DESTINATION ${PROJECT_SOURCE_DIR})
+endif()
