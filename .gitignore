@@ -2,6 +2,7 @@ build/*
 lib/*
 include/*
 externals/*
+modules/*
 examples/example_basic1
 examples/example_basic2
 examples/example_basic3
@@ -12,3 +13,4 @@ examples/example_basic7
 examples/example_basic8
 examples/example_multi_grid1
 bindings/C++/examples/example_basic1cpp
+bindings/Fortran/examples/example_basic1fc

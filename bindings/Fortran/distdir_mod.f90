@@ -66,13 +66,35 @@ MODULE distdir_mod
 			TYPE(c_ptr)                       :: res_ptr
 		END FUNCTION new_idxlist_c
 
-		SUBROUTINE delete_idxlist_c(idxlist) BIND(C, name='delete_idxlist')
-			IMPORT :: t_idxlist
+		SUBROUTINE delete_idxlist_c(ptr) BIND(C, name='delete_idxlist')
+			IMPORT :: c_ptr
 			IMPLICIT NONE
-			TYPE(t_idxlist), INTENT(in) :: idxlist
+			TYPE(c_ptr), VALUE, INTENT(in) :: ptr
 		END SUBROUTINE delete_idxlist_c
 
 	END INTERFACE
 
+	CONTAINS
+
+	FUNCTION t_idxlist_c2f(idxlist) RESULT(p)
+		TYPE(c_ptr), INTENT(in) :: idxlist
+		TYPE(t_idxlist) :: p
+		p%cptr = idxlist
+	END FUNCTION t_idxlist_c2f
+
+	SUBROUTINE new_idxlist(idxlist, list, num_indices)
+		type(t_idxlist), INTENT(OUT) :: idxlist
+		INTEGER, INTENT(IN) :: list(:)
+		INTEGER, INTENT(IN) :: num_indices
+
+		idxlist = t_idxlist_c2f(new_idxlist_c(list, num_indices))
+	END SUBROUTINE new_idxlist
+
+	SUBROUTINE delete_idxlist(idxlist)
+		type(t_idxlist), INTENT(INOUT) :: idxlist
+
+		CALL delete_idxlist_c(idxlist%cptr)
+		idxlist%cptr = c_null_ptr
+	END SUBROUTINE delete_idxlist
 
 END MODULE distdir_mod

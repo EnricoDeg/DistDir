@@ -37,4 +37,21 @@ PROGRAM example_basic1
 
 	IMPLICIT NONE
 
+	INTEGER, ALLOCATABLE, DIMENSION(:) :: list
+	INTEGER :: size = 10
+	INTEGER :: i
+	TYPE(t_idxlist) :: idxlist
+
+	ALLOCATE(list(size))
+
+	DO i = 1,10
+		list(i) = i
+	END DO
+
+	CALL new_idxlist(idxlist, list, size)
+
+	CALL delete_idxlist(idxlist)
+
+	DEALLOCATE(list)
+
 END PROGRAM example_basic1

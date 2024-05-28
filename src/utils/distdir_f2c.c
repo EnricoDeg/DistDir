@@ -66,8 +66,6 @@ t_exchanger * t_exchanger_f2c(struct t_exchanger_f *p)
 	return p->cptr;
 }
 
-
-
 t_map * new_map_f(struct t_idxlist_f *src_idxlist_f,
                   struct t_idxlist_f *dst_idxlist_f,
                   int stride,
