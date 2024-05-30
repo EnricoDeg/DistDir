@@ -56,7 +56,7 @@ t_idxlist * t_idxlist_f2c(struct t_idxlist_f *p)
 	return p->cptr;
 }
 
-t_map * t_xmap_f2c(struct t_map_f *p)
+t_map * t_map_f2c(struct t_map_f *p)
 {
 	return p->cptr;
 }
@@ -73,4 +73,12 @@ t_map * new_map_f(struct t_idxlist_f *src_idxlist_f,
 {
 	MPI_Comm comm_c = MPI_Comm_f2c(comm_f);
 	return new_map(src_idxlist_f->cptr, dst_idxlist_f->cptr, stride, comm_c);
+}
+
+t_exchanger* new_exchanger_f(struct t_map_f *map    ,
+                             MPI_Fint        type_f ,
+                             int             hw     ) {
+
+	MPI_Datatype type_c = MPI_Type_f2c(type_f);
+	return new_exchanger(map->cptr, type_c, hw);
 }
