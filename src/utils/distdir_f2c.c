@@ -82,3 +82,9 @@ t_exchanger* new_exchanger_f(struct t_map_f *map    ,
 	MPI_Datatype type_c = MPI_Type_f2c(type_f);
 	return new_exchanger(map->cptr, type_c, hw);
 }
+
+void exchanger_go_f(struct t_exchanger_f *exchanger,
+                    void *src_data,
+                    void *dst_data) {
+	exchanger_go(exchanger->cptr, src_data, dst_data);
+}
