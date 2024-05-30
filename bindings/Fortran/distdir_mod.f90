@@ -169,12 +169,12 @@ MODULE distdir_mod
 			TYPE(c_ptr), VALUE, INTENT(in) :: ptr
 		END SUBROUTINE delete_exchanger_c
 
-		SUBROUTINE exchanger_go_c(exchanger, src_data, dst_data) BIND(C, name='exchanger_go')
-			IMPORT :: c_ptr
+		SUBROUTINE exchanger_go_c(exchanger, src_data, dst_data) BIND(C, name='exchanger_go_f')
+			IMPORT :: c_ptr, t_exchanger
 			IMPLICIT NONE
-			TYPE(c_ptr), INTENT(in) :: exchanger
-			TYPE(c_ptr)             :: src_data
-			TYPE(c_ptr)             :: dst_data
+			TYPE(t_exchanger), INTENT(in) :: exchanger
+			TYPE(c_ptr), VALUE, INTENT(IN) :: src_data
+			TYPE(c_ptr), VALUE, INTENT(IN) :: dst_data
 		END SUBROUTINE exchanger_go_c
 
 	END INTERFACE
@@ -296,7 +296,7 @@ MODULE distdir_mod
 		TYPE(c_ptr)       :: src_data
 		TYPE(c_ptr)       :: dst_data
 
-		CALL exchanger_go_c(exchanger%cptr, src_data, dst_data)
+		CALL exchanger_go_c(exchanger, src_data, dst_data)
 	END SUBROUTINE exchanger_go_no_offset
 
 END MODULE distdir_mod
