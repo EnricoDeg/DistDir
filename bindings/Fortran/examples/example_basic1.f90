@@ -34,12 +34,16 @@
 PROGRAM example_basic1
 	USE mpi
 	USE distdir_mod
+	USE, INTRINSIC :: ISO_C_BINDING, ONLY: c_loc
 
 	IMPLICIT NONE
 
 	INTEGER, ALLOCATABLE, DIMENSION(:) :: list
+	INTEGER, ALLOCATABLE, TARGET, DIMENSION(:) :: data
 	INTEGER :: i, j
-	TYPE(t_idxlist) :: idxlist
+	TYPE(t_idxlist)   :: idxlist, idxlist_empty
+	TYPE(t_map)       :: map
+	TYPE(t_exchanger) :: exchanger
 	INTEGER :: error, world_rank, world_size, world_role
 	INTEGER :: npoints_local, ncols_local, nrows_local
 
@@ -48,11 +52,14 @@ PROGRAM example_basic1
 	INTEGER, PARAMETER :: I_DST = 1
 	INTEGER, PARAMETER :: NCOLS = 4
 	INTEGER, PARAMETER :: NROWS = 4
+	INTEGER, PARAMETER :: comm  = MPI_COMM_WORLD
+	INTEGER, PARAMETER :: hw    = DISTDIR_HW_CPU
+	INTEGER, PARAMETER :: type  = MPI_INT
 	
 	CALL distdir_initialize()
 
-	CALL MPI_COMM_SIZE(MPI_COMM_WORLD, world_size, error)
-	CALL MPI_COMM_RANK(MPI_COMM_WORLD, world_rank, error)
+	CALL MPI_COMM_SIZE(comm, world_size, error)
+	CALL MPI_COMM_RANK(comm, world_rank, error)
 
 	npoints_local = NCOLS * NROWS / (world_size / 2)
 
@@ -79,9 +86,34 @@ PROGRAM example_basic1
 	END IF
 
 	CALL new_idxlist(idxlist, list, npoints_local)
+	CALL new_idxlist(idxlist_empty)
 
+	IF (world_role == I_SRC) THEN
+		CALL new_map(map, idxlist, idxlist_empty, comm)
+	ELSE
+		CALL new_map(map, idxlist_empty, idxlist, comm)
+	END IF
+
+	ALLOCATE(data(npoints_local))
+
+	IF (world_role == I_SRC) THEN
+		DO i = 1, npoints_local
+			data(i) = (i-1) + npoints_local * world_rank;
+		END DO
+	END IF
+
+	CALL new_exchanger(exchanger, map, type, hw)
+
+	CALL exchanger_go(exchanger, C_LOC(data(1)), C_LOC(data(1)))
+
+	write(*,*) world_rank, ': ', data(:)
+
+	CALL delete_exchanger(exchanger)
+	CALL delete_map(map)
+	CALL delete_idxlist(idxlist_empty)
 	CALL delete_idxlist(idxlist)
 
+	DEALLOCATE(data)
 	DEALLOCATE(list)
 	
 	CALL distdir_finalize()
