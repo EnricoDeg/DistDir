@@ -48,6 +48,14 @@ MODULE distdir_mod
 
 	INTERFACE
 
+		SUBROUTINE distdir_initialize_c() BIND(C, name='distdir_initialize')
+			IMPLICIT NONE
+		END SUBROUTINE distdir_initialize_c
+
+		SUBROUTINE distdir_finalize_c() BIND(C, name='distdir_finalize')
+			IMPLICIT NONE
+		END SUBROUTINE distdir_finalize_c
+
 		! this function must not be implemented in Fortran because
 		! PGI 11.x chokes on that
 		FUNCTION t_idxlist_f2c(idxlist) BIND(c, name='t_idxlist_f2c') RESULT(p)
@@ -75,6 +83,16 @@ MODULE distdir_mod
 	END INTERFACE
 
 	CONTAINS
+
+	SUBROUTINE distdir_initialize()
+
+		CALL distdir_initialize_c()
+	END SUBROUTINE
+
+	SUBROUTINE distdir_finalize()
+
+		CALL distdir_finalize_c()
+	END SUBROUTINE distdir_finalize
 
 	FUNCTION t_idxlist_c2f(idxlist) RESULT(p)
 		TYPE(c_ptr), INTENT(in) :: idxlist
