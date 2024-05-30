@@ -38,20 +38,52 @@ PROGRAM example_basic1
 	IMPLICIT NONE
 
 	INTEGER, ALLOCATABLE, DIMENSION(:) :: list
-	INTEGER :: size = 10
-	INTEGER :: i
+	INTEGER :: i, j
 	TYPE(t_idxlist) :: idxlist
+	INTEGER :: error, world_rank, world_size, world_role
+	INTEGER :: npoints_local, ncols_local, nrows_local
 
-	ALLOCATE(list(size))
 
-	DO i = 1,10
-		list(i) = i
-	END DO
+	INTEGER, PARAMETER :: I_SRC = 0
+	INTEGER, PARAMETER :: I_DST = 1
+	INTEGER, PARAMETER :: NCOLS = 4
+	INTEGER, PARAMETER :: NROWS = 4
+	
+	CALL distdir_initialize()
 
-	CALL new_idxlist(idxlist, list, size)
+	CALL MPI_COMM_SIZE(MPI_COMM_WORLD, world_size, error)
+	CALL MPI_COMM_RANK(MPI_COMM_WORLD, world_rank, error)
+
+	npoints_local = NCOLS * NROWS / (world_size / 2)
+
+	ALLOCATE(list(npoints_local))
+
+	! index list with global indices
+	IF (world_rank < 2) THEN
+		world_role = I_SRC
+		ncols_local = NCOLS / (world_size / 2)
+		DO i = 0, NROWS - 1
+			DO j = 0, ncols_local - 1
+				list((j + 1) + i * ncols_local) = j + i * NCOLS + world_rank * (NCOLS - ncols_local)
+			END DO
+		END DO
+	ELSE
+		world_role = I_DST
+		nrows_local = NROWS / (world_size / 2)
+		DO i = 0, nrows_local - 1
+			DO j = 0, NCOLS - 1
+				list((j + 1) + i * NCOLS) = j + i * NCOLS + (world_rank - (world_size / 2)) * &
+				                                    (NROWS - nrows_local) * NCOLS
+			END DO
+		END DO
+	END IF
+
+	CALL new_idxlist(idxlist, list, npoints_local)
 
 	CALL delete_idxlist(idxlist)
 
 	DEALLOCATE(list)
+	
+	CALL distdir_finalize()
 
 END PROGRAM example_basic1
