@@ -381,8 +381,9 @@ t_exchanger* new_exchanger(t_map        *map  ,
                            distdir_hardware hw) {
 
 #ifdef ERROR_CHECK
-	assert(type == MPI_INT || type == MPI_REAL || type == MPI_DOUBLE);
-	assert(hw == CPU       || hw == GPU_NVIDIA || hw == GPU_AMD     );
+	assert(type == MPI_INT     || type == MPI_REAL  || type == MPI_DOUBLE          ||
+	       type == MPI_INTEGER || type == MPI_FLOAT || type == MPI_DOUBLE_PRECISION);
+	assert(hw == CPU           || hw == GPU_NVIDIA  || hw == GPU_AMD               );
 #endif
 
 	// group all info into data structure

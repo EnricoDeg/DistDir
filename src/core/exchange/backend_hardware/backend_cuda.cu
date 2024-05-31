@@ -165,17 +165,17 @@ extern "C" t_kernels * new_vtable_cuda(MPI_Datatype type) {
 	table_kernels->allocator = allocator_cuda;
 	table_kernels->deallocator = deallocator_cuda;
 
-	if (type == MPI_INT) {
+	if (type == MPI_INT || type == MPI_INTEGER) {
 
 		/* Packing / Unpacking functions */
 		table_kernels->pack = (kernel_func_pack)pack_cuda_int;
 		table_kernels->unpack = (kernel_func_pack)unpack_cuda_int;
-	} else if (type == MPI_REAL) {
+	} else if (type == MPI_REAL || type == MPI_FLOAT) {
 
 		/* Packing / Unpacking functions */
 		table_kernels->pack = (kernel_func_pack)pack_cuda_float;
 		table_kernels->unpack = (kernel_func_pack)unpack_cuda_float;
-	} else if (type == MPI_DOUBLE) {
+	} else if (type == MPI_DOUBLE || type == MPI_DOUBLE_PRECISION) {
 
 		/* Packing / Unpacking functions */
 		table_kernels->pack = (kernel_func_pack)pack_cuda_double;

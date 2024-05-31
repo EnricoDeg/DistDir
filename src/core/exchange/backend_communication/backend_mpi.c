@@ -38,15 +38,15 @@
 t_mpi_exchange * new_mpi_exchanger(MPI_Datatype  type, int size) {
 
 	t_mpi_exchange *mpi_exchange = (t_mpi_exchange *)malloc(sizeof(t_mpi_exchange));
-	if (type == MPI_INT) {
+	if (type == MPI_INT || type == MPI_INTEGER) {
 		mpi_exchange->isend = (kernel_func_isendirecv)mpi_wrapper_isend_int;
 		mpi_exchange->irecv = (kernel_func_isendirecv)mpi_wrapper_irecv_int;
 		mpi_exchange->recv  = (kernel_func_recv      )mpi_wrapper_recv_int ;
-	} else if (type == MPI_REAL) {
+	} else if (type == MPI_REAL || type == MPI_FLOAT) {
 		mpi_exchange->isend = (kernel_func_isendirecv)mpi_wrapper_isend_float;
 		mpi_exchange->irecv = (kernel_func_isendirecv)mpi_wrapper_irecv_float;
 		mpi_exchange->recv  = (kernel_func_recv      )mpi_wrapper_recv_float ;
-	} else if (type == MPI_DOUBLE) {
+	} else if (type == MPI_DOUBLE || type == MPI_DOUBLE_PRECISION) {
 		mpi_exchange->isend = (kernel_func_isendirecv)mpi_wrapper_isend_double;
 		mpi_exchange->irecv = (kernel_func_isendirecv)mpi_wrapper_irecv_double;
 		mpi_exchange->recv  = (kernel_func_recv      )mpi_wrapper_recv_double ;
