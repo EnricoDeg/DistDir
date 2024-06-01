@@ -55,6 +55,13 @@ class distdir {
 			distdir_finalize();
 		}
 
+		void group(MPI_Comm *new_comm ,
+		           MPI_Comm  work_comm,
+		           int       id       ) {
+
+			new_group(new_comm, work_comm, id);
+		}
+
 		void set_exchanger(int exchanger_type) {
 			set_config_exchanger(exchanger_type);
 		}
@@ -139,6 +146,12 @@ class exchanger {
 
 		void go(std::vector<T>& src_data, std::vector<T>& dst_data) {
 			exchanger_go(m_exchanger, src_data.data(), dst_data.data());
+		}
+
+		void go(std::vector<T>& src_data, std::vector<T>& dst_data,
+		        std::vector<int>& transform_src, std::vector<int>& transform_dst) {
+			exchanger_go_with_transform(m_exchanger, src_data.data(), dst_data.data(),
+			                            transform_src.data(), transform_dst.data());
 		}
 
 		~exchanger() {
