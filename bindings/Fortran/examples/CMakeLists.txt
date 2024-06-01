@@ -14,10 +14,20 @@ target_link_libraries (example_basic2fc distdir ${MPI_Fortran_LIBRARIES})
 target_include_directories(example_basic2fc PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(example_basic2fc PRIVATE ${MPI_Fortran_INCLUDE_DIRS})
 
+add_executable(example_basic3fc example_basic3.f90)
+set_property(TARGET example_basic3fc PROPERTY LINKER_LANGUAGE Fortran)
+target_link_libraries (example_basic3fc distdir ${MPI_Fortran_LIBRARIES})
+target_include_directories(example_basic3fc PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(example_basic3fc PRIVATE ${MPI_Fortran_INCLUDE_DIRS})
+
 install (TARGETS
   example_basic1fc # executables
   RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/Fortran/examples)
 
 install (TARGETS
   example_basic2fc # executables
+  RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/Fortran/examples)
+
+install (TARGETS
+  example_basic3fc # executables
   RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/Fortran/examples)
