@@ -36,6 +36,8 @@ MODULE distdir_mod
 	USE, INTRINSIC :: ISO_C_BINDING, ONLY: c_ptr, c_int, c_null_ptr
 	IMPLICIT NONE
 
+	PRIVATE
+
 	INTEGER, PARAMETER :: DISTDIR_HW_CPU        = 0
 	INTEGER, PARAMETER :: DISTDIR_HW_GPU_NVIDIA = 1
 	INTEGER, PARAMETER :: DISTDIR_HW_GPU_AMD    = 2
@@ -244,6 +246,19 @@ MODULE distdir_mod
 		MODULE PROCEDURE :: exchanger_go_no_transform
 		MODULE PROCEDURE :: exchanger_go_with_transform
 	END INTERFACE
+
+	PUBLIC :: DISTDIR_HW_CPU, DISTDIR_HW_GPU_AMD, DISTDIR_HW_GPU_NVIDIA
+	PUBLIC :: DISTDIR_VERBOSE_TRUE, DISTDIR_VERBOSE_FALSE
+	PUBLIC :: DISTDIR_EXCHANGER_IsendIrecv1, DISTDIR_EXCHANGER_IsendIrecv1NoWait
+	PUBLIC :: DISTDIR_EXCHANGER_IsendIrecv2, DISTDIR_EXCHANGER_IsendIrecv2NoWait
+	PUBLIC :: DISTDIR_EXCHANGER_IsendRecv1, DISTDIR_EXCHANGER_IsendRecv1NoWait
+	PUBLIC :: DISTDIR_EXCHANGER_IsendRecv2, DISTDIR_EXCHANGER_IsendRecv2NoWait
+	PUBLIC :: distdir_initialize, distdir_finalize
+	PUBLIC :: set_config_exchanger, set_config_verbose
+	PUBLIC :: new_group
+	PUBLIC :: new_idxlist, delete_idxlist
+	PUBLIC :: new_map, delete_map
+	PUBLIC :: new_exchanger, delete_exchanger, exchanger_go
 
 	CONTAINS
 
