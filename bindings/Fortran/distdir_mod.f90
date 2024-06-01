@@ -49,6 +49,9 @@ MODULE distdir_mod
 	INTEGER, PARAMETER :: DISTDIR_EXCHANGER_IsendRecv1NoWait  = 6
 	INTEGER, PARAMETER :: DISTDIR_EXCHANGER_IsendRecv2NoWait  = 7
 
+	INTEGER, PARAMETER :: DISTDIR_VERBOSE_TRUE  = 0
+	INTEGER, PARAMETER :: DISTDIR_VERBOSE_FALSE = 1
+
 	! note: this type must not be extended to contain any other
 	! components, its memory pattern has to match void * exactly, which
 	! it does because of C constraints
@@ -186,26 +189,38 @@ MODULE distdir_mod
 			TYPE(c_ptr), VALUE, INTENT(IN) :: dst_data
 		END SUBROUTINE exchanger_go_c
 
+		SUBROUTINE exchanger_go_with_transform_c(exchanger, src_data, dst_data, transform_src, transform_dst) &
+		                                    BIND(C, name='exchanger_go_with_transform')
+			IMPORT :: c_ptr, t_exchanger, c_int
+			IMPLICIT NONE
+			TYPE(t_exchanger),  INTENT(IN) :: exchanger
+			TYPE(c_ptr), VALUE, INTENT(IN) :: src_data
+			TYPE(c_ptr), VALUE, INTENT(IN) :: dst_data
+			INTEGER(c_int),     INTENT(IN) :: transform_src(*)
+			INTEGER(c_int),     INTENT(IN) :: transform_dst(*)
+		END SUBROUTINE exchanger_go_with_transform_c
+
 	END INTERFACE
 
 	INTERFACE new_map
 		MODULE PROCEDURE :: new_map_full
 		MODULE PROCEDURE :: new_map_default
 		MODULE PROCEDURE :: new_map_extend
-	END INTERFACE new_map
+	END INTERFACE
 
 	INTERFACE new_idxlist
 		MODULE PROCEDURE :: new_idxlist_full
 		MODULE PROCEDURE :: new_idxlist_empty
-	END INTERFACE new_idxlist
+	END INTERFACE
 
 	INTERFACE new_exchanger
 		MODULE PROCEDURE :: new_exchanger_full
-	END INTERFACE new_exchanger
+	END INTERFACE
 
 	INTERFACE exchanger_go
-		MODULE PROCEDURE :: exchanger_go_no_offset
-	END INTERFACE exchanger_go
+		MODULE PROCEDURE :: exchanger_go_no_transform
+		MODULE PROCEDURE :: exchanger_go_with_transform
+	END INTERFACE
 
 	CONTAINS
 
@@ -309,12 +324,22 @@ MODULE distdir_mod
 		exchanger%cptr = c_null_ptr
 	END SUBROUTINE delete_exchanger
 
-	SUBROUTINE exchanger_go_no_offset(exchanger, src_data, dst_data)
+	SUBROUTINE exchanger_go_no_transform(exchanger, src_data, dst_data)
 		TYPE(t_exchanger) :: exchanger
 		TYPE(c_ptr)       :: src_data
 		TYPE(c_ptr)       :: dst_data
 
 		CALL exchanger_go_c(exchanger, src_data, dst_data)
-	END SUBROUTINE exchanger_go_no_offset
+	END SUBROUTINE exchanger_go_no_transform
+
+	SUBROUTINE exchanger_go_with_transform(exchanger, src_data, dst_data, transform_src, transform_dst)
+		TYPE(t_exchanger)   :: exchanger
+		TYPE(c_ptr)         :: src_data
+		TYPE(c_ptr)         :: dst_data
+		INTEGER, INTENT(IN) :: transform_src(:)
+		INTEGER, INTENT(IN) :: transform_dst(:)
+
+		CALL exchanger_go_with_transform_c(exchanger, src_data, dst_data, transform_src, transform_dst)
+	END SUBROUTINE exchanger_go_with_transform
 
 END MODULE distdir_mod
