@@ -66,6 +66,18 @@ t_exchanger * t_exchanger_f2c(struct t_exchanger_f *p)
 	return p->cptr;
 }
 
+void new_group_f(MPI_Fint *new_comm_f ,
+                 MPI_Fint  work_comm_f,
+                 int       id       ) {
+
+	
+	MPI_Comm *new_comm_c = (MPI_Comm *)malloc(sizeof(MPI_Comm));
+	MPI_Comm work_comm_c = MPI_Comm_f2c(work_comm_f);
+	new_group(new_comm_c, work_comm_c, id);
+	*new_comm_f = MPI_Comm_c2f(*new_comm_c);
+	free(new_comm_c);
+}
+
 t_map * new_map_f(struct t_idxlist_f *src_idxlist_f,
                   struct t_idxlist_f *dst_idxlist_f,
                   int stride,

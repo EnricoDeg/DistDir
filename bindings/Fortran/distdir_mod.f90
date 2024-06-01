@@ -92,6 +92,15 @@ MODULE distdir_mod
 			IMPLICIT NONE
 		END SUBROUTINE distdir_finalize_c
 
+		SUBROUTINE new_group_c(new_comm, work_comm, id) &
+		                       BIND(C, name='new_group_f')
+			IMPORT :: c_int
+			IMPLICIT NONE
+			INTEGER(c_int), INTENT(OUT) :: new_comm
+			INTEGER(c_int), VALUE, INTENT(IN) :: work_comm
+			INTEGER(c_int), VALUE, INTENT(IN) :: id
+		END SUBROUTINE new_group_c
+
 		SUBROUTINE set_config_exchanger_c(exchanger_type) &
 		                                  BIND(C, name='set_config_exchanger')
 			IMPORT :: c_int
@@ -247,6 +256,14 @@ MODULE distdir_mod
 
 		CALL distdir_finalize_c()
 	END SUBROUTINE distdir_finalize
+
+	SUBROUTINE new_group(new_comm, work_comm, id)
+		INTEGER, INTENT(OUT) :: new_comm
+		INTEGER, INTENT(IN)  :: work_comm
+		INTEGER, INTENT(IN)  :: id
+
+		CALL new_group_c(new_comm, work_comm, id)
+	END SUBROUTINE new_group
 
 	SUBROUTINE set_config_exchanger(exchanger_type)
 		INTEGER, INTENT(IN) :: exchanger_type
