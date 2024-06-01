@@ -99,7 +99,7 @@ PROGRAM example_basic3
 	IF (world_role == I_SRC) THEN
 		DO j = 1, NLEVS
 			DO i = 1, npoints_local
-				data(i+j*npoints_local) = (i-1) + (j-1) * npoints_local + npoints_local * NLEVS * world_rank;
+				data(i+(j-1)*npoints_local) = (i-1) + (j-1) * npoints_local + npoints_local * NLEVS * world_rank;
 			END DO
 		END DO
 	END IF
