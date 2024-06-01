@@ -65,6 +65,7 @@ cdef extern from "src/distdir.h":
 	void distdir_finalize()
 	void set_config_exchanger(int exchanger_type)
 	void set_config_verbose(int verbose_type)
+	void new_group(libmpi.MPI_Comm * new_comm, libmpi.MPI_Comm work_comm, int id)
 
 	ctypedef struct t_idxlist:
 		int  count
@@ -140,6 +141,8 @@ cdef extern from "src/distdir.h":
 
 	t_exchanger* new_exchanger(t_map *map, libmpi.MPI_Datatype type, distdir_hardware hw)
 	void exchanger_go(t_exchanger* exchanger, void *src_data, void* dst_data)
+	void exchanger_go_with_transform(t_exchanger* exchanger, void *src_data, void* dst_data,
+	                                 int *transform_src, int *transform_dst)
 	void delete_exchanger(t_exchanger * exchanger)
 
 class pydistdir_verbose(IntEnum):
@@ -163,6 +166,9 @@ cdef class distdir:
 
 	def verbose(self, verbose_type):
 		set_config_verbose(verbose_type)
+
+	def group(self, MPI.Comm new_comm, MPI.Comm work_comm, id):
+		new_group(&new_comm.ob_mpi, work_comm.ob_mpi, id)
 
 if Py_AtExit(distdir_finalize) < 0:
 	print(
@@ -239,3 +245,11 @@ cdef class exchanger:
 		cdef double[::1] src_data_view = _np.ascontiguousarray(src_data, dtype=_np.double)
 		cdef double[::1] dst_data_view = _np.ascontiguousarray(dst_data, dtype=_np.double)
 		exchanger_go((<exchanger?>self)._exchanger, <void*> &src_data_view[0], <void*> &dst_data_view[0])
+
+	def go(self, src_data, dst_data, transform_src, transform_dst):
+		cdef int[::1] transform_src_view = _np.ascontiguousarray(transform_src, dtype=_np.int32)
+		cdef int[::1] transform_dst_view = _np.ascontiguousarray(transform_dst, dtype=_np.int32)
+		cdef double[::1] src_data_view   = _np.ascontiguousarray(src_data, dtype=_np.double)
+		cdef double[::1] dst_data_view   = _np.ascontiguousarray(dst_data, dtype=_np.double)
+		exchanger_go_with_transform((<exchanger?>self)._exchanger, <void*> &src_data_view[0], <void*> &dst_data_view[0],
+		             &transform_src_view[0], &transform_dst_view[0])
