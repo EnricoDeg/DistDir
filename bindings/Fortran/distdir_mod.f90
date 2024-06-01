@@ -190,7 +190,7 @@ MODULE distdir_mod
 		END SUBROUTINE exchanger_go_c
 
 		SUBROUTINE exchanger_go_with_transform_c(exchanger, src_data, dst_data, transform_src, transform_dst) &
-		                                    BIND(C, name='exchanger_go_with_transform')
+		                                    BIND(C, name='exchanger_go_with_transform_f')
 			IMPORT :: c_ptr, t_exchanger, c_int
 			IMPLICIT NONE
 			TYPE(t_exchanger),  INTENT(IN) :: exchanger

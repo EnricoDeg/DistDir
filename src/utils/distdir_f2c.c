@@ -93,3 +93,11 @@ void exchanger_go_f(struct t_exchanger_f *exchanger,
                     void *dst_data) {
 	exchanger_go(exchanger->cptr, src_data, dst_data);
 }
+
+void exchanger_go_with_transform_f(struct t_exchanger_f *exchanger,
+                                   void *src_data,
+                                   void *dst_data,
+                                   int *transform_src,
+                                   int *transform_dst) {
+	exchanger_go_with_transform(exchanger->cptr, src_data, dst_data, transform_src, transform_dst);
+}
