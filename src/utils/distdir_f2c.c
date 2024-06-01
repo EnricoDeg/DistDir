@@ -75,6 +75,11 @@ t_map * new_map_f(struct t_idxlist_f *src_idxlist_f,
 	return new_map(src_idxlist_f->cptr, dst_idxlist_f->cptr, stride, comm_c);
 }
 
+t_map * extend_map_3d_f(struct t_map_f *map2d  ,
+                      int             nlevels) {
+	return extend_map_3d(map2d->cptr, nlevels);
+}
+
 t_exchanger* new_exchanger_f(struct t_map_f *map    ,
                              MPI_Fint        type_f ,
                              int             hw     ) {

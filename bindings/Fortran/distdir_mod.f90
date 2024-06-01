@@ -138,6 +138,15 @@ MODULE distdir_mod
 			TYPE(c_ptr) :: map_ptr
 		END FUNCTION new_map_c
 
+		FUNCTION extend_map_3d_c(map2d, nlevels) &
+		                         BIND(C, name='extend_map_3d_f') RESULT(map_ptr)
+			IMPORT :: c_ptr, t_map, c_int
+			IMPLICIT NONE
+			TYPE(t_map),  INTENT(IN) :: map2d
+			INTEGER(c_int), VALUE, INTENT(IN) :: nlevels
+			TYPE(c_ptr) :: map_ptr
+		END FUNCTION extend_map_3d_c
+
 		SUBROUTINE delete_map_c(ptr) BIND(C, name='delete_map')
 			IMPORT :: c_ptr
 			IMPLICIT NONE
@@ -182,6 +191,7 @@ MODULE distdir_mod
 	INTERFACE new_map
 		MODULE PROCEDURE :: new_map_full
 		MODULE PROCEDURE :: new_map_default
+		MODULE PROCEDURE :: new_map_extend
 	END INTERFACE new_map
 
 	INTERFACE new_idxlist
@@ -261,6 +271,14 @@ MODULE distdir_mod
 		INTEGER :: stride = -1
 		map = t_map_c2f(new_map_c(src_idxlist, dst_idxlist, stride, comm))
 	END SUBROUTINE new_map_default
+
+	SUBROUTINE new_map_extend(map3d, map2d, nlevels)
+		TYPE(t_map), INTENT(OUT) :: map3d
+		TYPE(t_map), INTENT(IN)  :: map2d
+		INTEGER,     INTENT(IN)  :: nlevels
+
+		map3d = t_map_c2f(extend_map_3d_c(map2d, nlevels))
+	END SUBROUTINE new_map_extend
 
 	SUBROUTINE delete_map(map)
 		type(t_map), INTENT(INOUT) :: map
