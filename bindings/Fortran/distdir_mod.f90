@@ -92,6 +92,20 @@ MODULE distdir_mod
 			IMPLICIT NONE
 		END SUBROUTINE distdir_finalize_c
 
+		SUBROUTINE set_config_exchanger_c(exchanger_type) &
+		                                  BIND(C, name='set_config_exchanger')
+			IMPORT :: c_int
+			IMPLICIT NONE
+			INTEGER(c_int), VALUE, INTENT(IN) :: exchanger_type
+		END SUBROUTINE set_config_exchanger_c
+
+		SUBROUTINE set_config_verbose_c(verbose_type) &
+		                                BIND(C, name='set_config_verbose')
+			IMPORT :: c_int
+			IMPLICIT NONE
+			INTEGER(c_int), VALUE, INTENT(IN) :: verbose_type
+		END SUBROUTINE set_config_verbose_c
+
 		! this function must not be implemented in Fortran because
 		! PGI 11.x chokes on that
 		FUNCTION t_idxlist_f2c(idxlist) BIND(c, name='t_idxlist_f2c') RESULT(p)
@@ -233,6 +247,18 @@ MODULE distdir_mod
 
 		CALL distdir_finalize_c()
 	END SUBROUTINE distdir_finalize
+
+	SUBROUTINE set_config_exchanger(exchanger_type)
+		INTEGER, INTENT(IN) :: exchanger_type
+
+		CALL set_config_exchanger_c(exchanger_type)
+	END SUBROUTINE set_config_exchanger
+
+	SUBROUTINE set_config_verbose(verbose_type)
+		INTEGER, INTENT(IN) :: verbose_type
+
+		CALL set_config_verbose_c(verbose_type)
+	END SUBROUTINE set_config_verbose
 
 	FUNCTION t_idxlist_c2f(idxlist) RESULT(p)
 		TYPE(c_ptr), INTENT(in) :: idxlist
