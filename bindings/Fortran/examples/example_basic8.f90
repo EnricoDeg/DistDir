@@ -87,7 +87,6 @@ PROGRAM example_basic8
 			END DO
 		END DO
 	END IF
-	write(*,*) 'list:', list(:)
 
 	CALL new_idxlist(idxlist, list, npoints_local)
 	CALL new_idxlist(idxlist_empty)
@@ -109,7 +108,6 @@ PROGRAM example_basic8
 				END DO
 			END DO
 		END DO
-		write(*,*) transform(:)
 	END IF
 
 	ALLOCATE(data(npoints_local*NLEVS))
@@ -123,11 +121,9 @@ PROGRAM example_basic8
 				END DO
 			END DO
 		END DO
-		write(*,*) "data = ", data(:)
 	END IF
 
 	CALL new_exchanger(exchanger, map, type, hw)
-
 
 	IF (world_role == I_SRC) THEN
 		CALL exchanger_go(exchanger, C_LOC(data(1)), C_LOC(data(1)), transform, transform);
