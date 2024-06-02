@@ -82,6 +82,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga27a3c56330b0f5797ec2d0e4d88247c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sorting.html#ga27a3c56330b0f5797ec2d0e4d88247c3">quickSort</a> (int *arr, int *arr_idx, int l, int h)</td></tr>
 <tr class="memdesc:ga27a3c56330b0f5797ec2d0e4d88247c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort array.  <a href="group__sorting.html#ga27a3c56330b0f5797ec2d0e4d88247c3">More...</a><br /></td></tr>
 <tr class="separator:ga27a3c56330b0f5797ec2d0e4d88247c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaec2cefb5dc70a583985c6dec5e70f7bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sorting.html#gaec2cefb5dc70a583985c6dec5e70f7bb">timSort</a> (int *arr, int n)</td></tr>
+<tr class="memdesc:gaec2cefb5dc70a583985c6dec5e70f7bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort array.  <a href="group__sorting.html#gaec2cefb5dc70a583985c6dec5e70f7bb">More...</a><br /></td></tr>
+<tr class="separator:gaec2cefb5dc70a583985c6dec5e70f7bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Sorting algorithms used internally by DistDir library </p>
@@ -287,6 +290,44 @@ Functions</h2></td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">arr</td><td>Array to be sorted </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">l</td><td>First index of the array to be sorted </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">r</td><td>Last index of the array to be sorted </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="gaec2cefb5dc70a583985c6dec5e70f7bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaec2cefb5dc70a583985c6dec5e70f7bb">&#9670;&nbsp;</a></span>timSort()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void timSort </td>
+          <td>(</td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>arr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sort array. </p>
+<p>Sort array using timsort algorithm using subarrays of size 32</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">arr</td><td>Array to be sorted </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">n</td><td>Length of the array </td></tr>
   </table>
   </dd>
 </dl>
