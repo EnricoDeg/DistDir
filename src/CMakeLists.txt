@@ -23,6 +23,7 @@ set(SOURCE_EXE  ${SOURCE_CUDA}
 	        setup/setting.c
 	        sort/quicksort.c
                 sort/mergesort.c
+                sort/timsort.c
                 setup/group.c
                 core/indices/idxlist.c
 		core/algorithm/backend/backend.c
