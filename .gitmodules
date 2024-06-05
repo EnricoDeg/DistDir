@@ -1,0 +1,3 @@
+[submodule "bindings/Julia/DistDir.jl"]
+	path = bindings/Julia/DistDir.jl
+	url = https://github.com/EnricoDeg/DistDir.jl.git
