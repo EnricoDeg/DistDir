@@ -42,10 +42,11 @@ DistDir.initialize()
 DistDir.set_config_exchanger(DistDir.IsendIrecv2)
 DistDir.set_config_verbose(DistDir.verbose_true)
 
+size :: Int32 = 10
+
 work_comm = MPI.COMM_WORLD
 rank = MPI.Comm_rank(work_comm)
 print("Hello world, I am rank $(MPI.Comm_rank(work_comm)) of $(MPI.Comm_size(work_comm))\n")
-
 i :: Int = 0
 if rank < 2
 	id = 0
@@ -57,10 +58,29 @@ new_comm = MPI.COMM_NULL
 DistDir.new_group(new_comm, work_comm, id)
 print("Hello world, I am rank $(MPI.Comm_rank(new_comm)) of $(MPI.Comm_size(new_comm))\n")
 
-list = Vector{Int32}([0, 1, 2, 3, 4, 5])
+list = Vector{Int32}([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 idxlist::DistDir.t_idxlist_jl = DistDir.new_idxlist(list)
 idxlist_empty::DistDir.t_idxlist_jl = DistDir.new_idxlist()
 
+a = Vector{Float64}(undef, size)
+for i in eachindex(a)
+	a[i] = 2 * i * (1-rank)
+end
+
+if rank < 1
+	map :: DistDir.t_map_jl = DistDir.new_map(idxlist, idxlist_empty, work_comm)
+else
+	map :: DistDir.t_map_jl = DistDir.new_map(idxlist_empty, idxlist, work_comm)
+end
+
+exchanger :: DistDir.t_exchanger_jl = DistDir.new_exchanger(map, MPI.Datatype(Float64))
+
+DistDir.exchanger_go(exchanger, a, a)
+
+println(a)
+
+DistDir.delete_exchanger(exchanger)
+DistDir.delete_map(map)
 DistDir.delete_idxlist(idxlist_empty)
 DistDir.delete_idxlist(idxlist)
 
