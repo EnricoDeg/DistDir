@@ -230,8 +230,12 @@ cdef class map:
 cdef class exchanger:
 	cdef t_exchanger *_exchanger
 
-	def __init__(self, p_map, hw):
-		cdef distdir_hardware hardware_type = hw
+	def __init__(self, p_map, hw=None):
+		cdef distdir_hardware hardware_type
+		if hw is None:
+			hardware_type = pydistdir_hardware.CPU
+		else:
+			hardware_type = hw
 		cdef MPI.Datatype type = MPI.DOUBLE
 		self._exchanger = new_exchanger((<map?>p_map)._map, type.ob_mpi, hardware_type)
 
