@@ -296,4 +296,103 @@ makes it slimmer.
 
 All the C examples provided in the `examples` folder are replicated in Fortran in the `bindings/Fortran/examples` folder.
 
+\section julia Julia
+
+The development of Julia bindings has followed a different strategy. Since Julia development is standardized,
+a <a href="https://github.com/EnricoDeg/DistDir.jl">DistDir.jl</a> package was created which is a submodule in the main 
+DistDir repository. Since Julia is just in time compiled, the module needs to open the library (using \c dlopen),
+so `LOAD_PATH` or `LD_LIBRARY_PATH` needs to be set to the location where the library is installed. In addition to that, 
+the `JULIA_LOAD_PATH` needs to be set to the location of the `DistDir.jl` folder in order to be able to import the module
+in your Julia application. This step is needed because `DistDir.jl` is not an official package.
+
+The library is initialized and finalized calling the following functions
+
+\code
+DistDir.initialize()
+...
+DistDir.finalize()
+\endcode
+
+A \c idxlist object can be created passing a integer vector with the list of global indices
+
+\code
+idxlist::DistDir.t_idxlist_jl = DistDir.new_idxlist(list)
+\endcode
+
+where `idxlist` is a variable of type `t_idxlist_jl`.
+
+An empty idxlist object can be generated without passing any list
+
+\code
+idxlist_empty::DistDir.t_idxlist_jl = DistDir.new_idxlist()
+\endcode
+
+A \c map object can be created by passing the source and destination \c idxlist objects and
+the MPI communicator
+
+\code
+map :: DistDir.t_map_jl = DistDir.new_map(idxlist, idxlist_empty, MPI.COMM_WORLD)
+\endcode
+
+where `map` is a variable of type `t_map_jl`. In addition the \c stride argument can be passed
+
+\code
+map :: DistDir.t_map_jl = DistDir.new_map(idxlist, idxlist_empty, stride, MPI.COMM_WORLD)
+\endcode
+
+In case the \c t_map object is generated expanding a 2D object, the constructor can be used as follows
+
+\code
+map :: DistDir.t_map_jl = DistDir.new_map(map2d, nlevels)
+\endcode
+
+where the \c map2d is a \c t_map_jl variable.
+
+A \c exchanger object can be generated passing the \c map object, the hardware type and 
+the MPI datatype
+
+\code
+exchanger :: DistDir.t_exchanger_jl = DistDir.new_exchanger(map, MPI.Datatype(Float64), hw)
+\endcode
+
+The \c exchanger variable is of type \c t_exchanger_jl. The type is an MPI datatype, like MPI.Datatype(Float64) for 
+doubles, and the hardware is an integer which can be defined using the following enumerator:
+
+\code
+@enum distdir_hardware begin
+	CPU = 0
+	GPU_NVIDIA = 1
+	GPU_AMD = 2
+end
+\endcode
+
+The default hardware is the CPU, so the exchanger can also be created as follows
+
+\code
+exchanger :: DistDir.t_exchanger_jl = DistDir.new_exchanger(map, MPI.Datatype(Float64))
+\endcode
+
+The data to be exchanger has to be defined in a vector. Finally, the \c exchanger_go function can be called
+
+\code
+DistDir.exchanger_go(exchanger, data, data)
+\endcode
+
+If a transformation is provided on the data layout
+
+\code
+DistDir.exchanger_go(exchanger, data, data, transform_src, transform_dst)
+\endcode
+
+where `transform_src` and `transform_dst` are integer vectors.
+
+Finally, a Julia script can be launched as follows:
+
+\code
+mpiexecjl -n 4 julia example_basic1.jl
+\endcode
+
+The Julia interface is very comparable to the Fortran one. All the C examples provided in the `examples` folder 
+are replicated in Fortran in the `bindings/Julia/examples` folder.
+
 */
