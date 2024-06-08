@@ -114,4 +114,93 @@ minor limitations which will be tackled in future developments.
 
 All the C examples provided in the `examples` folder are replicated in python in the `bindings/python/examples` folder.
 
+\section cpp C++
+
+A tiny wrapper around the library is generated to provide C++ bindings. This is not strictly necessary because a C library
+can be called directly from C++, but since C++ is based on object oriented programming, a class-based interface
+is provided for the C library. The header file `distdir.hpp` should be included. This is installed in the `include`
+folder by adding \c -DENABLE_CXX=ON. The classed belonging to the C++ interface are all defined in \c distdir namespace.
+
+The library is initialized by calling the constructor of the `distdir` class:
+
+\code
+distdir::distdir::Ptr distdir( new distdir::distdir() );
+\endcode
+
+And it is finalized by calling the destructor:
+
+\code
+distdir.reset();
+\endcode
+
+A \c idxlist object can be created passying a \c vector to the constructor:
+
+\code
+distdir::idxlist::Ptr idxlist( new distdir::idxlist(list) );
+\endcode
+
+where `list` is a `std::vector<int>`.
+
+An empty \c idxlist object can be created not passing any array to the constructor
+
+\code
+distdir::idxlist::Ptr idxlist_empty( new distdir::idxlist() );
+\endcode
+
+A \c map object can be created by passing the source and destination \c idxlist objects shared pointers and
+the MPI communicator
+
+\code
+distdir::map::Ptr map( new distdir::map(idxlist, idxlist_empty, MPI_COMM_WORLD) );
+\endcode
+
+In addition the \c stride argument can be passed
+
+\code
+distdir::map::Ptr map( new distdir::map(idxlist, idxlist_empty, stride, MPI_COMM_WORLD) );
+\endcode
+
+In case the \c t_map object is generated expanding a 2D object, the constructor can be used as follows
+
+\code
+distdir::map::Ptr map( new distdir::map(map2d, nlevels) );
+\endcode
+
+where the \c map2d is a shared pointer to a map object.
+
+A \c exchanger object can be generated passing the \c map object shared pointer, the hardware type and 
+the MPI datatype
+
+\code
+distdir::exchanger<int>::Ptr exchanger ( new distdir::exchanger<int>(map, MPI_INT, CPU) );
+\endcode
+
+The \c exchanger class is templated, in the example it is specified which is used for \c int types and 
+the type has to match the MPI datatype passed to the constructor. The hardware type is specified using 
+the \c distdir_hardware enumerator defined in the C library. If not specified, the default hardware type 
+is the CPU:
+
+\code
+distdir::exchanger<int>::Ptr exchanger ( new distdir::exchanger<int>(map, MPI_INT) );
+\endcode
+
+The data to be exchanger has to be defined in a \c vector. Finally, the \c go method of the \c exchanger class
+can be called
+
+\code
+exchanger->go(data, data);
+\endcode
+
+If a transformation is provided on the data layout
+
+\code
+exchanger->go(data, data, transform_src, transform_dst);
+\endcode
+
+where `transform_src` and `transform_dst` are vector of type \c int.
+
+If compared with the C API described in the \ref start page, the C++ interface has an object oriented design.
+
+All the C examples provided in the `examples` folder are replicated in python in the `bindings/C++/examples` folder.
+
 */
