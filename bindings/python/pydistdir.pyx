@@ -241,15 +241,19 @@ cdef class exchanger:
 	def cleanup(self):
 		delete_exchanger((<exchanger?>self)._exchanger)
 
-	def go(self, src_data, dst_data):
-		cdef double[::1] src_data_view = _np.ascontiguousarray(src_data, dtype=_np.double)
-		cdef double[::1] dst_data_view = _np.ascontiguousarray(dst_data, dtype=_np.double)
-		exchanger_go((<exchanger?>self)._exchanger, <void*> &src_data_view[0], <void*> &dst_data_view[0])
-
-	def go(self, src_data, dst_data, transform_src, transform_dst):
-		cdef int[::1] transform_src_view = _np.ascontiguousarray(transform_src, dtype=_np.int32)
-		cdef int[::1] transform_dst_view = _np.ascontiguousarray(transform_dst, dtype=_np.int32)
-		cdef double[::1] src_data_view   = _np.ascontiguousarray(src_data, dtype=_np.double)
-		cdef double[::1] dst_data_view   = _np.ascontiguousarray(dst_data, dtype=_np.double)
-		exchanger_go_with_transform((<exchanger?>self)._exchanger, <void*> &src_data_view[0], <void*> &dst_data_view[0],
-		             &transform_src_view[0], &transform_dst_view[0])
+	def go(self, src_data, dst_data, transform_src=None, transform_dst=None):
+		cdef int[::1] transform_src_view
+		cdef int[::1] transform_dst_view
+		cdef double[::1] src_data_view
+		cdef double[::1] dst_data_view
+		if transform_src is None or transform_dst is None:
+			src_data_view   = _np.ascontiguousarray(src_data, dtype=_np.double)
+			dst_data_view   = _np.ascontiguousarray(dst_data, dtype=_np.double)
+			exchanger_go((<exchanger?>self)._exchanger, <void*> &src_data_view[0], <void*> &dst_data_view[0])
+		else:
+			transform_src_view = _np.ascontiguousarray(transform_src, dtype=_np.int32)
+			transform_dst_view = _np.ascontiguousarray(transform_dst, dtype=_np.int32)
+			src_data_view   = _np.ascontiguousarray(src_data, dtype=_np.double)
+			dst_data_view   = _np.ascontiguousarray(dst_data, dtype=_np.double)
+			exchanger_go_with_transform((<exchanger?>self)._exchanger, <void*> &src_data_view[0], <void*> &dst_data_view[0],
+			             &transform_src_view[0], &transform_dst_view[0])
