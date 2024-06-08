@@ -229,14 +229,20 @@ cdef class map:
 
 cdef class exchanger:
 	cdef t_exchanger *_exchanger
+	cdef MPI.Datatype _type
 
-	def __init__(self, p_map, hw=None):
+	def __init__(self, p_map, hw=None, typein=None):
 		cdef distdir_hardware hardware_type
 		if hw is None:
 			hardware_type = pydistdir_hardware.CPU
 		else:
 			hardware_type = hw
 		cdef MPI.Datatype type = MPI.DOUBLE
+		if typein is None:
+			type = MPI.DOUBLE
+		else:
+			type = typein
+		self._type = type
 		self._exchanger = new_exchanger((<map?>p_map)._map, type.ob_mpi, hardware_type)
 
 	def __del__(self):
@@ -248,16 +254,55 @@ cdef class exchanger:
 	def go(self, src_data, dst_data, transform_src=None, transform_dst=None):
 		cdef int[::1] transform_src_view
 		cdef int[::1] transform_dst_view
-		cdef double[::1] src_data_view
-		cdef double[::1] dst_data_view
+		cdef double[::1] src_data_view_double
+		cdef double[::1] dst_data_view_double
+		cdef int[::1] src_data_view_int
+		cdef int[::1] dst_data_view_int
+		cdef float[::1] src_data_view_float
+		cdef float[::1] dst_data_view_float
 		if transform_src is None or transform_dst is None:
-			src_data_view   = _np.ascontiguousarray(src_data, dtype=_np.double)
-			dst_data_view   = _np.ascontiguousarray(dst_data, dtype=_np.double)
-			exchanger_go((<exchanger?>self)._exchanger, <void*> &src_data_view[0], <void*> &dst_data_view[0])
+			if self._type == MPI.DOUBLE:
+				src_data_view_double   = _np.ascontiguousarray(src_data, dtype=_np.double)
+				dst_data_view_double   = _np.ascontiguousarray(dst_data, dtype=_np.double)
+				exchanger_go((<exchanger?>self)._exchanger,
+				              <void*> &src_data_view_double[0],
+				              <void*> &dst_data_view_double[0])
+			elif self._type == MPI.INT:
+				src_data_view_int   = _np.ascontiguousarray(src_data, dtype=_np.int32)
+				dst_data_view_int   = _np.ascontiguousarray(dst_data, dtype=_np.int32)
+				exchanger_go((<exchanger?>self)._exchanger,
+				              <void*> &src_data_view_int[0],
+				              <void*> &dst_data_view_int[0])
+			elif self._type == MPI.FLOAT:
+				src_data_view_float   = _np.ascontiguousarray(src_data, dtype=_np.single)
+				dst_data_view_float   = _np.ascontiguousarray(dst_data, dtype=_np.single)
+				exchanger_go((<exchanger?>self)._exchanger,
+				              <void*> &src_data_view_float[0],
+				              <void*> &dst_data_view_float[0])
 		else:
 			transform_src_view = _np.ascontiguousarray(transform_src, dtype=_np.int32)
 			transform_dst_view = _np.ascontiguousarray(transform_dst, dtype=_np.int32)
-			src_data_view   = _np.ascontiguousarray(src_data, dtype=_np.double)
-			dst_data_view   = _np.ascontiguousarray(dst_data, dtype=_np.double)
-			exchanger_go_with_transform((<exchanger?>self)._exchanger, <void*> &src_data_view[0], <void*> &dst_data_view[0],
-			             &transform_src_view[0], &transform_dst_view[0])
+			if self._type == MPI.DOUBLE:
+				src_data_view_double   = _np.ascontiguousarray(src_data, dtype=_np.double)
+				dst_data_view_double   = _np.ascontiguousarray(dst_data, dtype=_np.double)
+				exchanger_go_with_transform((<exchanger?>self)._exchanger,
+				                             <void*> &src_data_view_double[0],
+				                             <void*> &dst_data_view_double[0],
+				                                     &transform_src_view[0],
+				                                     &transform_dst_view[0])
+			elif self._type == MPI.INT:
+				src_data_view_int   = _np.ascontiguousarray(src_data, dtype=_np.int32)
+				dst_data_view_int   = _np.ascontiguousarray(dst_data, dtype=_np.int32)
+				exchanger_go_with_transform((<exchanger?>self)._exchanger,
+				                             <void*> &src_data_view_int[0],
+				                             <void*> &dst_data_view_int[0],
+				                                     &transform_src_view[0],
+				                                     &transform_dst_view[0])
+			elif self._type == MPI.FLOAT:
+				src_data_view_float   = _np.ascontiguousarray(src_data, dtype=_np.single)
+				dst_data_view_float   = _np.ascontiguousarray(dst_data, dtype=_np.single)
+				exchanger_go_with_transform((<exchanger?>self)._exchanger,
+				                             <void*> &src_data_view_float[0],
+				                             <void*> &dst_data_view_float[0],
+				                                     &transform_src_view[0],
+				                                     &transform_dst_view[0])
