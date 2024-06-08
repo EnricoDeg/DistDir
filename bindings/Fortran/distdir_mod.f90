@@ -240,6 +240,7 @@ MODULE distdir_mod
 
 	INTERFACE new_exchanger
 		MODULE PROCEDURE :: new_exchanger_full
+		MODULE PROCEDURE :: new_exchanger_cpu
 	END INTERFACE
 
 	INTERFACE exchanger_go
@@ -374,6 +375,14 @@ MODULE distdir_mod
 
 		exchanger = t_exchanger_c2f(new_exchanger_c(map, type, hw))
 	END SUBROUTINE new_exchanger_full
+
+	SUBROUTINE new_exchanger_cpu(exchanger, map, type)
+		type(t_exchanger), INTENT(OUT) :: exchanger
+		type(t_map),       INTENT(IN)  :: map
+		INTEGER,           INTENT(IN)  :: type
+
+		exchanger = t_exchanger_c2f(new_exchanger_c(map, type, DISTDIR_HW_CPU))
+	END SUBROUTINE new_exchanger_cpu
 
 	SUBROUTINE delete_exchanger(exchanger)
 		type(t_exchanger), INTENT(INOUT) :: exchanger
