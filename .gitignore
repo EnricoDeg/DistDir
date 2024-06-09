@@ -14,6 +14,7 @@ examples/example_basic8
 examples/example_multi_grid1
 bindings/C++/examples/example_basic1cpp
 bindings/C++/examples/example_basic2cpp
+bindings/C++/examples/example_basic3cpp
 bindings/Fortran/examples/example_basic1fc
 bindings/Fortran/examples/example_basic2fc
 bindings/Fortran/examples/example_basic3fc
