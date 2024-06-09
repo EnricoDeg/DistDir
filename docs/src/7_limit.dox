@@ -1,10 +1,8 @@
 /**
  * \page limit Limitations
 
- - The global indices provided to build the t_idxlist structure have to be in ascending order
+ - The global indices provided to build the \c t_idxlist structure have to be in ascending order
 
  - The exchange supported by the library has to involve the all domain, i.e. halo exchange is not supported
-
- - The python bindings only support the exchange of double type fields
 
 */
