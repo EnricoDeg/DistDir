@@ -37,6 +37,11 @@ target_link_libraries (example_basic7cpp distdir ${MPI_CXX_LIBRARIES})
 target_include_directories(example_basic7cpp PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(example_basic7cpp PRIVATE ${MPI_CXX_INCLUDE_DIRS})
 
+add_executable(example_basic8cpp example_basic8.cpp)
+target_link_libraries (example_basic8cpp distdir ${MPI_CXX_LIBRARIES})
+target_include_directories(example_basic8cpp PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(example_basic8cpp PRIVATE ${MPI_CXX_INCLUDE_DIRS})
+
 install (TARGETS
   example_basic1cpp # executables
   RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/C++/examples)
@@ -63,5 +68,9 @@ install (TARGETS
 
 install (TARGETS
   example_basic7cpp # executables
+  RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/C++/examples)
+
+install (TARGETS
+  example_basic8cpp # executables
   RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/C++/examples)
 
