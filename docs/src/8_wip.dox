@@ -3,12 +3,6 @@
 
 \tableofcontents
 
-\section bindings_wip Bindings
-
- - Fortran
- - C++
- - Julia
-
 \section cicd_wip CI/CD
 
 Improve CI/CD with different stages:
