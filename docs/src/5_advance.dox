@@ -9,58 +9,50 @@ When the library is initialized calling \c distdir_initialize, a \c t_config str
 It contains the settings of the library which can be specified as environment variables or using API functions.
 At the moment, the following settings are supported:
 
- - hardware type: it can be specified using the environment variable \c DISTDIR_HARDWARE or
- the API function \c set_config_hardware
-
  - exchanger type: it can be specified using the environment variable \c DISTDIR_EXCHANGER or
  the API function \c set_config_exchanger
 
  - verbose mode: it can be specified using the environment variable \c DISTDIR_VERBOSE or
  the API function \c set_config_verbose
 
-The hardware type specifies if the MPI ranks are running on CPU or GPU. An enumerator is defined internally:
-
- - \c CPU=0
-
- - \c GPU_NVIDIA=1
-
- - \c GPU_AMD=2
-
-The \c CPU is the default. The environment variable would set this parameter globally, while the API allows
-to set it per MPI rank. This means that a group of MPI processes can run on the GPU and send data to a group of 
-MPI processes running on the CPU. In this case, the API function must be used and it can be set per t_map, before
-the call to \c new_map.
-
 The exchanger type specifies the type of exchange. An enumerator is defined internally:
 
- - \c IsendIrecv=0 : each buffer to be sent is filled and then sent with a call to \c MPI_Isend,
+ - \c IsendIrecv1=0 : each buffer to be sent is filled and then sent with a call to \c MPI_Isend,
 while all the buffers to be received are received with a call to \c MPI_Irecv, then \c MPI_Waitall is called
 and the received buffers are unpacked into the field data array
 
- - \c IsendRecv1=1 : each buffer to be sent is filled and then sent with a call to \c MPI_Isend, 
- then \c MPI_Waitalc l is called. Finally, all the buffers to be received are received with a call to \c MPI_Recv 
+ - \c IsendIrecv2=1 : all buffers to be sent are first filled and then sent with calls to \c MPI_Isend,
+while all the buffers to be received are received with calls to \c MPI_Irecv, then \c MPI_Waitall is called
+and the received buffers are unpacked into the field data array
+
+ - \c IsendRecv1=2 : each buffer to be sent is filled and then sent with a call to \c MPI_Isend, 
+ then \c MPI_Waitall l is called. Finally, all the buffers to be received are received with a call to \c MPI_Recv 
  and as the final step all the received buffers are unpacked into the field data array
 
- - \c IsendRecv2=2 : each buffer to be sent is filled and then sent with a call to \c MPI_Isend,
+ - \c IsendRecv2=3 : each buffer to be sent is filled and then sent with a call to \c MPI_Isend,
  then \c MPI_Waitall is called. Finally, all the buffers to be received are received with a call to \c MPI_Recv
  and immediately unpacked into the field data array. 
 
- - \c IsendIrecvNoWait=3 : same as \c IsendIrecv but the sending messages are waited during the next call to 
- the function or during the call to \c distdir_finalize. It can be used only when the sending processes and the 
+ - \c IsendIrecv1NoWait=4 : same as \c IsendIrecv1 but the sending messages are waited during the next call to 
+ the function or during the call to \c delete_exchanger. It can be used only when the sending processes and the 
  receiving processes do not overlap, i.e. concurrent implementations.
 
- - \c IsendRecv1NoWait=4 : same as \c IsendRecv1 but the sending messages are waited during the next call to 
- the function or during the call to \c distdir_finalize. It can be used only when the sending processes and the 
+ - \c IsendIrecv2NoWait=5 : same as \c IsendIrecv2 but the sending messages are waited during the next call to 
+ the function or during the call to \c delete_exchanger. It can be used only when the sending processes and the 
  receiving processes do not overlap, i.e. concurrent implementations.
 
- - \c IsendRecv2NoWait=5 : same as \c IsendRecv2 but the sending messages are waited during the next call to 
- the function or during the call to \c distdir_finalize. It can be used only when the sending processes and the 
+ - \c IsendRecv1NoWait=6 : same as \c IsendRecv1 but the sending messages are waited during the next call to 
+ the function or during the call to \c delete_exchanger. It can be used only when the sending processes and the 
  receiving processes do not overlap, i.e. concurrent implementations.
 
-The default exchanger is \c IsendIrecv. The environment variable would set this parameter globally, while the API allows
-to set it per t_exchanger object. This means that given the same map, fields exchanged with different exchangers but
+ - \c IsendRecv2NoWait=7 : same as \c IsendRecv2 but the sending messages are waited during the next call to 
+ the function or during the call to \c delete_exchanger. It can be used only when the sending processes and the 
+ receiving processes do not overlap, i.e. concurrent implementations.
+
+The default exchanger is \c IsendIrecv1. The environment variable would set this parameter globally, while the API allows
+to set it per \c t_exchanger object. This means that given the same map, fields exchanged with different exchangers but
 having the same communication path, can use different type of exchange. In this case the API function must be called 
-before the call to \c new_exchanger, which creates a t_exchanger object.
+before the call to \c new_exchanger, which creates a \c t_exchanger object.
 
 The verbose mode specifies if the library should run in verbose mode or not. An enumerator is defined internally:
 
@@ -117,13 +109,15 @@ scale each component and to run each component on the optimal hardware. Concurre
 points between components. This exchange can be in one direction or in both directions.
 
 In case of two way exchange, both components send and receive information during an exchange point. This means that 
-only \c IsendIrecv, \c IsendRecv1 or \c IsendRecv2 can be used. The optimal exchanger is highly dependent on the
-application itself and the MPI implementation. The developers recommend to test the different exchanger types for each 
-specific usage.
+only \c IsendIrecv1, \c IsendIrecv2, \c IsendRecv1 or \c IsendRecv2 can be used.
+The optimal exchanger is highly dependent on the application itself and the MPI implementation.
+The developers recommend to test the different exchanger types for each specific usage.
 
-In case of one way exchange, \c IsendIrecv, \c IsendRecv1 or \c IsendRecv2 can be used but they would be suboptimal because
-the sending processes do not need to wait for the messages to be received. For this reason, \c IsendIrecvNoWait, 
-\c IsendRecv1NoWait or \c IsendRecv2NoWait are recommended. In this case, the sending processes fill the buffers and 
+In case of one way exchange, \c IsendIrecv1, \c IsendIrecv2, \c IsendRecv1 or \c IsendRecv2 can be used
+but they would be suboptimal because 
+the sending processes do not need to wait for the messages to be received. For this reason, \c IsendIrecv1NoWait, 
+\c IsendIrecv2NoWait, \c IsendRecv1NoWait or \c IsendRecv2NoWait are recommended. 
+In this case, the sending processes fill the buffers and 
 start a non blocking send. Afterwards they continue with the next step and they will wait for the sending messages only 
 right before the next exchange. In this way, overlapping of communication and computation can be fully achieved on the 
 sending processes. This is crucial if we think about a real case application. A classic example is a climate model which 
@@ -146,10 +140,22 @@ specific use cases.
 
 
 
-\section cuda CUDA backend
+\section gpu_backend GPU backend
 
+The \c new_exchanger function requires a hardware type argument.
 
+The hardware type specifies if the MPI ranks are running on CPU or GPU. An enumerator is defined internally:
 
+ - \c CPU=0
+ - \c GPU_NVIDIA=1
+ - \c GPU_AMD=2
 
+The function API allows to set the hardware per MPI rank and per exchanger object.
+This means that a group of MPI processes can run on the GPU and send data to a group of 
+MPI processes running on the CPU, but it also means that a group of MPI processes can send data from the GPU with one 
+exchanger and send other data from the CPU with another exchanger using the same previously generated map.
+
+If the exchanger runs on GPU, the pointer to the data passed to the `exchanger_go` or the `exchanger_go_with_transform` 
+functions must be a GPU pointer.
 
 */
