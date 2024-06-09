@@ -146,13 +146,23 @@ cdef extern from "src/distdir.h":
 	void delete_exchanger(t_exchanger * exchanger)
 
 class pydistdir_verbose(IntEnum):
-	verbose_true = 0
+	verbose_true  = 0
 	verbose_false = 1
 
 class pydistdir_hardware(IntEnum):
-	CPU = 0
+	CPU        = 0
 	GPU_NVIDIA = 1
-	GPU_AMD = 2
+	GPU_AMD    = 2
+
+class pydistdir_exchanger(IntEnum):
+	IsendIrecv1       = 0
+	IsendIrecv2       = 1
+	IsendRecv1        = 2
+	IsendRecv2        = 3
+	IsendIrecv1NoWait = 4
+	IsendIrecv2NoWait = 5
+	IsendRecv1NoWait  = 6
+	IsendRecv2NoWait  = 7
 
 cdef class distdir:
 	def __init__(self):
