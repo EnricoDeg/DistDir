@@ -77,13 +77,14 @@ cdef extern from "src/distdir.h":
 
 	ctypedef struct t_map_exch_per_rank:
 		int exch_rank
-		int buffer_size
-		int *buffer_idxlist
-		void *buffer
-	
+
 	ctypedef struct t_map_exch:
-		int count
-		t_map_exch_per_rank **exch
+		int count;
+		t_map_exch_per_rank **exch;
+		int buffer_size;
+		int *buffer_idxlist;
+		int *buffer_idxlist_gpu;
+		int *buffer_offset;
 	
 	ctypedef struct t_map:
 		libmpi.MPI_Comm comm
@@ -94,13 +95,25 @@ cdef extern from "src/distdir.h":
 	t_map * extend_map_3d(t_map *map2d, int nlevels);
 	void delete_map(t_map *map);
 
-	ctypedef struct t_exchange_per_rank:
-		int buffer_size
-		void *buffer
+	ctypedef void (*kernel_func_pack) ( void*, void*, int*, int, int, int* );
 
-	ctypedef struct t_exchange:
-		int count
-		t_exchange_per_rank **exch
+	ctypedef void* (*kernel_func_alloc) (size_t);
+
+	ctypedef void  (*kernel_func_free) (void *);
+
+	ctypedef struct t_kernels:
+		kernel_func_pack pack
+		kernel_func_pack unpack
+		kernel_func_alloc allocator
+		kernel_func_free deallocator
+
+	ctypedef void (*kernel_backend_func_wait) (int, libmpi.MPI_Request *, libmpi.MPI_Status *);
+
+	ctypedef void (*kernel_func_isendirecv) ( void *, int , libmpi.MPI_Datatype, int, int,
+	                                          libmpi.MPI_Comm, libmpi.MPI_Request *, int ) ;
+
+	ctypedef void (*kernel_func_recv)  ( void *, int, libmpi.MPI_Datatype, int, int,
+	                                     libmpi.MPI_Comm, libmpi.MPI_Status * , int) ;
 
 	ctypedef struct t_mpi_exchange:
 		libmpi.MPI_Datatype type
@@ -109,32 +122,31 @@ cdef extern from "src/distdir.h":
 		libmpi.MPI_Status *stat
 		int nreq_send
 		int nreq_recv
+		kernel_backend_func_wait wait
+		kernel_func_isendirecv isend
+		kernel_func_isendirecv irecv
+		kernel_func_recv recv
 
-	ctypedef void (*kernel_func_pack) (void*, void*, int*, int)
+	ctypedef struct t_exchange:
+		int count
+		int buffer_size
+		void *buffer
+		int *buffer_idxlist
 
-	ctypedef void* (*kernel_func_alloc) (size_t)
-
-	ctypedef struct t_kernels:
-		kernel_func_pack pack
-		kernel_func_pack unpack
-		kernel_func_alloc allocator
-
-	ctypedef void (*kernel_func_wait) (t_mpi_exchange*)
+	ctypedef void (*backend_func_wait) (t_mpi_exchange*);
 
 	ctypedef struct t_wait:
-		kernel_func_wait pre_wait
-		kernel_func_wait post_wait
+		backend_func_wait pre_wait
+		backend_func_wait post_wait
 
-	ctypedef void (*kernel_func_go) (t_exchange *, t_exchange*,  t_map*, t_kernels*, t_mpi_exchange*, t_wait*, void*, void *)
+	ctypedef void (*backend_func_go) (t_exchange *, t_exchange*,  t_map*, t_kernels*,
+	                                 t_mpi_exchange*, t_wait*, void*, void *, int *, int*);
 
-	ctypedef struct t_messages:
-		kernel_func_go send_recv
-
-	struct t_exchanger:
+	ctypedef struct t_exchanger:
 		t_exchange *exch_send
 		t_exchange *exch_recv
 		t_kernels* vtable
-		t_messages* vtable_messages
+		backend_func_go go
 		t_wait* vtable_wait
 		t_map *map
 		t_mpi_exchange *mpi_exchange
