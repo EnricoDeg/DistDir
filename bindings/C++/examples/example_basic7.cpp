@@ -85,7 +85,7 @@ int example_basic7() {
 	int world_size;
 	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 	int world_role, total_size, nlevs_local;
-	int npoints_local = NCOLS * NROWS / (world_size / 2);
+	int npoints_local = NCOLS * NROWS / (world_size / 4);
 
 	if (world_size != 8) return 1;
 
