@@ -164,12 +164,19 @@ minor limitations which will be tackled in future developments.
 
 All the C examples provided in the `examples` folder are replicated in python in the `bindings/python/examples` folder.
 
+
+
+
+
 \section cpp C++
 
 A tiny wrapper around the library is generated to provide C++ bindings. This is not strictly necessary because a C library
-can be called directly from C++, but since C++ is based on object oriented programming, a class-based interface
-is provided for the C library. The header file `distdir.hpp` should be included. This is installed in the `include`
-folder by adding \c -DENABLE_CXX=ON. The classed belonging to the C++ interface are all defined in \c distdir namespace.
+can be called directly from C++, but since C++ is an object oriented language, a class-based interface
+is provided. The header file `distdir.hpp` should be included. This is installed in the `include`
+folder by adding \c -DENABLE_CXX=ON. The classed belonging to the C++ interface are all defined in `distdir` namespace.
+
+The design of the C++ bindings are similar to the Python bindings for consistency, since they are both
+object oriented languages.
 
 The library is initialized by calling the constructor of the `distdir` class:
 
@@ -183,20 +190,48 @@ And it is finalized by calling the destructor:
 distdir.reset();
 \endcode
 
-A \c idxlist object can be created passying a \c vector to the constructor:
+A new group can be created using the `group` method of the `distdir` class.
+
+\code
+distdir->group(new_comm, work_comm, id);
+\endcode
+
+where the `work_comm` is the communicator containing all the processes running the application, the `id` is an integer 
+which defines in which group each process belongs and `new_comm` is the new communicator.
+
+The `distdir` class also contains methods to setup the library
+
+\code
+distdir->set_verbose(verbose_true)
+distdir->set_exchanger(IsendIrecv1)
+\endcode
+
+The verbose type is specified using the `distdir_verbose` enumerator and
+the exchanger type is specified using the `distdir_exchanger` enumerator.
+
+A \c idxlist class is defined which allows to create an index list. A `idxlist` object can be created 
+by passying a \c vector to the constructor:
 
 \code
 distdir::idxlist::Ptr idxlist( new distdir::idxlist(list) );
 \endcode
 
-where `list` is a `std::vector<int>`.
+where `list` is a `std::vector<int>`. The design of the C++ bindings is based on shared pointers, so each class defines a 
+shared pointer type to itself `distdir::idxlist::Ptr`.
 
-An empty \c idxlist object can be created not passing any array to the constructor
+An empty \c idxlist object can be created by not passing any array to the constructor:
 
 \code
 distdir::idxlist::Ptr idxlist_empty( new distdir::idxlist() );
 \endcode
 
+The destructor of the `idxlist` class frees the memory internally generated:
+
+\code
+idxlist.reset();
+\endcode
+
+A \c map class is defined which allows to create a map.
 A \c map object can be created by passing the source and destination \c idxlist objects shared pointers and
 the MPI communicator
 
@@ -210,15 +245,17 @@ In addition the \c stride argument can be passed
 distdir::map::Ptr map( new distdir::map(idxlist, idxlist_empty, stride, MPI_COMM_WORLD) );
 \endcode
 
-In case the \c t_map object is generated expanding a 2D object, the constructor can be used as follows
+The default stride is -1 which means that striding is not used internally to generate the map.
+
+In case the \c map object is generated expanding a 2D object, the constructor can be used as follows
 
 \code
 distdir::map::Ptr map( new distdir::map(map2d, nlevels) );
 \endcode
 
-where the \c map2d is a shared pointer to a map object.
+where \c map2d is a shared pointer to a map object generated previously.
 
-A \c exchanger object can be generated passing the \c map object shared pointer, the hardware type and 
+An \c exchanger object can be generated passing the \c map object shared pointer, the hardware type and 
 the MPI datatype
 
 \code
@@ -234,14 +271,17 @@ is the CPU:
 distdir::exchanger<int>::Ptr exchanger ( new distdir::exchanger<int>(map, MPI_INT) );
 \endcode
 
-The data to be exchanger has to be defined in a \c vector. Finally, the \c go method of the \c exchanger class
+The main difference with the Python bindings is that the `exchanger` class is templated in C++ and there is no 
+default MPI datatype.
+
+The data to be exchanger has to be defined in a \c vector. Finally, the `go` method of the `exchanger` class
 can be called
 
 \code
 exchanger->go(data, data);
 \endcode
 
-If a transformation is provided on the data layout
+If a transformation is provided on the data layout, the following method can be used
 
 \code
 exchanger->go(data, data, transform_src, transform_dst);
@@ -252,6 +292,10 @@ where `transform_src` and `transform_dst` are vector of type \c int.
 If compared with the C API described in the \ref start page, the C++ interface has an object oriented design.
 
 All the C examples provided in the `examples` folder are replicated in C++ in the `bindings/C++/examples` folder.
+
+
+
+
 
 \section fortran Fortran
 
@@ -345,6 +389,10 @@ The Fortran bindings are very comparable to the C interface with the addition of
 makes it slimmer.
 
 All the C examples provided in the `examples` folder are replicated in Fortran in the `bindings/Fortran/examples` folder.
+
+
+
+
 
 \section julia Julia
 
