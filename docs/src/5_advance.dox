@@ -137,8 +137,27 @@ specific use cases.
 
 \section transform Memory layout transformation
 
+Climate applications usually apply a runtime transformation to the memory layout for caching purposes. This means that 
+if a 3D subdomain has a memory layout `[npoints_local, nlevels]` at runtime it can be transformed 
+`[nproma, nlevels, nblocks]` where `nproma` is a runtime parameter. The library supports also this memory layout 
+transformation. In this case, the index list has to be generated providing the global indices in the original layout.
+This means that the generated map is also based on the original layout.
 
+When the data needs to be exchanged the API function `exchanger_go_with_transform` can be used to transform the original 
+memory layout in the one defined at runtime. In this case, the transformation for the source and destination needs to 
+be provided in the form of indices in a integer array.
 
+An example:
+
+\code
+for (int block = 0; block<nblocks; block++)
+	for (int level = 0; level<nlevels; level++)
+		for (int k=0; k<nproma; k++)
+			transform[k+level*nproma+block*nlevels*nproma] = k+level*npoints_local+block*nproma;
+\endcode
+
+During the packing of the buffer, the transformation is applied before filling the buffer and during the unpacking 
+of the buffer, the transformation is applied before filling the data field.
 
 \section gpu_backend GPU backend
 
@@ -156,6 +175,6 @@ MPI processes running on the CPU, but it also means that a group of MPI processe
 exchanger and send other data from the CPU with another exchanger using the same previously generated map.
 
 If the exchanger runs on GPU, the pointer to the data passed to the `exchanger_go` or the `exchanger_go_with_transform` 
-functions must be a GPU pointer.
+functions must be a GPU pointer. In case of memory layout transformation, the transform arrays need to be on GPU as well.
 
 */
