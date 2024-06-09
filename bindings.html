@@ -142,7 +142,7 @@ Python</h1>
 </div><!-- fragment --><p>If a transformation is provided on the data layout, the following method can be used:</p>
 <div class="fragment"><div class="line">exchanger.go(data, data, transform_src, transform_dst)</div>
 </div><!-- fragment --><p>where <code>transform_src</code> and <code>transform_dst</code> are integer <code>numpy</code> arrays.</p>
-<p>The destructors of the <code>idxlist</code>, <code>map</code> and <code>exchanger</code> classes free the memory internally allocated by the library.</p>
+<p>The destructors of the <code>idxlist</code>, <code>map</code> and <code>exchanger</code> classes free the memory internally allocated by the library. They can be called explicitly inside a Python script or let the garbage collector call them.</p>
 <p>Overall, the Python bindings provide the following classes:</p>
 <ul>
 <li><code>distdir</code>: initialize the library, create new group and handle the library settings</li>
@@ -154,30 +154,46 @@ Python</h1>
 <p>All the C examples provided in the <code>examples</code> folder are replicated in python in the <code>bindings/python/examples</code> folder.</p>
 <h1><a class="anchor" id="cpp"></a>
 C++</h1>
-<p>A tiny wrapper around the library is generated to provide C++ bindings. This is not strictly necessary because a C library can be called directly from C++, but since C++ is based on object oriented programming, a class-based interface is provided for the C library. The header file <code>distdir.hpp</code> should be included. This is installed in the <code>include</code> folder by adding <code>-DENABLE_CXX=ON</code>. The classed belonging to the C++ interface are all defined in <code>distdir</code> namespace.</p>
+<p>A tiny wrapper around the library is generated to provide C++ bindings. This is not strictly necessary because a C library can be called directly from C++, but since C++ is an object oriented language, a class-based interface is provided. The header file <code>distdir.hpp</code> should be included. This is installed in the <code>include</code> folder by adding <code>-DENABLE_CXX=ON</code>. The classed belonging to the C++ interface are all defined in <code>distdir</code> namespace.</p>
+<p>The design of the C++ bindings are similar to the Python bindings for consistency, since they are both object oriented languages.</p>
 <p>The library is initialized by calling the constructor of the <code>distdir</code> class:</p>
 <div class="fragment"><div class="line">distdir::distdir::Ptr distdir( <span class="keyword">new</span> distdir::distdir() );</div>
 </div><!-- fragment --><p>And it is finalized by calling the destructor:</p>
 <div class="fragment"><div class="line">distdir.reset();</div>
-</div><!-- fragment --><p>A <code>idxlist</code> object can be created passying a <code>vector</code> to the constructor:</p>
+</div><!-- fragment --><p>A new group can be created using the <code>group</code> method of the <code>distdir</code> class.</p>
+<div class="fragment"><div class="line">distdir-&gt;group(new_comm, work_comm, <span class="keywordtype">id</span>);</div>
+</div><!-- fragment --><p>where the <code>work_comm</code> is the communicator containing all the processes running the application, the <code>id</code> is an integer which defines in which group each process belongs and <code>new_comm</code> is the new communicator.</p>
+<p>The <code>distdir</code> class also contains methods to setup the library</p>
+<div class="fragment"><div class="line">distdir-&gt;set_verbose(<a class="code" href="setting_8h.html#a872750440db9c977dd1af46abd1b0509aeea48180a46e04382c732e23e6e8dbf8">verbose_true</a>)</div>
+<div class="line">distdir-&gt;set_exchanger(<a class="code" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5a5482f735bd3a3e8cf9af30c91bc7edf4">IsendIrecv1</a>)</div>
+</div><!-- fragment --><p>The verbose type is specified using the <code>distdir_verbose</code> enumerator and the exchanger type is specified using the <code>distdir_exchanger</code> enumerator.</p>
+<p>A <code>idxlist</code> class is defined which allows to create an index list. A <code>idxlist</code> object can be created by passying a <code>vector</code> to the constructor:</p>
 <div class="fragment"><div class="line">distdir::idxlist::Ptr idxlist( <span class="keyword">new</span> distdir::idxlist(list) );</div>
-</div><!-- fragment --><p>where <code>list</code> is a <code>std::vector&lt;int&gt;</code>.</p>
-<p>An empty <code>idxlist</code> object can be created not passing any array to the constructor</p>
+</div><!-- fragment --><p>where <code>list</code> is a <code>std::vector&lt;int&gt;</code>. The design of the C++ bindings is based on shared pointers, so each class defines a shared pointer type to itself <code>distdir::idxlist::Ptr</code>.</p>
+<p>An empty <code>idxlist</code> object can be created by not passing any array to the constructor:</p>
 <div class="fragment"><div class="line">distdir::idxlist::Ptr idxlist_empty( <span class="keyword">new</span> distdir::idxlist() );</div>
-</div><!-- fragment --><p>A <code>map</code> object can be created by passing the source and destination <code>idxlist</code> objects shared pointers and the MPI communicator</p>
+</div><!-- fragment --><p>The destructor of the <code>idxlist</code> class frees the memory internally generated:</p>
+<div class="fragment"><div class="line">idxlist.reset();</div>
+</div><!-- fragment --><p>A <code>map</code> class is defined which allows to create a map. A <code>map</code> object can be created by passing the source and destination <code>idxlist</code> objects shared pointers and the MPI communicator</p>
 <div class="fragment"><div class="line">distdir::map::Ptr map( <span class="keyword">new</span> distdir::map(idxlist, idxlist_empty, MPI_COMM_WORLD) );</div>
 </div><!-- fragment --><p>In addition the <code>stride</code> argument can be passed</p>
 <div class="fragment"><div class="line">distdir::map::Ptr map( <span class="keyword">new</span> distdir::map(idxlist, idxlist_empty, stride, MPI_COMM_WORLD) );</div>
-</div><!-- fragment --><p>In case the <code><a class="el" href="structt__map.html">t_map</a></code> object is generated expanding a 2D object, the constructor can be used as follows</p>
+</div><!-- fragment --><p>The default stride is -1 which means that striding is not used internally to generate the map.</p>
+<p>In case the <code>map</code> object is generated expanding a 2D object, the constructor can be used as follows</p>
 <div class="fragment"><div class="line">distdir::map::Ptr map( <span class="keyword">new</span> distdir::map(map2d, nlevels) );</div>
-</div><!-- fragment --><p>where the <code>map2d</code> is a shared pointer to a map object.</p>
-<p>A <code>exchanger</code> object can be generated passing the <code>map</code> object shared pointer, the hardware type and the MPI datatype</p>
+</div><!-- fragment --><p>where <code>map2d</code> is a shared pointer to a map object generated previously.</p>
+<p>The destructor of the <code>map</code> class frees the memory internally generated:</p>
+<div class="fragment"><div class="line">map.reset();</div>
+</div><!-- fragment --><p>An <code>exchanger</code> object can be generated passing the <code>map</code> object shared pointer, the hardware type and the MPI datatype</p>
 <div class="fragment"><div class="line">distdir::exchanger&lt;int&gt;::Ptr exchanger ( <span class="keyword">new</span> distdir::exchanger&lt;int&gt;(map, MPI_INT, <a class="code" href="setting_8h.html#a88848da5c7ea10c738db173d5314c659a0035eb0600d18dfc302f6bf7a7cbfa3b">CPU</a>) );</div>
 </div><!-- fragment --><p>The <code>exchanger</code> class is templated, in the example it is specified which is used for <code>int</code> types and the type has to match the MPI datatype passed to the constructor. The hardware type is specified using the <code>distdir_hardware</code> enumerator defined in the C library. If not specified, the default hardware type is the CPU:</p>
 <div class="fragment"><div class="line">distdir::exchanger&lt;int&gt;::Ptr exchanger ( <span class="keyword">new</span> distdir::exchanger&lt;int&gt;(map, MPI_INT) );</div>
+</div><!-- fragment --><p>The main difference with the Python bindings is that the <code>exchanger</code> class is templated in C++ and there is no default MPI datatype.</p>
+<p>The destructor of the <code>exchanger</code> class frees the memory internally generated:</p>
+<div class="fragment"><div class="line">exchanger.reset();</div>
 </div><!-- fragment --><p>The data to be exchanger has to be defined in a <code>vector</code>. Finally, the <code>go</code> method of the <code>exchanger</code> class can be called</p>
 <div class="fragment"><div class="line">exchanger-&gt;go(data, data);</div>
-</div><!-- fragment --><p>If a transformation is provided on the data layout</p>
+</div><!-- fragment --><p>If a transformation is provided on the data layout, the following method can be used:</p>
 <div class="fragment"><div class="line">exchanger-&gt;go(data, data, transform_src, transform_dst);</div>
 </div><!-- fragment --><p>where <code>transform_src</code> and <code>transform_dst</code> are vector of type <code>int</code>.</p>
 <p>If compared with the C API described in the <a class="el" href="start.html">Getting started</a> page, the C++ interface has an object oriented design.</p>
@@ -192,70 +208,132 @@ Fortran</h1>
 <div class="line">CALL <a class="code" href="setting_8h.html#aec38b53906f3988b782b517f241fc658">distdir_finalize</a>()</div>
 <div class="ttc" id="asetting_8h_html_a6edc2c7cfa96bc4f790c2c857b69b787"><div class="ttname"><a href="setting_8h.html#a6edc2c7cfa96bc4f790c2c857b69b787">distdir_initialize</a></div><div class="ttdeci">void distdir_initialize()</div></div>
 <div class="ttc" id="asetting_8h_html_aec38b53906f3988b782b517f241fc658"><div class="ttname"><a href="setting_8h.html#aec38b53906f3988b782b517f241fc658">distdir_finalize</a></div><div class="ttdeci">void distdir_finalize()</div></div>
-</div><!-- fragment --><p>A <code>idxlist</code> object can be created passing a 1D integer array with the list of global indices and its size</p>
+</div><!-- fragment --><p>A new group can be created by calling the following subroutine:</p>
+<div class="fragment"><div class="line">CALL <a class="code" href="group__group.html#ga17a360858b2b338ca0be15c1e111a7b9">new_group</a>(new_comm, work_comm, <span class="keywordtype">id</span>)</div>
+<div class="ttc" id="agroup__group_html_ga17a360858b2b338ca0be15c1e111a7b9"><div class="ttname"><a href="group__group.html#ga17a360858b2b338ca0be15c1e111a7b9">new_group</a></div><div class="ttdeci">void new_group(MPI_Comm *new_comm, MPI_Comm work_comm, int id)</div><div class="ttdoc">Create new group of processes with the same provided id.</div></div>
+</div><!-- fragment --><p>where the <code>work_comm</code> is the communicator containing all the processes running the application, the <code>id</code> is an integer which defines in which group each process belongs and <code>new_comm</code> is the new communicator.</p>
+<p>The following subroutines can be used to set up the library:</p>
+<div class="fragment"><div class="line">CALL <a class="code" href="setting_8h.html#a74519e6e5b8c242e2f89bfadc182a021">set_config_verbose</a>(verbose_type)</div>
+<div class="line">CALL <a class="code" href="setting_8h.html#ab4033425c4cfb9df06d8a740aed4b336">set_config_exchanger</a>(exchanger_type)</div>
+<div class="ttc" id="asetting_8h_html_a74519e6e5b8c242e2f89bfadc182a021"><div class="ttname"><a href="setting_8h.html#a74519e6e5b8c242e2f89bfadc182a021">set_config_verbose</a></div><div class="ttdeci">void set_config_verbose(int verbose_type)</div></div>
+<div class="ttc" id="asetting_8h_html_ab4033425c4cfb9df06d8a740aed4b336"><div class="ttname"><a href="setting_8h.html#ab4033425c4cfb9df06d8a740aed4b336">set_config_exchanger</a></div><div class="ttdeci">void set_config_exchanger(int exchanger_type)</div></div>
+</div><!-- fragment --><p>The verbose type is specified using one of the following parameters:</p>
+<div class="fragment"><div class="line">DISTDIR_VERBOSE_TRUE</div>
+<div class="line">DISTDIR_VERBOSE_FALSE</div>
+</div><!-- fragment --><p>The exchanger type is specified using one of the following parameters:</p>
+<div class="fragment"><div class="line">DISTDIR_EXCHANGER_IsendIrecv1</div>
+<div class="line">DISTDIR_EXCHANGER_IsendIrecv2</div>
+<div class="line">DISTDIR_EXCHANGER_IsendRecv1</div>
+<div class="line">DISTDIR_EXCHANGER_IsendRecv2</div>
+<div class="line">DISTDIR_EXCHANGER_IsendIrecv1NoWait</div>
+<div class="line">DISTDIR_EXCHANGER_IsendIrecv2NoWait</div>
+<div class="line">DISTDIR_EXCHANGER_IsendRecv1NoWait</div>
+<div class="line">DISTDIR_EXCHANGER_IsendRecv2NoWait</div>
+</div><!-- fragment --><p>A new index list can be created passing a 1D integer array with the list of global indices and its size:</p>
 <div class="fragment"><div class="line">CALL <a class="code" href="group__idxlist.html#ga3529184e0ad60b227dc1eeef64f0019b">new_idxlist</a>(idxlist, list, npoints_local)</div>
 <div class="ttc" id="agroup__idxlist_html_ga3529184e0ad60b227dc1eeef64f0019b"><div class="ttname"><a href="group__idxlist.html#ga3529184e0ad60b227dc1eeef64f0019b">new_idxlist</a></div><div class="ttdeci">t_idxlist * new_idxlist(int *idx_array, int num_indices)</div><div class="ttdoc">Create new index list.</div></div>
-</div><!-- fragment --><p>where <code>idxlist</code> is a variable of type <code><a class="el" href="structt__idxlist.html" title="The structure contains information about an index list.">t_idxlist</a></code>.</p>
-<p>An empty idxlist object can be generated without passing any list</p>
+</div><!-- fragment --><p>where <code>idxlist</code> is a variable of type <code>TYPE(t_idxlist)</code>.</p>
+<p>An empty index list can be generated without passing any list:</p>
 <div class="fragment"><div class="line">CALL <a class="code" href="group__idxlist.html#ga3529184e0ad60b227dc1eeef64f0019b">new_idxlist</a>(idxlist_empty)</div>
-</div><!-- fragment --><p>A <code>map</code> object can be created by passing the source and destination <code>idxlist</code> objects and the MPI communicator</p>
+</div><!-- fragment --><p>The memory internally allocated for an index list can be freed by calling the following subroutine:</p>
+<div class="fragment"><div class="line">CALL <a class="code" href="group__idxlist.html#gab2d74f9dae2dcd08ba12fc8bf2336312">delete_idxlist</a>(idxlist)</div>
+<div class="ttc" id="agroup__idxlist_html_gab2d74f9dae2dcd08ba12fc8bf2336312"><div class="ttname"><a href="group__idxlist.html#gab2d74f9dae2dcd08ba12fc8bf2336312">delete_idxlist</a></div><div class="ttdeci">void delete_idxlist(t_idxlist *idxlist)</div><div class="ttdoc">Clean memory of a t_idxlist structure.</div></div>
+</div><!-- fragment --><p>A map can be generated by passing the source and destination index lists and the MPI communicator:</p>
 <div class="fragment"><div class="line">CALL <a class="code" href="group__map.html#ga717fc32277b647a6cb241aca178af099">new_map</a>(map, idxlist, idxlist_empty, MPI_COMM_WORLD)</div>
 <div class="ttc" id="agroup__map_html_ga717fc32277b647a6cb241aca178af099"><div class="ttname"><a href="group__map.html#ga717fc32277b647a6cb241aca178af099">new_map</a></div><div class="ttdeci">t_map * new_map(t_idxlist *src_idxlist, t_idxlist *dst_idxlist, int stride, MPI_Comm comm)</div><div class="ttdoc">Create a new t_map structure.</div></div>
-</div><!-- fragment --><p>where <code>map</code> is a variable of type <code><a class="el" href="structt__map.html">t_map</a></code>. In addition the <code>stride</code> argument can be passed</p>
+</div><!-- fragment --><p>where <code>map</code> is a variable of type <code>TYPE(t_map)</code>. In addition the <code>stride</code> argument can be passed:</p>
 <div class="fragment"><div class="line">CALL <a class="code" href="group__map.html#ga717fc32277b647a6cb241aca178af099">new_map</a>(map, idxlist, idxlist_empty, stride, comm)</div>
-</div><!-- fragment --><p>In case the <code><a class="el" href="structt__map.html">t_map</a></code> object is generated expanding a 2D object, the constructor can be used as follows</p>
+</div><!-- fragment --><p>The default stride is -1 which means that striding is not used internally.</p>
+<p>In case the map is generated expanding a 2D map, the <code>new_map</code> subroutine can be called as follows:</p>
 <div class="fragment"><div class="line">CALL <a class="code" href="group__map.html#ga717fc32277b647a6cb241aca178af099">new_map</a>(map, map2d, nlevels)</div>
-</div><!-- fragment --><p>where the <code>map2d</code> is a <code><a class="el" href="structt__map.html">t_map</a></code> object.</p>
-<p>A <code>exchanger</code> object can be generated passing the <code>map</code> object, the hardware type and the MPI datatype</p>
+</div><!-- fragment --><p>where the <code>map2d</code> is a variable of type <code>TYPE(t_map)</code>.</p>
+<p>The memory internally allocated for a map can be freed by calling the following subroutine:</p>
+<div class="fragment"><div class="line">CALL <a class="code" href="group__map.html#ga4c059dac87d848393a3176692302b19e">delete_map</a>(map)</div>
+<div class="ttc" id="agroup__map_html_ga4c059dac87d848393a3176692302b19e"><div class="ttname"><a href="group__map.html#ga4c059dac87d848393a3176692302b19e">delete_map</a></div><div class="ttdeci">void delete_map(t_map *map)</div><div class="ttdoc">Clean memory of a t_map structure.</div></div>
+</div><!-- fragment --><p>An exchanger can be generated passing the previously created map, the hardware type and the MPI datatype:</p>
 <div class="fragment"><div class="line">CALL <a class="code" href="group__exchange.html#ga7d58720459ca3e68fa767abf810f0b8c">new_exchanger</a>(exchanger, map, type, hw)</div>
 <div class="ttc" id="agroup__exchange_html_ga7d58720459ca3e68fa767abf810f0b8c"><div class="ttname"><a href="group__exchange.html#ga7d58720459ca3e68fa767abf810f0b8c">new_exchanger</a></div><div class="ttdeci">t_exchanger * new_exchanger(t_map *map, MPI_Datatype type, distdir_hardware hw)</div><div class="ttdoc">Create a new t_exchanger structure.</div></div>
-</div><!-- fragment --><p>The <code>exchanger</code> variable is of type <code><a class="el" href="structt__exchanger.html">t_exchanger</a></code>. The type is an MPI datatype and the hardware is an integer which can have the following values:</p>
+</div><!-- fragment --><p>The <code>exchanger</code> variable is of type <code>TYPE(t_exchanger)</code>. The <code>type</code> is an MPI datatype and the <code>hw</code> variable is an integer which can have the following values:</p>
 <div class="fragment"><div class="line">DISTDIR_HW_CPU</div>
 <div class="line">DISTDIR_HW_GPU_NVIDIA</div>
 <div class="line">DISTDIR_HW_GPU_AMD</div>
-</div><!-- fragment --><p>The default hardware is the CPU, so the exchanger can also be created as follows</p>
+</div><!-- fragment --><p>The default hardware is the CPU, so the exchanger can also be created as follows:</p>
 <div class="fragment"><div class="line">CALL <a class="code" href="group__exchange.html#ga7d58720459ca3e68fa767abf810f0b8c">new_exchanger</a>(exchanger, map, type)</div>
-</div><!-- fragment --><p>The data to be exchanger has to be defined in a 1D array. Finally, the <code>exchanger_go</code> function can be called</p>
+</div><!-- fragment --><p>The memory internally allocated for an exchanger can be freed by calling the following subroutine:</p>
+<div class="fragment"><div class="line">CALL <a class="code" href="group__exchange.html#ga6eca3b7ee320a010d0143b5747350153">delete_exchanger</a>(exchanger)</div>
+<div class="ttc" id="agroup__exchange_html_ga6eca3b7ee320a010d0143b5747350153"><div class="ttname"><a href="group__exchange.html#ga6eca3b7ee320a010d0143b5747350153">delete_exchanger</a></div><div class="ttdeci">void delete_exchanger(t_exchanger *exchanger)</div><div class="ttdoc">Clean memory of a t_exchanger structure.</div></div>
+</div><!-- fragment --><p>The data to be exchanger has to be defined in a 1D array. Finally, the <code>exchanger_go</code> subroutine can be called:</p>
 <div class="fragment"><div class="line">CALL <a class="code" href="group__exchange.html#ga7de4537721ade98510c71e4ee56ba4dc">exchanger_go</a>(exchanger, C_LOC(data(1)), C_LOC(data(1)))</div>
 <div class="ttc" id="agroup__exchange_html_ga7de4537721ade98510c71e4ee56ba4dc"><div class="ttname"><a href="group__exchange.html#ga7de4537721ade98510c71e4ee56ba4dc">exchanger_go</a></div><div class="ttdeci">void exchanger_go(t_exchanger *exchanger, void *src_data, void *dst_data)</div><div class="ttdoc">Arbitrary exchange given a map.</div></div>
-</div><!-- fragment --><p>If a transformation is provided on the data layout</p>
+</div><!-- fragment --><p>If a transformation is provided on the data layout, the following subroutine can be used:</p>
 <div class="fragment"><div class="line">CALL <a class="code" href="group__exchange.html#ga7de4537721ade98510c71e4ee56ba4dc">exchanger_go</a>(exchanger, C_LOC(data(1)), C_LOC(data(1)), transform_src, transform_dst)</div>
 </div><!-- fragment --><p>where <code>transform_src</code> and <code>transform_dst</code> are 1D integer arrays.</p>
-<p>The Fortran bindings are very comparable to the C interface with the addition of function overloading which makes it slimmer.</p>
+<p>The design of the Fortran bindings is very comparable to the C interface with the addition of function overloading which makes it slimmer.</p>
 <p>All the C examples provided in the <code>examples</code> folder are replicated in Fortran in the <code>bindings/Fortran/examples</code> folder.</p>
 <h1><a class="anchor" id="julia"></a>
 Julia</h1>
-<p>The development of Julia bindings has followed a different strategy. Since Julia development is standardized, a <a href="https://github.com/EnricoDeg/DistDir.jl">DistDir.jl</a> package was created which is a submodule in the main DistDir repository. Since Julia is just in time compiled, the module needs to open the library (using <code>dlopen</code>), so <code>LOAD_PATH</code> or <code>LD_LIBRARY_PATH</code> needs to be set to the location where the library is installed. In addition to that, the <code>JULIA_LOAD_PATH</code> needs to be set to the location of the <code>DistDir.jl</code> folder in order to be able to import the module in your Julia application. This step is needed because <code>DistDir.jl</code> is not an official package.</p>
-<p>The library is initialized and finalized calling the following functions</p>
+<p>The development of Julia bindings has followed a different strategy. Since Julia development is standardized, a <a href="https://github.com/EnricoDeg/DistDir.jl">DistDir.jl</a> package was created which is a submodule in the main DistDir repository. Since Julia is just in time (JIT) compiled, the module needs to open the library (using <code>dlopen</code>), so <code>LOAD_PATH</code> or <code>LD_LIBRARY_PATH</code> needs to be set to the location where the library is installed. In addition to that, the <code>JULIA_LOAD_PATH</code> needs to be set to the location of the <code>DistDir.jl</code> folder in order to be able to import the module in your Julia application. This step is needed because <code>DistDir.jl</code> is not an official package.</p>
+<p>The library is initialized and finalized calling the following functions:</p>
 <div class="fragment"><div class="line">DistDir.initialize()</div>
 <div class="line">...</div>
 <div class="line">DistDir.finalize()</div>
-</div><!-- fragment --><p>A <code>idxlist</code> object can be created passing a integer vector with the list of global indices</p>
+</div><!-- fragment --><p>A new group can be created by calling the following function:</p>
+<div class="fragment"><div class="line">DistDir.new_group(new_comm, work_comm, <span class="keywordtype">id</span>)</div>
+</div><!-- fragment --><p>where the <code>work_comm</code> is the communicator containing all the processes running the application, the <code>id</code> is an integer which defines in which group each process belongs and <code>new_comm</code> is the new communicator.</p>
+<p>The following functions can be used to set up the library:</p>
+<div class="fragment"><div class="line">DistDir.set_config_verbose(verbose_type)</div>
+<div class="line">DistDir.set_config_exchanger(exchanger_type)</div>
+</div><!-- fragment --><p>The <code>verbose_type</code> argument is an enumerator which replicates the one defined in the C library:</p>
+<div class="fragment"><div class="line">@<span class="keyword">enum</span> <a class="code" href="setting_8h.html#a872750440db9c977dd1af46abd1b0509">distdir_verbose</a> begin</div>
+<div class="line">    <a class="code" href="setting_8h.html#a872750440db9c977dd1af46abd1b0509aeea48180a46e04382c732e23e6e8dbf8">verbose_true</a> = 0</div>
+<div class="line">    <a class="code" href="setting_8h.html#a872750440db9c977dd1af46abd1b0509a435bde354474f5af5c7ef6c4623e25f8">verbose_false</a> = 1</div>
+<div class="line">end</div>
+<div class="ttc" id="asetting_8h_html_a872750440db9c977dd1af46abd1b0509"><div class="ttname"><a href="setting_8h.html#a872750440db9c977dd1af46abd1b0509">distdir_verbose</a></div><div class="ttdeci">distdir_verbose</div><div class="ttdef"><b>Definition:</b> setting.h:54</div></div>
+</div><!-- fragment --><p>The same concept is applied to the <code>exchanger_type</code> argument:</p>
+<div class="fragment"><div class="line">@<span class="keyword">enum</span> <a class="code" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5">distdir_exchanger</a> begin</div>
+<div class="line">    <a class="code" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5a5482f735bd3a3e8cf9af30c91bc7edf4">IsendIrecv1</a> = 0</div>
+<div class="line">    <a class="code" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5a0a5d71d3c2578fe0de92f88c3711726e">IsendIrecv2</a> = 1</div>
+<div class="line">    <a class="code" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5aaf8f0c2808a1366941b9fee1b347084a">IsendRecv1</a> = 2</div>
+<div class="line">    <a class="code" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5a7fa4a74df5657045ded4a2f2bb76143e">IsendRecv2</a> = 3</div>
+<div class="line">    <a class="code" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5a9167eea6a77b615aa1bd5e4457a0cc0d">IsendIrecv1NoWait</a> = 4</div>
+<div class="line">    <a class="code" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5a02c4d5cdf42211c27eabcb6db7a41a9b">IsendIrecv2NoWait</a> = 5</div>
+<div class="line">    <a class="code" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5a8d6e3764446e60370fd9e6e798028167">IsendRecv1NoWait</a> = 6</div>
+<div class="line">    <a class="code" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5a4f0e464410a7d6b323e295cbb97dd835">IsendRecv2NoWait</a> = 7</div>
+<div class="line">end</div>
+<div class="ttc" id="asetting_8h_html_a949370a7049e027f9bb7dda8451a1ef5"><div class="ttname"><a href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5">distdir_exchanger</a></div><div class="ttdeci">distdir_exchanger</div><div class="ttdef"><b>Definition:</b> setting.h:43</div></div>
+</div><!-- fragment --><p>An index list can be created by passing a integer vector with the list of global indices:</p>
 <div class="fragment"><div class="line">idxlist::DistDir.t_idxlist_jl = DistDir.new_idxlist(list)</div>
 </div><!-- fragment --><p>where <code>idxlist</code> is a variable of type <code>t_idxlist_jl</code>.</p>
-<p>An empty idxlist object can be generated without passing any list</p>
+<p>An empty index list can be generated without passing any list:</p>
 <div class="fragment"><div class="line">idxlist_empty::DistDir.t_idxlist_jl = DistDir.new_idxlist()</div>
-</div><!-- fragment --><p>A <code>map</code> object can be created by passing the source and destination <code>idxlist</code> objects and the MPI communicator</p>
+</div><!-- fragment --><p>The memory internally allocated for an index list can be freed by calling the following function:</p>
+<div class="fragment"><div class="line">DistDir.delete_idxlist(idxlist)</div>
+</div><!-- fragment --><p>A map can be created by passing the source and destination index lists and the MPI communicator:</p>
 <div class="fragment"><div class="line">map :: DistDir.t_map_jl = DistDir.new_map(idxlist, idxlist_empty, MPI.COMM_WORLD)</div>
-</div><!-- fragment --><p>where <code>map</code> is a variable of type <code>t_map_jl</code>. In addition the <code>stride</code> argument can be passed</p>
+</div><!-- fragment --><p>where <code>map</code> is a variable of type <code>t_map_jl</code>. In addition the <code>stride</code> argument can be passed:</p>
 <div class="fragment"><div class="line">map :: DistDir.t_map_jl = DistDir.new_map(idxlist, idxlist_empty, stride, MPI.COMM_WORLD)</div>
-</div><!-- fragment --><p>In case the <code><a class="el" href="structt__map.html">t_map</a></code> object is generated expanding a 2D object, the constructor can be used as follows</p>
+</div><!-- fragment --><p>The default stride is -1 which means that striding is not used internally.</p>
+<p>In case the map is generated expanding a 2D previously generated map, the following function can be used:</p>
 <div class="fragment"><div class="line">map :: DistDir.t_map_jl = DistDir.new_map(map2d, nlevels)</div>
 </div><!-- fragment --><p>where the <code>map2d</code> is a <code>t_map_jl</code> variable.</p>
-<p>A <code>exchanger</code> object can be generated passing the <code>map</code> object, the hardware type and the MPI datatype</p>
+<p>The memory internally allocated for a map can be freed by calling the following function:</p>
+<div class="fragment"><div class="line">DistDir.delete_map(map)</div>
+</div><!-- fragment --><p>An exchanger can be generated by passing the map, the hardware type and the MPI datatype:</p>
 <div class="fragment"><div class="line">exchanger :: DistDir.t_exchanger_jl = DistDir.new_exchanger(map, MPI.Datatype(Float64), hw)</div>
-</div><!-- fragment --><p>The <code>exchanger</code> variable is of type <code>t_exchanger_jl</code>. The type is an MPI datatype, like MPI.Datatype(Float64) for doubles, and the hardware is an integer which can be defined using the following enumerator:</p>
+</div><!-- fragment --><p>where the <code>exchanger</code> variable is of type <code>t_exchanger_jl</code>. The type is an MPI datatype, like <code>MPI.Datatype(Float64)</code> for doubles, and the hardware is an integer which can be defined using the following enumerator:</p>
 <div class="fragment"><div class="line">@<span class="keyword">enum</span> <a class="code" href="setting_8h.html#a88848da5c7ea10c738db173d5314c659">distdir_hardware</a> begin</div>
 <div class="line">    <a class="code" href="setting_8h.html#a88848da5c7ea10c738db173d5314c659a0035eb0600d18dfc302f6bf7a7cbfa3b">CPU</a> = 0</div>
 <div class="line">    <a class="code" href="setting_8h.html#a88848da5c7ea10c738db173d5314c659a6cb05199ff046e64442cca7a016d3d8f">GPU_NVIDIA</a> = 1</div>
 <div class="line">    <a class="code" href="setting_8h.html#a88848da5c7ea10c738db173d5314c659ae7beb011901e35a1dd50c6066c32f313">GPU_AMD</a> = 2</div>
 <div class="line">end</div>
 <div class="ttc" id="asetting_8h_html_a88848da5c7ea10c738db173d5314c659"><div class="ttname"><a href="setting_8h.html#a88848da5c7ea10c738db173d5314c659">distdir_hardware</a></div><div class="ttdeci">distdir_hardware</div><div class="ttdef"><b>Definition:</b> setting.h:37</div></div>
-</div><!-- fragment --><p>The default hardware is the CPU, so the exchanger can also be created as follows</p>
+</div><!-- fragment --><p>The default hardware is the CPU, so the exchanger can also be created as follows:</p>
 <div class="fragment"><div class="line">exchanger :: DistDir.t_exchanger_jl = DistDir.new_exchanger(map, MPI.Datatype(Float64))</div>
-</div><!-- fragment --><p>The data to be exchanger has to be defined in a vector. Finally, the <code>exchanger_go</code> function can be called</p>
+</div><!-- fragment --><p>The memory internally allocated for an exchanger can be freed by calling the following function:</p>
+<div class="fragment"><div class="line">DistDir.delete_exchanger(exchanger)</div>
+</div><!-- fragment --><p>The data to be exchanger has to be defined in a vector. Finally, the <code>exchanger_go</code> function can be called:</p>
 <div class="fragment"><div class="line">DistDir.exchanger_go(exchanger, data, data)</div>
-</div><!-- fragment --><p>If a transformation is provided on the data layout</p>
+</div><!-- fragment --><p>If a transformation is provided on the data layout, the following function can be used:</p>
 <div class="fragment"><div class="line">DistDir.exchanger_go(exchanger, data, data, transform_src, transform_dst)</div>
 </div><!-- fragment --><p>where <code>transform_src</code> and <code>transform_dst</code> are integer vectors.</p>
 <p>Finally, a Julia script can be launched as follows:</p>
