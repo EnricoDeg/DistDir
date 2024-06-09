@@ -22,6 +22,11 @@ target_link_libraries (example_basic4cpp distdir ${MPI_CXX_LIBRARIES})
 target_include_directories(example_basic4cpp PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(example_basic4cpp PRIVATE ${MPI_CXX_INCLUDE_DIRS})
 
+add_executable(example_basic5cpp example_basic5.cpp)
+target_link_libraries (example_basic5cpp distdir ${MPI_CXX_LIBRARIES})
+target_include_directories(example_basic5cpp PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(example_basic5cpp PRIVATE ${MPI_CXX_INCLUDE_DIRS})
+
 install (TARGETS
   example_basic1cpp # executables
   RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/C++/examples)
@@ -36,5 +41,9 @@ install (TARGETS
 
 install (TARGETS
   example_basic4cpp # executables
+  RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/C++/examples)
+
+install (TARGETS
+  example_basic5cpp # executables
   RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/C++/examples)
 
