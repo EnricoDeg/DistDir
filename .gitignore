@@ -17,6 +17,7 @@ bindings/C++/examples/example_basic2cpp
 bindings/C++/examples/example_basic3cpp
 bindings/C++/examples/example_basic4cpp
 bindings/C++/examples/example_basic5cpp
+bindings/C++/examples/example_basic6cpp
 bindings/Fortran/examples/example_basic1fc
 bindings/Fortran/examples/example_basic2fc
 bindings/Fortran/examples/example_basic3fc
