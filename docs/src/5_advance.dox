@@ -141,4 +141,15 @@ with those exchangers. As mentioned for the other exchangers, the choice between
 application and the MPI implementation, this the users should test the different \c nowait exchanger types for their 
 specific use cases.
 
+\section transform Memory layout transformation
+
+
+
+
+\section cuda CUDA backend
+
+
+
+
+
 */
