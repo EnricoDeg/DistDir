@@ -1,7 +1,8 @@
 ## DistDir
 The library allows the exchange of fields between two arbitrary domain decompositions over the same grid.
 
-The user needs to provide the global indices belonging to each MPI process in its subdomain. Internally, the library uses a distributed directory algorithm to figure out the exchange patterns.
+The user needs to provide the global indices belonging to each MPI process in its subdomain.
+Internally, the library uses a distributed directory algorithm to figure out the exchange patterns.
 
 Features:
  - 2D fields exchange
@@ -19,11 +20,9 @@ Dependencies:
  - MPI
  - CMake
  - Doxygen
- - Python
 
 ##### Installation
 ```
-export CC=mpicc
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
@@ -46,11 +45,15 @@ firefox docs/html/index.html
 The full documentation can be found here: https://enricodeg.github.io/DistDir
 
 ##### Python bindings
-Distdir library can be very easily used in a python script. Remember to set the `PYTHONPATH` environment variable:
+Distdir library can be easily used in a Python script (add `-DENABLE_PYTHON=ON` option to the `cmake` command).
+
+Remember to set the `PYTHONPATH` environment variable:
 ```
 export PYTHONPATH=${DISTDIR_ROOT}/lib/pydistdir
 ```
-Examples of python scripts using `distdir` library can be found in `bindings/python/examples`
+Examples of Python scripts using `DistDir` library can be found in `bindings/python/examples`.
+
+Bindings for Fortran, C++, and Julia are also implemented and fully documented.
 
 ##### Examples
-A complete list of use cases can be found in the `examples` folder
+A complete list of use cases can be found in the `examples` folder.
