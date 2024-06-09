@@ -8,15 +8,27 @@ Dependencies:
  - MPI
  - CMake
  - Doxygen
- - Python
+ - Python (optional)
+ - Fortran (optional)
+ - C++ (optional)
+ - CUDA (optional)
+
+Minimal installation:
 
 \code
-export CC=mpicc
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make
 make install
 \endcode
+
+Additionally, the following option can be specified:
+
+ - `-DENABLE_CUDA=ON`: compile the CUDA backend
+ - `-DENABLE_PYTHON=ON`: compile the Python bindings and install the Python module in `lib/pydistdir` folder
+ - `-DENABLE_CXX=ON`: install the `distdir.hpp` header in the `include`folder and compile the C++ examples
+ - `-DENABLE_FORTRAN=ON`: compile the Fortran bindings and install the `distdir_mod` module in the `modules` folder and 
+ compile the Fortran examples
 
 */
