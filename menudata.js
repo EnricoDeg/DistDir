@@ -105,4 +105,5 @@ var menudata={children:[
 {text:"Enumerator",url:"globals_eval.html"},
 {text:"Macros",url:"globals_defs.html",children:[
 {text:"i",url:"globals_defs.html#index_i"},
-{text:"n",url:"globals_defs.html#index_n"}]}]}]}]}
+{text:"n",url:"globals_defs.html#index_n"},
+{text:"s",url:"globals_defs.html#index_s"}]}]}]}]}
