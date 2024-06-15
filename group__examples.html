@@ -73,6 +73,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga51d7781847c9745a45349c655ceb9a2a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__examples.html#ga51d7781847c9745a45349c655ceb9a2a">example_basic1</a> ()</td></tr>
 <tr class="memdesc:ga51d7781847c9745a45349c655ceb9a2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic example of exchange between two 2D domain decomposition each using 2 MPI processes.  <a href="group__examples.html#ga51d7781847c9745a45349c655ceb9a2a">More...</a><br /></td></tr>
 <tr class="separator:ga51d7781847c9745a45349c655ceb9a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga142ef96bc5bdc4ae35de45912b4fe9f3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__examples.html#ga142ef96bc5bdc4ae35de45912b4fe9f3">example_basic10</a> ()</td></tr>
+<tr class="memdesc:ga142ef96bc5bdc4ae35de45912b4fe9f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic example of exchange between two 2D domain decomposition.  <a href="group__examples.html#ga142ef96bc5bdc4ae35de45912b4fe9f3">More...</a><br /></td></tr>
+<tr class="separator:ga142ef96bc5bdc4ae35de45912b4fe9f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga506ceb38626b94fe9218e16108331668"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__examples.html#ga506ceb38626b94fe9218e16108331668">example_basic2</a> ()</td></tr>
 <tr class="memdesc:ga506ceb38626b94fe9218e16108331668"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic example of exchange between two 2D domain decomposition each using 2 MPI processes.  <a href="group__examples.html#ga506ceb38626b94fe9218e16108331668">More...</a><br /></td></tr>
 <tr class="separator:ga506ceb38626b94fe9218e16108331668"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -123,6 +126,31 @@ Functions</h2></td></tr>
 <p>Rank: 2 Indices: 0, 1, 2, 3, 4, 5, 6, 7, 8 Rank: 3 Indices: 9, 10, 11, 12, 13, 14, 15</p>
 <p>Ranks 0,1 send data to ranks 2,3</p>
 <p>Exchange of integers and doubles are tested. </p>
+
+</div>
+</div>
+<a id="ga142ef96bc5bdc4ae35de45912b4fe9f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga142ef96bc5bdc4ae35de45912b4fe9f3">&#9670;&nbsp;</a></span>example_basic10()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int example_basic10 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Basic example of exchange between two 2D domain decomposition. </p>
+<p>The example uses a total of 4 MPI processes over a 4x4 global 3D domain. Processes 0-3 have the following domain decomposition on the send side:</p>
+<p>Rank: 0 Indices: 0, 1, 4, 5 Rank: 1 Indices: 2, 3, 6, 7 Rank: 2 Indices: 8, 9, 12, 13 Rank: 3 Indices: 10, 11, 14, 15</p>
+<p>Processes 0 have the following domain decomposition on the receiver size:</p>
+<p>Rank: 4 Indices: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15</p>
+<p>Ranks 0-3 send data to ranks 0</p>
+<p>Exchange of integers is tested. </p>
 
 </div>
 </div>
