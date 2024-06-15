@@ -73,6 +73,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gadc9dec406c13798323a0c009df90f342"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__bucket__tests.html#gadc9dec406c13798323a0c009df90f342">map_idxlist_to_RD_decomp_test01</a> (MPI_Comm comm)</td></tr>
 <tr class="memdesc:gadc9dec406c13798323a0c009df90f342"><td class="mdescLeft">&#160;</td><td class="mdescRight">test01 for map_idxlist_to_RD_decomp function  <a href="group__bucket__tests.html#gadc9dec406c13798323a0c009df90f342">More...</a><br /></td></tr>
 <tr class="separator:gadc9dec406c13798323a0c009df90f342"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga12740591a4e4c2655c837785ae6faac2"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__bucket__tests.html#ga12740591a4e4c2655c837785ae6faac2">map_idxlist_to_RD_decomp_test02</a> (MPI_Comm comm)</td></tr>
+<tr class="memdesc:ga12740591a4e4c2655c837785ae6faac2"><td class="mdescLeft">&#160;</td><td class="mdescRight">test02 for map_idxlist_to_RD_decomp function  <a href="group__bucket__tests.html#ga12740591a4e4c2655c837785ae6faac2">More...</a><br /></td></tr>
+<tr class="separator:ga12740591a4e4c2655c837785ae6faac2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaa9235bfe155647e94a44b9c680c81f7a"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__bucket__tests.html#gaa9235bfe155647e94a44b9c680c81f7a">map_RD_decomp_to_idxlist_test01</a> (MPI_Comm comm)</td></tr>
 <tr class="memdesc:gaa9235bfe155647e94a44b9c680c81f7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">test01 for map_RD_decomp_to_idxlist function  <a href="group__bucket__tests.html#gaa9235bfe155647e94a44b9c680c81f7a">More...</a><br /></td></tr>
 <tr class="separator:gaa9235bfe155647e94a44b9c680c81f7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,6 +108,36 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>test01 for map_idxlist_to_RD_decomp function </p>
+<p>Map idxlists from 2 MPI processes with indices: Process 0: 0, 2, 4, 6, 8, 10, 12, 14 Process 1: 1, 3, 5, 7, 9, 11, 13, 15 To the RD decomposition with 4 processes </p>
+
+</div>
+</div>
+<a id="ga12740591a4e4c2655c837785ae6faac2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga12740591a4e4c2655c837785ae6faac2">&#9670;&nbsp;</a></span>map_idxlist_to_RD_decomp_test02()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int map_idxlist_to_RD_decomp_test02 </td>
+          <td>(</td>
+          <td class="paramtype">MPI_Comm&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>test02 for map_idxlist_to_RD_decomp function </p>
+<p>Map idxlists from 2 MPI processes with indices: Process 0: 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24 Process 1: 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23 To the RD decomposition with 4 processes </p>
 
 </div>
 </div>
@@ -133,6 +166,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>test01 for map_RD_decomp_to_idxlist function </p>
+<p>Map RD decomposition to idxlist. 2 MPI sending processes with indices: Process 0: 0, 2, 3, 6, 8, 10, 12, 14 Process 1: 1, 3, 5, 7, 9, 11, 13, 15 2 MPI receiving process with indices: Process 2: 0, 1, 2, 3, 4, 5, 6, 7 Process 3: 8, 9, 10, 11, 12, 13, 14, 15 </p>
 
 </div>
 </div>
