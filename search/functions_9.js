@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['quicksort_406',['quickSort',['../group__sorting.html#ga27a3c56330b0f5797ec2d0e4d88247c3',1,'quicksort.h']]]
+  ['quicksort_411',['quickSort',['../group__sorting.html#ga4ea4deb91a68f8e87be493951006d09a',1,'quicksort.h']]],
+  ['quicksort_5fwith_5fidx_412',['quickSort_with_idx',['../group__sorting.html#gaef8f49ca111338071f881eea7b39f27e',1,'quicksort.h']]]
 ];
