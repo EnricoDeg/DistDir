@@ -25,6 +25,13 @@ target_link_libraries(num_indices_to_send_to_each_bucket_tests PRIVATE cmocka-st
 target_include_directories(num_indices_to_send_to_each_bucket_tests PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(num_indices_to_send_to_each_bucket_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
 
+# Sorting
+add_executable(sorting_tests sort/sorting_tests.c)
+target_compile_features(sorting_tests PRIVATE c_std_99)
+target_link_libraries(sorting_tests PRIVATE cmocka-static distdir ${MPI_C_LIBRARIES})
+target_include_directories(sorting_tests PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(sorting_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
+
 #############
 # MPI tests #
 #############
@@ -64,6 +71,7 @@ target_link_libraries(bucket_idxlist_elements_tests PRIVATE distdir ${MPI_C_LIBR
 target_include_directories(bucket_idxlist_elements_tests PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(bucket_idxlist_elements_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
 
+# Bucket
 add_executable(map_idxlist_to_RD_decomp_tests core/algorithm/map_idxlist_to_RD_decomp_tests.c)
 target_link_libraries(map_idxlist_to_RD_decomp_tests PRIVATE distdir ${MPI_C_LIBRARIES})
 target_include_directories(map_idxlist_to_RD_decomp_tests PRIVATE ${PROJECT_SOURCE_DIR})
@@ -74,10 +82,12 @@ target_link_libraries(map_RD_decomp_to_idxlist_tests PRIVATE distdir ${MPI_C_LIB
 target_include_directories(map_RD_decomp_to_idxlist_tests PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(map_RD_decomp_to_idxlist_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
 
+# Backend
 add_executable(backend_MPI_tests core/algorithm/backend/backend_MPI_tests.c)
 target_compile_features(backend_MPI_tests PRIVATE c_std_99)
 target_link_libraries(backend_MPI_tests PRIVATE cmocka-static)
 
+# Bucket
 add_executable(bucket_MPI_tests core/algorithm/bucket_MPI_tests.c)
 target_compile_features(bucket_MPI_tests PRIVATE c_std_99)
 target_link_libraries(bucket_MPI_tests PRIVATE cmocka-static)
@@ -90,6 +100,7 @@ enable_testing()
 add_test(NAME idxlist_tests COMMAND idxlist_tests)
 add_test(NAME assign_idxlist_elements_to_buckets_tests COMMAND assign_idxlist_elements_to_buckets_tests)
 add_test(NAME num_indices_to_send_to_each_bucket_tests COMMAND num_indices_to_send_to_each_bucket_tests)
+add_test(NAME sorting_tests COMMAND sorting_tests)
 
 add_test(NAME hello_world_tests COMMAND hello_world_tests)
 add_test(NAME backend_MPI_tests COMMAND backend_MPI_tests)
