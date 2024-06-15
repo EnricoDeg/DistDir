@@ -43,11 +43,19 @@ static void test_map_idxlist_to_RD_decomp(void **state __attribute__((unused))) 
 	assert_int_equal(err, 0);
 }
 
+static void test_map_RD_decomp_to_idxlist(void **state __attribute__((unused))) {
+
+	int err = system("mpirun --allow-run-as-root -n 4 ./map_RD_decomp_to_idxlist_tests");
+	assert_int_equal(err, 0);
+}
+
+
 int main() {
 
 	const struct CMUnitTest tests[] =
 	{
 		cmocka_unit_test(test_map_idxlist_to_RD_decomp),
+		cmocka_unit_test(test_map_RD_decomp_to_idxlist),
 	};
 	return cmocka_run_group_tests(tests, NULL, NULL);
 }

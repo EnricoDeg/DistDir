@@ -69,6 +69,11 @@ target_link_libraries(map_idxlist_to_RD_decomp_tests PRIVATE distdir ${MPI_C_LIB
 target_include_directories(map_idxlist_to_RD_decomp_tests PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(map_idxlist_to_RD_decomp_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
 
+add_executable(map_RD_decomp_to_idxlist_tests core/algorithm/map_RD_decomp_to_idxlist_tests.c)
+target_link_libraries(map_RD_decomp_to_idxlist_tests PRIVATE distdir ${MPI_C_LIBRARIES})
+target_include_directories(map_RD_decomp_to_idxlist_tests PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(map_RD_decomp_to_idxlist_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
+
 add_executable(backend_MPI_tests core/algorithm/backend/backend_MPI_tests.c)
 target_compile_features(backend_MPI_tests PRIVATE c_std_99)
 target_link_libraries(backend_MPI_tests PRIVATE cmocka-static)
