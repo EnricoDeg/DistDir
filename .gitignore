@@ -12,6 +12,7 @@ examples/example_basic6
 examples/example_basic7
 examples/example_basic8
 examples/example_basic9
+examples/example_basic10
 examples/example_multi_grid1
 bindings/C++/examples/example_basic1cpp
 bindings/C++/examples/example_basic2cpp
