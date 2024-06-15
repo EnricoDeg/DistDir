@@ -43,7 +43,12 @@
 /**
  * @brief test01 for map_idxlist_to_RD_decomp function
  * 
- * @details 
+ * @details Map idxlists from 2 MPI processes with indices:
+ *          Process 0:
+ *          0, 2, 4, 6, 8, 10, 12, 14
+ *          Process 1:
+ *          1, 3, 5, 7, 9, 11, 13, 15
+ *          To the RD decomposition with 4 processes
  * 
  * @ingroup bucket_tests
  */
