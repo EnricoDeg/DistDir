@@ -15,6 +15,9 @@ Enrico Degregori
 - @ref limit
 - @ref wip
 
+@defgroup setting
+          User interface to setup the library
+
 @defgroup group
           User interface to split the MPI Communicator in case of multiblock grids
 
@@ -50,6 +53,9 @@ Enrico Degregori
 
 @defgroup examples
           Standalone example of applications using DistDir library
+
+@defgroup setting_tests
+          Tests of the setting module
 
 @defgroup group_tests
           Tests of the group module
