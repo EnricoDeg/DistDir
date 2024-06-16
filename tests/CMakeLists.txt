@@ -45,6 +45,12 @@ target_link_libraries(unpacking_cpu_tests PRIVATE cmocka-static distdir ${MPI_C_
 target_include_directories(unpacking_cpu_tests PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(unpacking_cpu_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
 
+add_executable(allocate_cpu_tests core/exchange/backend_hardware/allocate_cpu_tests.c)
+target_compile_features(allocate_cpu_tests PRIVATE c_std_99)
+target_link_libraries(allocate_cpu_tests PRIVATE cmocka-static distdir ${MPI_C_LIBRARIES})
+target_include_directories(allocate_cpu_tests PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(allocate_cpu_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
+
 #############
 # MPI tests #
 #############
@@ -116,6 +122,7 @@ add_test(NAME num_indices_to_send_to_each_bucket_tests COMMAND num_indices_to_se
 add_test(NAME sorting_tests COMMAND sorting_tests)
 add_test(NAME packing_cpu_tests COMMAND packing_cpu_tests)
 add_test(NAME unpacking_cpu_tests COMMAND unpacking_cpu_tests)
+add_test(NAME allocate_cpu_tests COMMAND allocate_cpu_tests)
 
 add_test(NAME hello_world_tests COMMAND hello_world_tests)
 add_test(NAME backend_MPI_tests COMMAND backend_MPI_tests)
