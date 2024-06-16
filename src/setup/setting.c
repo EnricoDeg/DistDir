@@ -79,7 +79,7 @@ int get_config_exchanger() {
 	return config->exchanger;
 }
 
-int get_verbose_type() {
+int get_config_verbose() {
 
 	return config->verbose;
 }
