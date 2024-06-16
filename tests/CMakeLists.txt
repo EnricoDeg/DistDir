@@ -101,6 +101,12 @@ target_link_libraries(map_RD_decomp_to_idxlist_tests PRIVATE distdir ${MPI_C_LIB
 target_include_directories(map_RD_decomp_to_idxlist_tests PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(map_RD_decomp_to_idxlist_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
 
+# Setting
+add_executable(setting_tests setup/setting_tests.c)
+target_link_libraries(setting_tests PRIVATE distdir ${MPI_C_LIBRARIES})
+target_include_directories(setting_tests PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(setting_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
+
 # Backend
 add_executable(backend_MPI_tests core/algorithm/backend/backend_MPI_tests.c)
 target_compile_features(backend_MPI_tests PRIVATE c_std_99)
@@ -110,6 +116,11 @@ target_link_libraries(backend_MPI_tests PRIVATE cmocka-static)
 add_executable(bucket_MPI_tests core/algorithm/bucket_MPI_tests.c)
 target_compile_features(bucket_MPI_tests PRIVATE c_std_99)
 target_link_libraries(bucket_MPI_tests PRIVATE cmocka-static)
+
+# Setting
+add_executable(setting_MPI_tests setup/setting_MPI_tests.c)
+target_compile_features(setting_MPI_tests PRIVATE c_std_99)
+target_link_libraries(setting_MPI_tests PRIVATE cmocka-static)
 
 #########################
 # Setup tests in CMocka #
@@ -127,4 +138,5 @@ add_test(NAME allocate_cpu_tests COMMAND allocate_cpu_tests)
 add_test(NAME hello_world_tests COMMAND hello_world_tests)
 add_test(NAME backend_MPI_tests COMMAND backend_MPI_tests)
 add_test(NAME bucket_MPI_tests COMMAND bucket_MPI_tests)
+add_test(NAME setting_MPI_tests COMMAND setting_MPI_tests)
 
