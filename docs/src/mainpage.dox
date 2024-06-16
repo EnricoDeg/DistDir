@@ -69,6 +69,15 @@ Enrico Degregori
 @defgroup backend_tests
           Tests of the backend module
 
+@defgroup backend_cpu_tests
+          Tests of the backend CPU module
+
+@defgroup backend_cuda_tests
+          Tests of the backend CUDA module
+
+@defgroup backend_mpi_tests
+          Tests of the backend MPI module
+
 @defgroup sorting_tests
           Tests of the sorting module
 
