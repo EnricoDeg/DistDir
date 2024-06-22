@@ -85,9 +85,18 @@ Functions</h2></td></tr>
 <tr class="memitem:gaef8f49ca111338071f881eea7b39f27e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sorting.html#gaef8f49ca111338071f881eea7b39f27e">quickSort_with_idx</a> (int *arr, int *arr_idx, int l, int h)</td></tr>
 <tr class="memdesc:gaef8f49ca111338071f881eea7b39f27e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort array and its array of indices.  <a href="group__sorting.html#gaef8f49ca111338071f881eea7b39f27e">More...</a><br /></td></tr>
 <tr class="separator:gaef8f49ca111338071f881eea7b39f27e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaec2cefb5dc70a583985c6dec5e70f7bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sorting.html#gaec2cefb5dc70a583985c6dec5e70f7bb">timSort</a> (int *arr, int n)</td></tr>
-<tr class="memdesc:gaec2cefb5dc70a583985c6dec5e70f7bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort array.  <a href="group__sorting.html#gaec2cefb5dc70a583985c6dec5e70f7bb">More...</a><br /></td></tr>
-<tr class="separator:gaec2cefb5dc70a583985c6dec5e70f7bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabdf291e6c2c06d7d84809a6f17635012"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sorting.html#gabdf291e6c2c06d7d84809a6f17635012">quickSort_with_idx2</a> (int *arr, int *arr_idx1, int *arr_idx2, int l, int h)</td></tr>
+<tr class="memdesc:gabdf291e6c2c06d7d84809a6f17635012"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort array and two associated index lists.  <a href="group__sorting.html#gabdf291e6c2c06d7d84809a6f17635012">More...</a><br /></td></tr>
+<tr class="separator:gabdf291e6c2c06d7d84809a6f17635012"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5e2c2279adbeb0f4801fe1c3d6240825"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sorting.html#ga5e2c2279adbeb0f4801fe1c3d6240825">timSort</a> (int *arr, int l, int r)</td></tr>
+<tr class="memdesc:ga5e2c2279adbeb0f4801fe1c3d6240825"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort array.  <a href="group__sorting.html#ga5e2c2279adbeb0f4801fe1c3d6240825">More...</a><br /></td></tr>
+<tr class="separator:ga5e2c2279adbeb0f4801fe1c3d6240825"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6d73be1bbc683d2168fd49cdd404763d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sorting.html#ga6d73be1bbc683d2168fd49cdd404763d">timSort_with_idx</a> (int *arr, int *arr_idx, int l, int r)</td></tr>
+<tr class="memdesc:ga6d73be1bbc683d2168fd49cdd404763d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort array and an associated index list.  <a href="group__sorting.html#ga6d73be1bbc683d2168fd49cdd404763d">More...</a><br /></td></tr>
+<tr class="separator:ga6d73be1bbc683d2168fd49cdd404763d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gafe43f28ec649aa3f7b0949ce0c1b76da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sorting.html#gafe43f28ec649aa3f7b0949ce0c1b76da">timSort_with_idx2</a> (int *arr, int *arr_idx1, int *arr_idx2, int l, int r)</td></tr>
+<tr class="memdesc:gafe43f28ec649aa3f7b0949ce0c1b76da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sort array and two associated index lists.  <a href="group__sorting.html#gafe43f28ec649aa3f7b0949ce0c1b76da">More...</a><br /></td></tr>
+<tr class="separator:gafe43f28ec649aa3f7b0949ce0c1b76da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Sorting algorithms used internally by DistDir library </p>
@@ -332,7 +341,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sort array and its array of indices. </p>
-<p>Sort array using quicksort algorithm</p>
+<p>Sort array and an associated index list using quicksort algorithm</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">arr</td><td>Array to be sorted </td></tr>
@@ -345,8 +354,67 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="gaec2cefb5dc70a583985c6dec5e70f7bb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaec2cefb5dc70a583985c6dec5e70f7bb">&#9670;&nbsp;</a></span>timSort()</h2>
+<a id="gabdf291e6c2c06d7d84809a6f17635012"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabdf291e6c2c06d7d84809a6f17635012">&#9670;&nbsp;</a></span>quickSort_with_idx2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void quickSort_with_idx2 </td>
+          <td>(</td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>arr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>arr_idx1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>arr_idx2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>h</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sort array and two associated index lists. </p>
+<p>Sort array and two associated index lists using quicksort algorithm</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">arr</td><td>Array to be sorted </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">arr_idx1</td><td>First Index list array to be sorted </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">arr_idx2</td><td>Second Index list array to be sorted </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">l</td><td>First index of the array to be sorted </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">r</td><td>Last index of the array to be sorted </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga5e2c2279adbeb0f4801fe1c3d6240825"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga5e2c2279adbeb0f4801fe1c3d6240825">&#9670;&nbsp;</a></span>timSort()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -361,7 +429,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>r</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -376,7 +450,119 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">arr</td><td>Array to be sorted </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">n</td><td>Length of the array </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">l</td><td>First index of the array to be sorted </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">r</td><td>Last index of the array to be sorted </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ga6d73be1bbc683d2168fd49cdd404763d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6d73be1bbc683d2168fd49cdd404763d">&#9670;&nbsp;</a></span>timSort_with_idx()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void timSort_with_idx </td>
+          <td>(</td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>arr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>arr_idx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>r</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sort array and an associated index list. </p>
+<p>Sort array and an associated index list using timsort algorithm with subarrays of size 32</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">arr</td><td>Array to be sorted </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">arr_idx</td><td>Index list array to be sorted </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">l</td><td>First index of the array to be sorted </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">r</td><td>Last index of the array to be sorted </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="gafe43f28ec649aa3f7b0949ce0c1b76da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gafe43f28ec649aa3f7b0949ce0c1b76da">&#9670;&nbsp;</a></span>timSort_with_idx2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void timSort_with_idx2 </td>
+          <td>(</td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>arr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>arr_idx1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>arr_idx2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>l</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>r</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sort array and two associated index lists. </p>
+<p>Sort array and two associated index lists using timsort algorithm with subarrays of size 32</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">arr</td><td>Array to be sorted </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">arr_idx1</td><td>First index list array to be sorted </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">arr_idx2</td><td>Second index list array to be sorted </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">l</td><td>First index of the array to be sorted </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">r</td><td>Last index of the array to be sorted </td></tr>
   </table>
   </dd>
 </dl>
