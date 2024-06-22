@@ -174,11 +174,97 @@ static void sorting_test02(void **state __attribute__((unused))) {
 	free(solution);
 }
 
+/**
+ * @brief Test03 of sorting functions
+ * 
+ * @details Create an unordered array.
+ *          Then use mergesort, timsort and quicksort to sort the array and 
+ *          keep track of two associated index lists.
+ * 
+ * @ingroup sorting_tests
+ */
+static void sorting_test03(void **state __attribute__((unused))) {
+
+	int array[10] = {20, 19, 4, 7, 99, 3, 5, 6, 21, 0};
+	int array_order[10] = {0, 3, 4, 5, 6, 7, 19, 20, 21, 99};
+	int indices_order[10] = {9, 5, 2, 6, 7, 3, 1, 0, 8, 4};
+	int indices1[10];
+	int indices2[10];
+
+	int *solution =  (int *)malloc(10*sizeof(int));
+
+	// test mergesort
+	for (int i=0; i<10; i++)
+		solution[i] = array[i];
+
+	for (int i=0; i<10; i++)
+		indices1[i] = i;
+
+	for (int i=0; i<10; i++)
+		indices2[i] = i;
+
+	mergeSort_with_idx2(solution, indices1, indices2, 0, 9);
+
+	for (int i=0; i<10; i++)
+		assert_int_equal(solution[i], array_order[i]);
+
+	for (int i=0; i<10; i++)
+		assert_int_equal(indices1[i], indices_order[i]);
+
+	for (int i=0; i<10; i++)
+		assert_int_equal(indices2[i], indices_order[i]);
+
+	// test timsort
+	for (int i=0; i<10; i++)
+		solution[i] = array[i];
+
+	for (int i=0; i<10; i++)
+		indices1[i] = i;
+
+	for (int i=0; i<10; i++)
+		indices2[i] = i;
+
+	timSort_with_idx2(solution, indices1, indices2, 0, 9);
+
+	for (int i=0; i<10; i++)
+		assert_int_equal(solution[i], array_order[i]);
+
+	for (int i=0; i<10; i++)
+		assert_int_equal(indices1[i], indices_order[i]);
+
+	for (int i=0; i<10; i++)
+		assert_int_equal(indices2[i], indices_order[i]);
+
+	// test quicksort
+	for (int i=0; i<10; i++)
+		solution[i] = array[i];
+
+	for (int i=0; i<10; i++)
+		indices1[i] = i;
+
+	for (int i=0; i<10; i++)
+		indices2[i] = i;
+
+	quickSort_with_idx2(solution, indices1, indices2, 0, 9);
+
+	for (int i=0; i<10; i++)
+		assert_int_equal(solution[i], array_order[i]);
+
+	for (int i=0; i<10; i++)
+		assert_int_equal(indices1[i], indices_order[i]);
+
+	for (int i=0; i<10; i++)
+		assert_int_equal(indices2[i], indices_order[i]);
+
+	free(solution);
+}
+
 int main(void) {
 
 	const struct CMUnitTest tests[] = {
 		cmocka_unit_test(sorting_test01),
 		cmocka_unit_test(sorting_test02),
+		cmocka_unit_test(sorting_test03),
 	};
 	return cmocka_run_group_tests(tests, NULL, NULL);
 }
