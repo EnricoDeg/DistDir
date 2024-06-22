@@ -107,6 +107,12 @@ target_link_libraries(map_tests PRIVATE distdir ${MPI_C_LIBRARIES})
 target_include_directories(map_tests PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(map_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
 
+# Exchange
+add_executable(exchange_tests core/exchange/exchange_tests.c)
+target_link_libraries(exchange_tests PRIVATE distdir ${MPI_C_LIBRARIES})
+target_include_directories(exchange_tests PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(exchange_tests PRIVATE ${MPI_C_INCLUDE_DIRS})
+
 # Setting
 add_executable(setting_tests setup/setting_tests.c)
 target_link_libraries(setting_tests PRIVATE distdir ${MPI_C_LIBRARIES})
@@ -133,6 +139,11 @@ target_link_libraries(bucket_MPI_tests PRIVATE cmocka-static)
 add_executable(map_MPI_tests core/algorithm/map_MPI_tests.c)
 target_compile_features(map_MPI_tests PRIVATE c_std_99)
 target_link_libraries(map_MPI_tests PRIVATE cmocka-static)
+
+# Exchange
+add_executable(exchange_MPI_tests core/exchange/exchange_MPI_tests.c)
+target_compile_features(exchange_MPI_tests PRIVATE c_std_99)
+target_link_libraries(exchange_MPI_tests PRIVATE cmocka-static)
 
 # Setting
 add_executable(setting_MPI_tests setup/setting_MPI_tests.c)
@@ -161,6 +172,7 @@ add_test(NAME hello_world_tests COMMAND hello_world_tests)
 add_test(NAME backend_MPI_tests COMMAND backend_MPI_tests)
 add_test(NAME bucket_MPI_tests COMMAND bucket_MPI_tests)
 add_test(NAME map_MPI_tests COMMAND map_MPI_tests)
+add_test(NAME exchange_MPI_tests COMMAND exchange_MPI_tests)
 add_test(NAME setting_MPI_tests COMMAND setting_MPI_tests)
 add_test(NAME group_MPI_tests COMMAND group_MPI_tests)
 
