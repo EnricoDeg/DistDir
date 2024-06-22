@@ -90,7 +90,7 @@ static void sorting_test01(void **state __attribute__((unused))) {
 	for (int i=0; i<size; i++)
 		solution[i] = array[i];
 
-	timSort(solution, size);
+	timSort(solution, 0, size-1);
 
 	for (int i=0; i<size; i++)
 		assert_int_equal(solution[i], i);

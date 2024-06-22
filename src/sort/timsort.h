@@ -40,10 +40,11 @@
  * @details Sort array using timsort algorithm using subarrays of size 32
  * 
  * @param[inout] arr Array to be sorted
- * @param[in]    n   Length of the array
+ * @param[in]    l   First index of the array to be sorted
+ * @param[in]    r   Last index of the array to be sorted
  * 
  * @ingroup sorting
  */
-void timSort(int *arr, int n);
+void timSort(int *arr, int l, int r);
 
 #endif

@@ -106,9 +106,10 @@ void merge_array(int *arr, int l, int m, int r)
 }
 
 /* Iterative Timsort function to sort the array[0...n-1] (similar to merge sort) */
-void timSort(int *arr, int n)
+void timSort(int *arr, int l, int r)
 {
 
+	int n = r - l + 1;
 	// Sort individual subarrays of size RUN
 	for (int i = 0; i < n; i += RUN)
 		insertionSort(arr, i, min((i + RUN - 1), (n - 1)));
