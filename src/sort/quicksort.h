@@ -50,7 +50,7 @@ void quickSort(int *arr, int l, int h);
 /**
  * @brief Sort array and its array of indices
  * 
- * @details Sort array using quicksort algorithm
+ * @details Sort array and an associated index list using quicksort algorithm
  * 
  * @param[inout] arr     Array to be sorted
  * @param[inout] arr_idx Array of indices following the sorting of arr
@@ -60,5 +60,20 @@ void quickSort(int *arr, int l, int h);
  * @ingroup sorting
  */
 void quickSort_with_idx(int *arr, int *arr_idx, int l, int h);
+
+/**
+ * @brief Sort array and two associated index lists
+ * 
+ * @details Sort array and two associated index lists using quicksort algorithm
+ * 
+ * @param[inout] arr      Array to be sorted
+ * @param[inout] arr_idx1 First Index list array to be sorted
+ * @param[inout] arr_idx2 Second Index list array to be sorted
+ * @param[in] l           First index of the array to be sorted
+ * @param[in] r           Last index of the array to be sorted
+ * 
+ * @ingroup sorting
+ */
+void quickSort_with_idx2(int *arr, int *arr_idx1, int *arr_idx2, int l, int h);
 
 #endif
