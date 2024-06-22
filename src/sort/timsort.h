@@ -47,4 +47,18 @@
  */
 void timSort(int *arr, int l, int r);
 
+/**
+ * @brief Sort array and an associated index list
+ * 
+ * @details Sort array and an associated index list using timsort algorithm with subarrays of size 32
+ * 
+ * @param[inout] arr     Array to be sorted
+ * @param[inout] arr_idx Index list array to be sorted
+ * @param[in]    l       First index of the array to be sorted
+ * @param[in]    r       Last index of the array to be sorted
+ * 
+ * @ingroup sorting
+ */
+void timSort_with_idx(int *arr, int *arr_idx, int l, int r);
+
 #endif
