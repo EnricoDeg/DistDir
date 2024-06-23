@@ -26,6 +26,7 @@ bindings/Fortran/examples/example_basic1fc
 bindings/Fortran/examples/example_basic2fc
 bindings/Fortran/examples/example_basic3fc
 bindings/Fortran/examples/example_basic4fc
+bindings/Fortran/examples/example_basic5fc
 bindings/Fortran/examples/example_basic8fc
 bindings/Fortran/examples/example_multi_grid1fc
 .vscode
