@@ -30,5 +30,6 @@ bindings/Fortran/examples/example_basic5fc
 bindings/Fortran/examples/example_basic6fc
 bindings/Fortran/examples/example_basic7fc
 bindings/Fortran/examples/example_basic8fc
+bindings/Fortran/examples/example_basic9fc
 bindings/Fortran/examples/example_multi_grid1fc
 .vscode
