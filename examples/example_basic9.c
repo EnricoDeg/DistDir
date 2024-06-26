@@ -74,7 +74,7 @@ int example_basic9() {
 	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 	int world_role;
 	int npoints_local = NCOLS * NROWS / (world_size-1);
-	int idxlist[npoints_local];
+	int *idxlist;
 	t_idxlist *p_idxlist;
 	t_idxlist *p_idxlist_empty;
 	t_map *p_map;
@@ -84,11 +84,13 @@ int example_basic9() {
 	// index list with global indices
 	if (world_rank < 2) {
 		world_role = I_SRC;
+		idxlist = (int *)malloc(npoints_local*sizeof(int));
 		for (int i=0; i<npoints_local; i++)
 			idxlist[i] = world_rank + i*2;
 	} else {
 		world_role = I_DST;
 		npoints_local = NROWS * NCOLS;
+		idxlist = (int *)malloc(npoints_local*sizeof(int));
 		for (int i=0; i < npoints_local; i++)
 			idxlist[i] = i;
 	}
