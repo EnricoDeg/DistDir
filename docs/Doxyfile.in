@@ -13,6 +13,7 @@ INPUT                  = "@DOXYGEN_INPUT_DIR@/src" \
                          "@DOXYGEN_INPUT_DIR@/tests/core/algorithm/backend" \
                          "@DOXYGEN_INPUT_DIR@/tests/core/algorithm" \
                          "@DOXYGEN_INPUT_DIR@/tests/core/exchange/backend_hardware" \
+                         "@DOXYGEN_INPUT_DIR@/tests/core/exchange/backend_communication" \
                          "@DOXYGEN_INPUT_DIR@/tests/core/exchange" \
                          "@DOXYGEN_INPUT_DIR@/tests/core/indices" \
                          "@DOXYGEN_INPUT_DIR@/tests/extra" \
