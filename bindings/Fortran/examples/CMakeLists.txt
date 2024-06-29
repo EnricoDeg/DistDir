@@ -56,6 +56,12 @@ target_link_libraries (example_basic9fc distdir ${MPI_Fortran_LIBRARIES})
 target_include_directories(example_basic9fc PRIVATE ${PROJECT_SOURCE_DIR})
 target_include_directories(example_basic9fc PRIVATE ${MPI_Fortran_INCLUDE_DIRS})
 
+add_executable(example_basic10fc example_basic10.f90)
+set_property(TARGET example_basic10fc PROPERTY LINKER_LANGUAGE Fortran)
+target_link_libraries (example_basic10fc distdir ${MPI_Fortran_LIBRARIES})
+target_include_directories(example_basic10fc PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(example_basic10fc PRIVATE ${MPI_Fortran_INCLUDE_DIRS})
+
 add_executable(example_multi_grid1fc example_multi_grid1.f90)
 set_property(TARGET example_multi_grid1fc PROPERTY LINKER_LANGUAGE Fortran)
 target_link_libraries (example_multi_grid1fc distdir ${MPI_Fortran_LIBRARIES})
@@ -99,5 +105,10 @@ install (TARGETS
   RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/Fortran/examples)
 
 install (TARGETS
+  example_basic10fc # executables
+  RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/Fortran/examples)
+
+install (TARGETS
   example_multi_grid1fc # executables
   RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/bindings/Fortran/examples)
+
