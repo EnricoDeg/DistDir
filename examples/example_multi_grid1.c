@@ -69,8 +69,6 @@ int main () {
 	int group_size;
 	MPI_Comm_size(group_comm, &group_size);
 
-//	printf("%d: rank %d of %d\n", world_rank, group_rank, group_size);
-
 	npoints_local = 4;
 	idxlist = (int *)malloc(npoints_local*sizeof(int));
 
