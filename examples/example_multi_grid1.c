@@ -41,7 +41,37 @@
 #define NCOLS 4
 #define NROWS 4
 
-int main () {
+/**
+ * @brief Basic example of exchange between two 2D domain decomposition.
+ * 
+ * @details The example uses a total of 8 MPI processes over two blocks of 4x4 global domain.
+ *          Processes 0-3 have the following domain decomposition on the send side:
+ * 
+ *          Rank: 0
+ *          Indices: 0, 1, 4, 5
+ *          Rank: 1
+ *          Indices: 2, 3, 6, 7
+ *          Rank: 2
+ *          Indices: 8, 9, 12, 13
+ *          Rank: 3
+ *          Indices: 10, 11, 14, 15
+ * 
+ *          Processes 0 have the following domain decomposition on the receiver size:
+ * 
+ *          Rank: 4
+ *          Indices: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+ * 
+ *          Ranks 0-3 send data to ranks 0
+ * 
+ *          Processes 4-7 has the same domain decomposition on the send side of processes 0-3,
+ *          but on a different domain block and process 4 has the same domain decomposition on the
+ *          receiver side of process 0 but on a different domain block.
+ * 
+ *          Exchange of integers is tested.
+ * 
+ * @ingroup examples
+ */
+int example_multi_grid1() {
 
 	distdir_initialize();
 
@@ -177,6 +207,14 @@ int main () {
 	delete_map(p_map);
 
 	distdir_finalize();
+
+	return 0;
+}
+
+int main () {
+
+	int err = example_multi_grid1();
+	if (err != 0) return err;
 
 	return 0;
 }
