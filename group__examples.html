@@ -100,6 +100,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gacacb39d5d6df08c56dfddd0174dcd38c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__examples.html#gacacb39d5d6df08c56dfddd0174dcd38c">example_basic9</a> ()</td></tr>
 <tr class="memdesc:gacacb39d5d6df08c56dfddd0174dcd38c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic example of exchange between two 2D domain decomposition. 2 MPI processes send to 1 MPI process.  <a href="group__examples.html#gacacb39d5d6df08c56dfddd0174dcd38c">More...</a><br /></td></tr>
 <tr class="separator:gacacb39d5d6df08c56dfddd0174dcd38c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae3cb23366b0b9667076efd0a99a0288a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__examples.html#gae3cb23366b0b9667076efd0a99a0288a">example_multi_grid1</a> ()</td></tr>
+<tr class="memdesc:gae3cb23366b0b9667076efd0a99a0288a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic example of exchange between two 2D domain decomposition.  <a href="group__examples.html#gae3cb23366b0b9667076efd0a99a0288a">More...</a><br /></td></tr>
+<tr class="separator:gae3cb23366b0b9667076efd0a99a0288a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Standalone example of applications using DistDir library </p>
@@ -352,6 +355,32 @@ Functions</h2></td></tr>
 <p>Rank: 2 Indices: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15</p>
 <p>Ranks 0,1 send data to ranks 2</p>
 <p>Exchange of integers are tested. </p>
+
+</div>
+</div>
+<a id="gae3cb23366b0b9667076efd0a99a0288a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gae3cb23366b0b9667076efd0a99a0288a">&#9670;&nbsp;</a></span>example_multi_grid1()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int example_multi_grid1 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Basic example of exchange between two 2D domain decomposition. </p>
+<p>The example uses a total of 8 MPI processes over two blocks of 4x4 global domain. Processes 0-3 have the following domain decomposition on the send side:</p>
+<p>Rank: 0 Indices: 0, 1, 4, 5 Rank: 1 Indices: 2, 3, 6, 7 Rank: 2 Indices: 8, 9, 12, 13 Rank: 3 Indices: 10, 11, 14, 15</p>
+<p>Processes 0 have the following domain decomposition on the receiver size:</p>
+<p>Rank: 4 Indices: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15</p>
+<p>Ranks 0-3 send data to ranks 0</p>
+<p>Processes 4-7 has the same domain decomposition on the send side of processes 0-3, but on a different domain block and process 4 has the same domain decomposition on the receiver side of process 0 but on a different domain block.</p>
+<p>Exchange of integers is tested. </p>
 
 </div>
 </div>
