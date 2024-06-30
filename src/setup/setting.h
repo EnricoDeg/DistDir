@@ -34,12 +34,22 @@
 #ifndef SETTING_H
 #define SETTING_H
 
+/** @enum distdir_hardware
+ * 
+ *  @brief Enum for supported hardware
+ * 
+ */
 typedef enum {
 	CPU = 0,
 	GPU_NVIDIA = 1,
 	GPU_AMD = 2
 } distdir_hardware ;
 
+/** @enum distdir_exchanger
+ * 
+ *  @brief Enum for supported exchanger
+ * 
+ */
 enum distdir_exchanger {
 	IsendIrecv1 = 0,
 	IsendIrecv2 = 1,
@@ -51,28 +61,128 @@ enum distdir_exchanger {
 	IsendRecv2NoWait = 7
 };
 
+/** @enum distdir_verbose
+ * 
+ *  @brief Enum for verbosity
+ * 
+ */
 enum distdir_verbose {
 	verbose_true = 0,
 	verbose_false = 1
 };
 
+/** @enum distdir_sort
+ * 
+ *  @brief Enum for supported sorting algorithms
+ * 
+ */
+enum distdir_sort {
+	mergesort = 0,
+	quicksort = 1,
+	timsort   = 2
+};
+
+/** @struct t_config
+ * 
+ *  @brief The structure contains information about the library configuration
+ * 
+ */
 struct t_config {
+	/** @brief define initialization state of the library */
 	int initialized;
+	/** @brief exchanger type */
 	enum distdir_exchanger exchanger;
+	/** @brief verbose type */
 	enum distdir_verbose verbose;
+	/** @brief sort type */
+	enum distdir_sort sort;
 };
 typedef struct t_config t_config;
 
+/**
+ * @brief Initialize the library
+ * 
+ * @details Initialize MPI if not already done and the library configuration
+ * 
+ * @ingroup setting
+ */
 void distdir_initialize();
 
+/**
+ * @brief Finalize the library
+ * 
+ * @details Finalize MPI and the library configuration
+ * 
+ * @ingroup setting
+ */
 void distdir_finalize();
 
+/**
+ * @brief Set library exchanger type
+ * 
+ * @details It can also be set up with environment variable \c DISTDIR_EXCHANGER.
+ *          The function should be called before a call to \c new_exchanger.
+ * 
+ * @param[in] exchanger_type exchanger type using values of distdir_exchanger enum
+ * 
+ * @ingroup setting
+ */
 void set_config_exchanger(int exchanger_type);
 
+/**
+ * @brief Set library verbosity
+ * 
+ * @details It can also be set up with environment variable \c DISTDIR_VERBOSE.
+ * 
+ * @param[in] verbose_type verbose type using values of distdir_verbose enum
+ * 
+ * @ingroup setting
+ */
 void set_config_verbose(int verbose_type);
 
+/**
+ * @brief Set library sort algorithm
+ * 
+ * @details It can also be set up with environment variable \c DISTDIR_SORT.
+ *          The function should be called before a call to \c new_map.
+ * 
+ * @param[in] sort_type sort algorithm type using values of distdir_sort enum
+ * 
+ * @ingroup setting
+ */
+void set_config_sort(int sort_type);
+
+/**
+ * @brief get current exchanger configuration
+ * 
+ * @details Return a value of the distdir_exchanger enum.
+ * 
+ * @return value of the distdir_exchanger enum
+ * 
+ * @ingroup setting
+ */
 int get_config_exchanger();
 
+/**
+ * @brief get current verbose configuration
+ * 
+ * @details Return a value of the distdir_verbose enum.
+ * 
+ * @return value of the distdir_verbose enum
+ * 
+ * @ingroup setting
+ */
 int get_config_verbose();
+
+/**
+ * @brief get current sert algorithm configuration
+ * 
+ * @details Return a value of the distdir_sort enum.
+ * 
+ * @return value of the distdir_sort enum
+ * 
+ * @ingroup setting
+ */
+int get_config_sort();
 
 #endif

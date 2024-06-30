@@ -56,12 +56,14 @@ static void set_default_config(t_config *config) {
 
 	config->exchanger = IsendIrecv1;
 	config->verbose = verbose_false;
+	config->sort = mergesort;
 }
 
 static void print_config() {
 
 	printf("DISTDIR_EXCHANGER = %d\n", config->exchanger);
 	printf("DISTDIR_VERBOSE   = %d\n", config->verbose  );
+	printf("DISTDIR_SORT      = %d\n", config->sort     );
 }
 
 void set_config_exchanger(int exchanger_type) {
@@ -74,6 +76,11 @@ void set_config_verbose(int verbose_type) {
 	config->verbose = verbose_type;
 }
 
+void set_config_sort(int sort_type) {
+
+	config->sort = sort_type;
+}
+
 int get_config_exchanger() {
 
 	return config->exchanger;
@@ -82,6 +89,11 @@ int get_config_exchanger() {
 int get_config_verbose() {
 
 	return config->verbose;
+}
+
+int get_config_sort() {
+
+	return config->sort;
 }
 
 void distdir_initialize() {
@@ -106,6 +118,12 @@ void distdir_initialize() {
 	// set verbose from env variable
 	{
 		int variable = get_env_variable("DISTDIR_VERBOSE");
+		if (variable != -1) config->verbose = variable;
+	}
+
+	// set verbose from env variable
+	{
+		int variable = get_env_variable("DISTDIR_SORT");
 		if (variable != -1) config->verbose = variable;
 	}
 
