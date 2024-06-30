@@ -36,8 +36,8 @@
 #include <assert.h>
 
 #include "src/core/algorithm/map.h"
-#include "src/sort/mergesort.h"
 #include "src/core/algorithm/bucket.h"
+#include "src/core/algorithm/backend/backend.h"
 #include "src/utils/check.h"
 #ifdef CUDA
 #include "src/core/exchange/backend_hardware/backend_cuda.h"
@@ -52,6 +52,8 @@ t_map * new_map(t_idxlist *src_idxlist ,
 	check_mpi( MPI_Comm_size(comm, &world_size) );
 	int world_rank;
 	check_mpi( MPI_Comm_rank(comm, &world_rank) );
+
+	sort_fn sort = get_sort_function();
 
 	// ==============================================
 	// Initial checks and computation of buckets size
@@ -273,7 +275,7 @@ t_map * new_map(t_idxlist *src_idxlist ,
 			                       map->exch_send->buffer_offset[count + 1];
 			int size = upper_bound - map->exch_send->buffer_offset[count];
 
-			mergeSort(&map->exch_send->buffer_idxlist[map->exch_send->buffer_offset[count]], 0, size-1);
+			sort(&map->exch_send->buffer_idxlist[map->exch_send->buffer_offset[count]], 0, size-1);
 		}
 
 #ifdef CUDA
@@ -342,7 +344,7 @@ t_map * new_map(t_idxlist *src_idxlist ,
 			                       map->exch_recv->buffer_offset[count + 1];
 			int size = upper_bound - map->exch_recv->buffer_offset[count];
 
-			mergeSort(&map->exch_recv->buffer_idxlist[map->exch_recv->buffer_offset[count]], 0, size-1);
+			sort(&map->exch_recv->buffer_idxlist[map->exch_recv->buffer_offset[count]], 0, size-1);
 		}
 
 #ifdef CUDA
