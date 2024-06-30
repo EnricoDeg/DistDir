@@ -267,6 +267,15 @@ t_map * new_map(t_idxlist *src_idxlist ,
 			map->exch_send->buffer_idxlist[memory_position] = src_idxlist_local[j];
 		}
 
+		for (int count=0; count < map->exch_send->count; count++) {
+			int upper_bound = count == map->exch_send->count-1 ?
+			                       map->exch_send->buffer_size :
+			                       map->exch_send->buffer_offset[count + 1];
+			int size = upper_bound - map->exch_send->buffer_offset[count];
+
+			mergeSort(&map->exch_send->buffer_idxlist[map->exch_send->buffer_offset[count]], 0, size-1);
+		}
+
 #ifdef CUDA
 		map->exch_send->buffer_idxlist_gpu = (int *)allocator_cuda(src_idxlist->count*sizeof(int));
 		memcpy_h2d(map->exch_send->buffer_idxlist_gpu,
@@ -325,6 +334,15 @@ t_map * new_map(t_idxlist *src_idxlist ,
 		for (int j=offset; j<dst_idxlist->count; j++) {
 			int memory_position = map->exch_recv->buffer_offset[count] + j - offset;
 			map->exch_recv->buffer_idxlist[memory_position] = dst_idxlist_local[j];
+		}
+
+		for (int count=0; count < map->exch_recv->count; count++) {
+			int upper_bound = count == map->exch_recv->count-1 ?
+			                       map->exch_recv->buffer_size :
+			                       map->exch_recv->buffer_offset[count + 1];
+			int size = upper_bound - map->exch_recv->buffer_offset[count];
+
+			mergeSort(&map->exch_recv->buffer_idxlist[map->exch_recv->buffer_offset[count]], 0, size-1);
 		}
 
 #ifdef CUDA
