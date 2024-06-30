@@ -191,13 +191,13 @@ static int map_test02(MPI_Comm comm) {
 
 		for (int i=0; i < NROWS; i++)
 			for (int j=0; j < ncols_local; j++)
-				idxlist[j+i*ncols_local] = NROWS * NCOLS - 1 + j + i * NCOLS + world_rank * (NCOLS - ncols_local);
+				idxlist[j+i*ncols_local] = NROWS * NCOLS - 1 - ( j + i * NCOLS + world_rank * (NCOLS - ncols_local) );
 	} else {
 		world_role = I_DST;
 		int nrows_local = NROWS / (world_size / 2);
 		for (int i=0; i < nrows_local; i++)
 			for (int j=0; j < NCOLS; j++)
-				idxlist[j+i*NCOLS] = NROWS * NCOLS - 1 + j + i * NCOLS + (world_rank - (world_size / 2)) * (NROWS - nrows_local) * NCOLS;
+				idxlist[j+i*NCOLS] = NROWS * NCOLS - 1 - ( j + i * NCOLS + (world_rank - (world_size / 2)) * (NROWS - nrows_local) * NCOLS );
 	}
 
 	p_idxlist = new_idxlist(idxlist, npoints_local);
