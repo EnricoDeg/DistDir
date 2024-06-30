@@ -54,6 +54,30 @@ sort_fn get_sort_function() {
 	}
 }
 
+sort_with_idx_fn get_sort_with_idx_function() {
+
+	int sort_type = get_config_sort();
+	if (sort_type == 0) {
+		return mergeSort_with_idx;
+	} else if (sort_type == 1) {
+		return quickSort_with_idx;
+	} else if (sort_type==2) {
+		return timSort_with_idx;
+	}
+}
+
+sort_with_idx2_fn get_sort_with_idx2_function() {
+
+	int sort_type = get_config_sort();
+	if (sort_type == 0) {
+		return mergeSort_with_idx2;
+	} else if (sort_type == 1) {
+		return quickSort_with_idx2;
+	} else if (sort_type==2) {
+		return timSort_with_idx2;
+	}
+}
+
 void assign_idxlist_elements_to_buckets(      int *bucket_idxlist,
                                         const int *idxlist       ,
                                               int bucket_min_size,

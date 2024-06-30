@@ -34,6 +34,8 @@
 #include "mpi.h"
 
 typedef void (*sort_fn) (int *, int, int);
+typedef void (*sort_with_idx_fn) (int *, int *, int, int);
+typedef void (*sort_with_idx2_fn) (int *, int *, int *, int, int);
 
 /**
  * @brief Return sorting function
@@ -45,6 +47,28 @@ typedef void (*sort_fn) (int *, int, int);
  * @ingroup backend
  */
 sort_fn get_sort_function();
+
+/**
+ * @brief Return sorting function with associated indices
+ * 
+ * @details The sorting function is chosen based on the current configuration
+ * 
+ * @return sorting function
+ * 
+ * @ingroup backend
+ */
+sort_with_idx_fn get_sort_with_idx_function();
+
+/**
+ * @brief Return sorting function with two associated indices
+ * 
+ * @details The sorting function is chosen based on the current configuration
+ * 
+ * @return sorting function
+ * 
+ * @ingroup backend
+ */
+sort_with_idx2_fn get_sort_with_idx2_function();
 
 /**
  * @brief Assign each element of a given index list to a bucket.
