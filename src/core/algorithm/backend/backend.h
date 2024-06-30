@@ -33,6 +33,19 @@
 
 #include "mpi.h"
 
+typedef void (*sort_fn) (int *, int, int);
+
+/**
+ * @brief Return sorting function
+ * 
+ * @details The sorting function is chosen based on the current configuration
+ * 
+ * @return sorting function
+ * 
+ * @ingroup backend
+ */
+sort_fn get_sort_function();
+
 /**
  * @brief Assign each element of a given index list to a bucket.
  * 

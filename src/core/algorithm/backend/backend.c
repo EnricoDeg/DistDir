@@ -37,7 +37,22 @@
 
 #include "src/core/algorithm/backend/backend.h"
 #include "src/sort/mergesort.h"
+#include "src/sort/quicksort.h"
+#include "src/sort/timsort.h"
+#include "src/setup/setting.h"
 #include "src/utils/check.h"
+
+sort_fn get_sort_function() {
+
+	int sort_type = get_config_sort();
+	if (sort_type == 0) {
+		return mergeSort;
+	} else if (sort_type == 1) {
+		return quickSort;
+	} else if (sort_type==2) {
+		return timSort;
+	}
+}
 
 void assign_idxlist_elements_to_buckets(      int *bucket_idxlist,
                                         const int *idxlist       ,
