@@ -52,6 +52,7 @@ void map_idxlist_to_RD_decomp(t_bucket  *bucket       ,
 	check_mpi( MPI_Comm_rank(comm, &world_rank) );
 
 	sort_fn sort = get_sort_function();
+	sort_with_idx2_fn sort_with_idx2 = get_sort_with_idx2_function();
 
 	// each element of the idxlist is assigned to a bucket
 	int bucket_idxlist[idxlist->count];
@@ -70,7 +71,7 @@ void map_idxlist_to_RD_decomp(t_bucket  *bucket       ,
 			src_idxlist_sort[i] = idxlist->list[i];
 			idxlist_local[i] = i;
 		}
-		mergeSort_with_idx2(bucket_idxlist, src_idxlist_sort, idxlist_local,
+		sort_with_idx2(bucket_idxlist, src_idxlist_sort, idxlist_local,
 		                    0, idxlist->count - 1);
 	}
 
@@ -122,6 +123,8 @@ void map_RD_decomp_to_idxlist(t_bucket *src_bucket   ,
 	int world_rank;
 	check_mpi( MPI_Comm_rank(comm, &world_rank) );
 
+	sort_with_idx_fn sort_with_idx = get_sort_with_idx_function();
+
 	int dst_bucket_sort_src[src_bucket->size];
 	for (int i=0; i<src_bucket->size; i++)
 		for (int j=0; j<src_bucket->size; j++)
@@ -154,5 +157,5 @@ void map_RD_decomp_to_idxlist(t_bucket *src_bucket   ,
 		check_mpi( MPI_Waitall(nreq, req, stat) );
 	}
 
-	if (idxlist_size > 0) mergeSort_with_idx(src_bucket->rank_exch, idxlist_local, 0, idxlist_size - 1);
+	if (idxlist_size > 0) sort_with_idx(src_bucket->rank_exch, idxlist_local, 0, idxlist_size - 1);
 }
