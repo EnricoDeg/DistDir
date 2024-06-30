@@ -100,6 +100,15 @@ if(ENABLE_CUDA)
     set_property(TARGET example_basic10 PROPERTY CUDA_SEPARABLE_COMPILATION ON)
 endif()
 
+add_executable(example_basic11 example_basic11.c)
+target_link_libraries (example_basic11 distdir)
+target_link_libraries(example_basic11 ${MPI_C_LIBRARIES})
+target_include_directories(example_basic11 PRIVATE ${PROJECT_SOURCE_DIR})
+target_include_directories(example_basic11 PRIVATE ${MPI_C_INCLUDE_DIRS})
+if(ENABLE_CUDA)
+    set_property(TARGET example_basic11 PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+endif()
+
 add_executable(example_multi_grid1 example_multi_grid1.c)
 target_link_libraries (example_multi_grid1 distdir)
 target_link_libraries(example_multi_grid1 ${MPI_C_LIBRARIES})
@@ -147,6 +156,10 @@ install (TARGETS
 
 install (TARGETS
   example_basic10 # executables
+  RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/examples)
+
+install (TARGETS
+  example_basic11 # executables
   RUNTIME DESTINATION ${PROJECT_SOURCE_DIR}/examples)
 
 install (TARGETS
