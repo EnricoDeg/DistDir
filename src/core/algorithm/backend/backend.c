@@ -146,8 +146,9 @@ void senders_to_bucket(      int      *senders_to_bucket        ,
                        const int      *n_idx_each_bucket        , 
                              int       n_procs_sending_to_bucket,
                              int       bucket_max_size          ,
-                             int       idxlist_size            ,
-                             MPI_Comm  comm                     ) {
+                             int       idxlist_size             ,
+                             MPI_Comm  comm                     ,
+                             sort_fn   sort                     ) {
 
 #ifdef ERROR_CHECK
 	assert(n_idx_each_bucket != NULL);
@@ -177,7 +178,7 @@ void senders_to_bucket(      int      *senders_to_bucket        ,
 
 	// sort by process number
 	if (senders_to_bucket != NULL)
-		mergeSort(senders_to_bucket, 0, n_procs_sending_to_bucket-1);
+		sort(senders_to_bucket, 0, n_procs_sending_to_bucket-1);
 }
 
 void num_indices_to_bucket_from_each_rank(      int      *bucket_msg_size_senders     ,

@@ -51,6 +51,8 @@ void map_idxlist_to_RD_decomp(t_bucket  *bucket       ,
 	int world_rank;
 	check_mpi( MPI_Comm_rank(comm, &world_rank) );
 
+	sort_fn sort = get_sort_function();
+
 	// each element of the idxlist is assigned to a bucket
 	int bucket_idxlist[idxlist->count];
 	if (bucket->stride < 0) {
@@ -82,7 +84,7 @@ void map_idxlist_to_RD_decomp(t_bucket  *bucket       ,
 	if (bucket->count_recv > 0)
 		bucket->src_recv = (int *)malloc(bucket->count_recv*sizeof(int));
 	senders_to_bucket(bucket->src_recv, bucket->size_ranks, 
-                         bucket->count_recv, bucket->max_size, idxlist->count, comm);
+                      bucket->count_recv, bucket->max_size, idxlist->count, comm, sort);
 
 	// size of each message that each bucket receive
 	if (bucket->count_recv > 0)

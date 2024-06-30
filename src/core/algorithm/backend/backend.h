@@ -144,6 +144,7 @@ void num_indices_to_send_to_each_bucket(      int *n_idx_each_bucket,
  * @param[in]  bucket_max_size           Max size between all buckets
  * @param[in]  idxlist_size              size of the idxlist array 
  * @param[in]  comm                      MPI communicator containing all the MPI procs involved in the RD decomposition
+ * @param[in]  sort                      sorting function
  * 
  * @ingroup backend
  */
@@ -152,7 +153,8 @@ void senders_to_bucket(      int      *senders_to_bucket        ,
                              int       n_procs_sending_to_bucket,
                              int       bucket_max_size          ,
                              int       idxlist_size             ,
-                             MPI_Comm  comm                     );
+                             MPI_Comm  comm                     ,
+                             sort_fn   sort                     );
 
 /**
  * @brief Each bucket receives an array of size n_procs_sending_to_bucket with the number of indices

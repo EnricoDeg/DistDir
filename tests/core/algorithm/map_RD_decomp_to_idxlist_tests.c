@@ -206,14 +206,12 @@ static int map_RD_decomp_to_idxlist_test01(MPI_Comm comm) {
 
 int main() {
 
-	// Initialize the MPI environment
-	MPI_Init(NULL, NULL);
+	distdir_initialize();
 
 	int error = 0;
 
 	error += map_RD_decomp_to_idxlist_test01(MPI_COMM_WORLD);
 
-	// Finalize the MPI environment.
-	MPI_Finalize();
+	distdir_finalize();
 	return error;
 }

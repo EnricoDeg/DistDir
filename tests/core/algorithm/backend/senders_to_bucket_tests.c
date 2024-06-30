@@ -38,6 +38,7 @@
 #include <stdio.h>
 
 #include "src/core/algorithm/backend/backend.h"
+#include "src/sort/mergesort.h"
 
 /**
  * @brief test01 for senders_to_bucket function
@@ -82,7 +83,8 @@ static int senders_to_bucket_test01(MPI_Comm comm) {
 	                   n_procs_sending_to_bucket,
 	                   bucket_max_size          ,
 	                   idxlist_size             ,
-	                   comm                     );
+	                   comm                     ,
+	                   mergeSort                );
 
 	// check result
 	int error = 0;
