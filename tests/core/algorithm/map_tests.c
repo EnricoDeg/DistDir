@@ -211,6 +211,42 @@ static int map_test02(MPI_Comm comm) {
 
 	// Check test results
 	int error = 0;
+	if (world_role == I_SRC) {
+
+		if ( p_map->exch_send->count != 2 )
+			error = 1;
+		if ( p_map->exch_send->buffer_size != npoints_local )
+			error = 1;
+		for (int i = 0; i < p_map->exch_send->count; i++)
+			if (p_map->exch_send->exch[i]->exch_rank != i + 2)
+				error = 1;
+#ifndef CUDA
+		for (int i = 0; i < p_map->exch_send->buffer_size; i++)
+			if (p_map->exch_send->buffer_idxlist[i] != i)
+				error = 1;
+#endif
+		for (int i = 0; i < p_map->exch_send->count; i++)
+			if (p_map->exch_send->buffer_offset[i] != i * 4)
+				error = 1;
+	} else {
+
+		if ( p_map->exch_recv->count != 2 )
+			error = 1;
+		if ( p_map->exch_recv->buffer_size != npoints_local )
+			error = 1;
+		for (int i = 0; i < p_map->exch_recv->count; i++)
+			if (p_map->exch_recv->exch[i]->exch_rank != i)
+				error = 1;
+#ifndef CUDA
+		int solution[LSIZE] = {0, 1, 4, 5, 2, 3, 6, 7};
+		for (int i = 0; i < p_map->exch_recv->buffer_size; i++)
+			if (p_map->exch_recv->buffer_idxlist[i] != solution[i])
+				error = 1;
+#endif
+		for (int i = 0; i < p_map->exch_recv->count; i++)
+			if (p_map->exch_recv->buffer_offset[i] != i * 4)
+				error = 1;
+	}
 
 	delete_idxlist(p_idxlist);
 	delete_idxlist(p_idxlist_empty);
@@ -227,7 +263,7 @@ int main() {
 
 	int error = 0;
 
-//	error += map_test01(MPI_COMM_WORLD);
+	error += map_test01(MPI_COMM_WORLD);
 	error += map_test02(MPI_COMM_WORLD);
 
 	// Finalize the MPI environment.
