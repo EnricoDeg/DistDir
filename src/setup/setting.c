@@ -124,7 +124,7 @@ void distdir_initialize() {
 	// set verbose from env variable
 	{
 		int variable = get_env_variable("DISTDIR_SORT");
-		if (variable != -1) config->verbose = variable;
+		if (variable != -1) config->sort = variable;
 	}
 
 	if (config->verbose == verbose_true) print_config();
