@@ -80,6 +80,7 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structt__config.html">t_config</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The structure contains information about the library configuration.  <a href="structt__config.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -93,6 +94,7 @@ Enumerations</h2></td></tr>
 , <a class="el" href="setting_8h.html#a88848da5c7ea10c738db173d5314c659a6cb05199ff046e64442cca7a016d3d8f">GPU_NVIDIA</a> = 1
 , <a class="el" href="setting_8h.html#a88848da5c7ea10c738db173d5314c659ae7beb011901e35a1dd50c6066c32f313">GPU_AMD</a> = 2
  }</td></tr>
+<tr class="memdesc:a88848da5c7ea10c738db173d5314c659"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum for supported hardware.  <a href="setting_8h.html#a88848da5c7ea10c738db173d5314c659">More...</a><br /></td></tr>
 <tr class="separator:a88848da5c7ea10c738db173d5314c659"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a949370a7049e027f9bb7dda8451a1ef5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5">distdir_exchanger</a> { <br />
 &#160;&#160;<a class="el" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5a5482f735bd3a3e8cf9af30c91bc7edf4">IsendIrecv1</a> = 0
@@ -106,26 +108,46 @@ Enumerations</h2></td></tr>
 , <a class="el" href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5a4f0e464410a7d6b323e295cbb97dd835">IsendRecv2NoWait</a> = 7
 <br />
  }</td></tr>
+<tr class="memdesc:a949370a7049e027f9bb7dda8451a1ef5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum for supported exchanger.  <a href="setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5">More...</a><br /></td></tr>
 <tr class="separator:a949370a7049e027f9bb7dda8451a1ef5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a872750440db9c977dd1af46abd1b0509"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="setting_8h.html#a872750440db9c977dd1af46abd1b0509">distdir_verbose</a> { <a class="el" href="setting_8h.html#a872750440db9c977dd1af46abd1b0509aeea48180a46e04382c732e23e6e8dbf8">verbose_true</a> = 0
 , <a class="el" href="setting_8h.html#a872750440db9c977dd1af46abd1b0509a435bde354474f5af5c7ef6c4623e25f8">verbose_false</a> = 1
  }</td></tr>
+<tr class="memdesc:a872750440db9c977dd1af46abd1b0509"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum for verbosity.  <a href="setting_8h.html#a872750440db9c977dd1af46abd1b0509">More...</a><br /></td></tr>
 <tr class="separator:a872750440db9c977dd1af46abd1b0509"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa441bad4dd384d7043007c886d752f31"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="setting_8h.html#aa441bad4dd384d7043007c886d752f31">distdir_sort</a> { <a class="el" href="setting_8h.html#aa441bad4dd384d7043007c886d752f31a1fafd72d6ddd8ffe68f90544c90ac2a1">mergesort</a> = 0
+, <a class="el" href="setting_8h.html#aa441bad4dd384d7043007c886d752f31a42cdbb846b9e5d658e2ea24525a31c5e">quicksort</a> = 1
+, <a class="el" href="setting_8h.html#aa441bad4dd384d7043007c886d752f31a35faa143545e668f072359e2bcfe2e9b">timsort</a> = 2
+ }</td></tr>
+<tr class="memdesc:aa441bad4dd384d7043007c886d752f31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enum for supported sorting algorithms.  <a href="setting_8h.html#aa441bad4dd384d7043007c886d752f31">More...</a><br /></td></tr>
+<tr class="separator:aa441bad4dd384d7043007c886d752f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a6edc2c7cfa96bc4f790c2c857b69b787"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="setting_8h.html#a6edc2c7cfa96bc4f790c2c857b69b787">distdir_initialize</a> ()</td></tr>
-<tr class="separator:a6edc2c7cfa96bc4f790c2c857b69b787"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec38b53906f3988b782b517f241fc658"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="setting_8h.html#aec38b53906f3988b782b517f241fc658">distdir_finalize</a> ()</td></tr>
-<tr class="separator:aec38b53906f3988b782b517f241fc658"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4033425c4cfb9df06d8a740aed4b336"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="setting_8h.html#ab4033425c4cfb9df06d8a740aed4b336">set_config_exchanger</a> (int exchanger_type)</td></tr>
-<tr class="separator:ab4033425c4cfb9df06d8a740aed4b336"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74519e6e5b8c242e2f89bfadc182a021"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="setting_8h.html#a74519e6e5b8c242e2f89bfadc182a021">set_config_verbose</a> (int verbose_type)</td></tr>
-<tr class="separator:a74519e6e5b8c242e2f89bfadc182a021"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3110b4a57968de6d7d494047162d1321"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="setting_8h.html#a3110b4a57968de6d7d494047162d1321">get_config_exchanger</a> ()</td></tr>
-<tr class="separator:a3110b4a57968de6d7d494047162d1321"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03278470a456dd794c376e310507eda7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="setting_8h.html#a03278470a456dd794c376e310507eda7">get_config_verbose</a> ()</td></tr>
-<tr class="separator:a03278470a456dd794c376e310507eda7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6edc2c7cfa96bc4f790c2c857b69b787"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__setting.html#ga6edc2c7cfa96bc4f790c2c857b69b787">distdir_initialize</a> ()</td></tr>
+<tr class="memdesc:ga6edc2c7cfa96bc4f790c2c857b69b787"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the library.  <a href="group__setting.html#ga6edc2c7cfa96bc4f790c2c857b69b787">More...</a><br /></td></tr>
+<tr class="separator:ga6edc2c7cfa96bc4f790c2c857b69b787"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaec38b53906f3988b782b517f241fc658"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__setting.html#gaec38b53906f3988b782b517f241fc658">distdir_finalize</a> ()</td></tr>
+<tr class="memdesc:gaec38b53906f3988b782b517f241fc658"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finalize the library.  <a href="group__setting.html#gaec38b53906f3988b782b517f241fc658">More...</a><br /></td></tr>
+<tr class="separator:gaec38b53906f3988b782b517f241fc658"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gab4033425c4cfb9df06d8a740aed4b336"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__setting.html#gab4033425c4cfb9df06d8a740aed4b336">set_config_exchanger</a> (int exchanger_type)</td></tr>
+<tr class="memdesc:gab4033425c4cfb9df06d8a740aed4b336"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set library exchanger type.  <a href="group__setting.html#gab4033425c4cfb9df06d8a740aed4b336">More...</a><br /></td></tr>
+<tr class="separator:gab4033425c4cfb9df06d8a740aed4b336"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga74519e6e5b8c242e2f89bfadc182a021"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__setting.html#ga74519e6e5b8c242e2f89bfadc182a021">set_config_verbose</a> (int verbose_type)</td></tr>
+<tr class="memdesc:ga74519e6e5b8c242e2f89bfadc182a021"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set library verbosity.  <a href="group__setting.html#ga74519e6e5b8c242e2f89bfadc182a021">More...</a><br /></td></tr>
+<tr class="separator:ga74519e6e5b8c242e2f89bfadc182a021"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4d66f2e295b669e952f8a421a3278357"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__setting.html#ga4d66f2e295b669e952f8a421a3278357">set_config_sort</a> (int sort_type)</td></tr>
+<tr class="memdesc:ga4d66f2e295b669e952f8a421a3278357"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set library sort algorithm.  <a href="group__setting.html#ga4d66f2e295b669e952f8a421a3278357">More...</a><br /></td></tr>
+<tr class="separator:ga4d66f2e295b669e952f8a421a3278357"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3110b4a57968de6d7d494047162d1321"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__setting.html#ga3110b4a57968de6d7d494047162d1321">get_config_exchanger</a> ()</td></tr>
+<tr class="memdesc:ga3110b4a57968de6d7d494047162d1321"><td class="mdescLeft">&#160;</td><td class="mdescRight">get current exchanger configuration  <a href="group__setting.html#ga3110b4a57968de6d7d494047162d1321">More...</a><br /></td></tr>
+<tr class="separator:ga3110b4a57968de6d7d494047162d1321"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga03278470a456dd794c376e310507eda7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__setting.html#ga03278470a456dd794c376e310507eda7">get_config_verbose</a> ()</td></tr>
+<tr class="memdesc:ga03278470a456dd794c376e310507eda7"><td class="mdescLeft">&#160;</td><td class="mdescRight">get current verbose configuration  <a href="group__setting.html#ga03278470a456dd794c376e310507eda7">More...</a><br /></td></tr>
+<tr class="separator:ga03278470a456dd794c376e310507eda7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga94c2eb53399e2d4d69cf61652c488e3c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__setting.html#ga94c2eb53399e2d4d69cf61652c488e3c">get_config_sort</a> ()</td></tr>
+<tr class="memdesc:ga94c2eb53399e2d4d69cf61652c488e3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">get current sert algorithm configuration  <a href="group__setting.html#ga94c2eb53399e2d4d69cf61652c488e3c">More...</a><br /></td></tr>
+<tr class="separator:ga94c2eb53399e2d4d69cf61652c488e3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>
 <a id="a819a6d83c42d472bd577d51900445d32"></a>
@@ -154,6 +176,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Enum for supported exchanger. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a949370a7049e027f9bb7dda8451a1ef5a5482f735bd3a3e8cf9af30c91bc7edf4"></a>IsendIrecv1&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a949370a7049e027f9bb7dda8451a1ef5a0a5d71d3c2578fe0de92f88c3711726e"></a>IsendIrecv2&#160;</td><td class="fielddoc"></td></tr>
@@ -178,10 +202,33 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Enum for supported hardware. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a88848da5c7ea10c738db173d5314c659a0035eb0600d18dfc302f6bf7a7cbfa3b"></a>CPU&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a88848da5c7ea10c738db173d5314c659a6cb05199ff046e64442cca7a016d3d8f"></a>GPU_NVIDIA&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a88848da5c7ea10c738db173d5314c659ae7beb011901e35a1dd50c6066c32f313"></a>GPU_AMD&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="aa441bad4dd384d7043007c886d752f31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa441bad4dd384d7043007c886d752f31">&#9670;&nbsp;</a></span>distdir_sort</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="setting_8h.html#aa441bad4dd384d7043007c886d752f31">distdir_sort</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Enum for supported sorting algorithms. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aa441bad4dd384d7043007c886d752f31a1fafd72d6ddd8ffe68f90544c90ac2a1"></a>mergesort&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aa441bad4dd384d7043007c886d752f31a42cdbb846b9e5d658e2ea24525a31c5e"></a>quicksort&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aa441bad4dd384d7043007c886d752f31a35faa143545e668f072359e2bcfe2e9b"></a>timsort&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -197,115 +244,12 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Enum for verbosity. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a872750440db9c977dd1af46abd1b0509aeea48180a46e04382c732e23e6e8dbf8"></a>verbose_true&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a872750440db9c977dd1af46abd1b0509a435bde354474f5af5c7ef6c4623e25f8"></a>verbose_false&#160;</td><td class="fielddoc"></td></tr>
 </table>
-
-</div>
-</div>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="aec38b53906f3988b782b517f241fc658"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec38b53906f3988b782b517f241fc658">&#9670;&nbsp;</a></span>distdir_finalize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void distdir_finalize </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6edc2c7cfa96bc4f790c2c857b69b787"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6edc2c7cfa96bc4f790c2c857b69b787">&#9670;&nbsp;</a></span>distdir_initialize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void distdir_initialize </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3110b4a57968de6d7d494047162d1321"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3110b4a57968de6d7d494047162d1321">&#9670;&nbsp;</a></span>get_config_exchanger()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int get_config_exchanger </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a03278470a456dd794c376e310507eda7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03278470a456dd794c376e310507eda7">&#9670;&nbsp;</a></span>get_config_verbose()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int get_config_verbose </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab4033425c4cfb9df06d8a740aed4b336"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab4033425c4cfb9df06d8a740aed4b336">&#9670;&nbsp;</a></span>set_config_exchanger()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void set_config_exchanger </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>exchanger_type</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a74519e6e5b8c242e2f89bfadc182a021"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a74519e6e5b8c242e2f89bfadc182a021">&#9670;&nbsp;</a></span>set_config_verbose()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void set_config_verbose </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>verbose_type</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
 
 </div>
 </div>

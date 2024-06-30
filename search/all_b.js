@@ -10,8 +10,9 @@ var searchData=
   ['delete_5fvtable_68',['delete_vtable',['../group__backend__cpu.html#ga9cd29fa5e8a11e5a4a691f0e30ee0d99',1,'backend_cpu.h']]],
   ['distdir_2eh_69',['distdir.h',['../distdir_8h.html',1,'']]],
   ['distdir_5fexchanger_70',['distdir_exchanger',['../setting_8h.html#a949370a7049e027f9bb7dda8451a1ef5',1,'setting.h']]],
-  ['distdir_5ffinalize_71',['distdir_finalize',['../setting_8h.html#aec38b53906f3988b782b517f241fc658',1,'setting.h']]],
+  ['distdir_5ffinalize_71',['distdir_finalize',['../group__setting.html#gaec38b53906f3988b782b517f241fc658',1,'setting.h']]],
   ['distdir_5fhardware_72',['distdir_hardware',['../setting_8h.html#a88848da5c7ea10c738db173d5314c659',1,'setting.h']]],
-  ['distdir_5finitialize_73',['distdir_initialize',['../setting_8h.html#a6edc2c7cfa96bc4f790c2c857b69b787',1,'setting.h']]],
-  ['distdir_5fverbose_74',['distdir_verbose',['../setting_8h.html#a872750440db9c977dd1af46abd1b0509',1,'setting.h']]]
+  ['distdir_5finitialize_73',['distdir_initialize',['../group__setting.html#ga6edc2c7cfa96bc4f790c2c857b69b787',1,'setting.h']]],
+  ['distdir_5fsort_74',['distdir_sort',['../setting_8h.html#aa441bad4dd384d7043007c886d752f31',1,'setting.h']]],
+  ['distdir_5fverbose_75',['distdir_verbose',['../setting_8h.html#a872750440db9c977dd1af46abd1b0509',1,'setting.h']]]
 ];

@@ -5,9 +5,9 @@ var indexSectionsWithContent =
   2: "12345678abcdeghimnpqstu",
   3: "abcdegmnpqstu",
   4: "abcdegilmnprstuvw",
-  5: "bkt",
+  5: "bkst",
   6: "d",
-  7: "cgiv",
+  7: "cgimqtv",
   8: "ilns",
   9: "bcegims",
   10: "abgilrw"
