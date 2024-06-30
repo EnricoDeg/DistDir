@@ -157,6 +157,69 @@ static int map_test01(MPI_Comm comm) {
 	return error;
 }
 
+/**
+ * @brief test02 for map module
+ * 
+ * @details 
+ * 
+ * @ingroup map_tests
+ */
+static int map_test02(MPI_Comm comm) {
+
+	const int I_SRC = 0;
+	const int I_DST = 1;
+	const int NCOLS = 4;
+	const int NROWS = 4;
+
+	int world_rank;
+	MPI_Comm_rank(comm, &world_rank);
+	int world_size;
+	MPI_Comm_size(comm, &world_size);
+	int world_role;
+	int npoints_local = NCOLS * NROWS / (world_size / 2);
+	int idxlist[npoints_local];
+	t_idxlist *p_idxlist;
+	t_idxlist *p_idxlist_empty;
+	t_map *p_map;
+
+	if (world_size != 4) return 1;
+
+	// index list with global indices
+	if (world_rank < 2) {
+		world_role = I_SRC;
+		int ncols_local = NCOLS / (world_size / 2);
+
+		for (int i=0; i < NROWS; i++)
+			for (int j=0; j < ncols_local; j++)
+				idxlist[j+i*ncols_local] = NROWS * NCOLS - 1 + j + i * NCOLS + world_rank * (NCOLS - ncols_local);
+	} else {
+		world_role = I_DST;
+		int nrows_local = NROWS / (world_size / 2);
+		for (int i=0; i < nrows_local; i++)
+			for (int j=0; j < NCOLS; j++)
+				idxlist[j+i*NCOLS] = NROWS * NCOLS - 1 + j + i * NCOLS + (world_rank - (world_size / 2)) * (NROWS - nrows_local) * NCOLS;
+	}
+
+	p_idxlist = new_idxlist(idxlist, npoints_local);
+	p_idxlist_empty = new_idxlist_empty();
+
+	if (world_role == I_SRC) {
+		p_map = new_map(p_idxlist, p_idxlist_empty, -1, comm);
+	} else {
+		p_map = new_map(p_idxlist_empty, p_idxlist, -1, comm);
+	}
+
+	// Check test results
+	int error = 0;
+
+	delete_idxlist(p_idxlist);
+	delete_idxlist(p_idxlist_empty);
+	delete_map(p_map);
+
+	return error;
+}
+
+
 int main() {
 
 	// Initialize the MPI environment
@@ -164,7 +227,8 @@ int main() {
 
 	int error = 0;
 
-	error += map_test01(MPI_COMM_WORLD);
+//	error += map_test01(MPI_COMM_WORLD);
+	error += map_test02(MPI_COMM_WORLD);
 
 	// Finalize the MPI environment.
 	MPI_Finalize();
