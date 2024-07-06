@@ -389,6 +389,145 @@ static int map_test03(MPI_Comm comm) {
 	return error;
 }
 
+/**
+ * @brief test04 for map module
+ * 
+ * @details The test has the same domain decomposition of test03.
+ *          The map is generated first extending a 2D map and then
+ *          directly providing the stride. The two generated 3D maps
+ *          are then compared.
+ * 
+ * @ingroup map_tests
+ */
+static int map_test04(MPI_Comm comm) {
+
+	const int I_SRC = 0;
+	const int I_DST = 1;
+	const int NCOLS = 4;
+	const int NROWS = 4;
+	const int NLEVS = 2;
+
+	int world_rank;
+	MPI_Comm_rank(comm, &world_rank);
+	int world_size;
+	MPI_Comm_size(comm, &world_size);
+	int world_role;
+	int npoints_local = NCOLS * NROWS / (world_size / 2);
+	int idxlist[npoints_local];
+	int idxlist3d[NLEVS*npoints_local];
+	t_idxlist *p_idxlist;
+	t_idxlist *p_idxlist3d;
+	t_idxlist *p_idxlist_empty;
+	t_map *p_map;
+	t_map *p_map2d;
+	t_map *p_map3d;
+
+	if (world_size != 4) return 1;
+
+	/**************************/
+	/* Create map from 2d map */
+	/**************************/
+
+	// index list with global indices
+	if (world_rank < 2) {
+		world_role = I_SRC;
+		for (int i=0; i<npoints_local; i++)
+			idxlist[i] = world_rank + i*2;
+	} else {
+		world_role = I_DST;
+		int nrows_local = NROWS / (world_size / 2);
+		for (int i=0; i < nrows_local; i++)
+			for (int j=0; j < NCOLS; j++)
+				idxlist[j+i*NCOLS] = j + i * NCOLS + (world_rank - (world_size / 2)) * (NROWS - nrows_local) * NCOLS;
+	}
+
+	p_idxlist = new_idxlist(idxlist, npoints_local);
+	p_idxlist_empty = new_idxlist_empty();
+
+	if (world_role == I_SRC) {
+		p_map2d = new_map(p_idxlist, p_idxlist_empty, -1, MPI_COMM_WORLD);
+	} else {
+		p_map2d = new_map(p_idxlist_empty, p_idxlist, -1, MPI_COMM_WORLD);
+	}
+	p_map = extend_map_3d(p_map2d, NLEVS);
+
+	/***********************************/
+	/* Create map directly with stride */
+	/***********************************/
+
+	// index list with global indices
+	if (world_rank < 2) {
+		world_role = I_SRC;
+		for (int k=0; k<NLEVS; k++)
+			for (int i=0; i<npoints_local; i++)
+				idxlist3d[i+k*npoints_local] = world_rank + i*2 + k * NROWS * NCOLS;
+	} else {
+		world_role = I_DST;
+		int nrows_local = NROWS / (world_size / 2);
+		for (int k=0; k<NLEVS; k++)
+			for (int i=0; i < nrows_local; i++)
+				for (int j=0; j < NCOLS; j++)
+					idxlist3d[j+i*NCOLS+k*NCOLS*nrows_local] =  j + i * NCOLS +
+					                     (world_rank - (world_size / 2)) * (NROWS - nrows_local) * NCOLS +
+					                      k * NROWS * NCOLS;
+	}
+	p_idxlist3d = new_idxlist(idxlist3d, NLEVS * npoints_local);
+	if (world_role == I_SRC) {
+		p_map3d = new_map(p_idxlist3d, p_idxlist_empty, NCOLS*NROWS, MPI_COMM_WORLD);
+	} else {
+		p_map3d = new_map(p_idxlist_empty, p_idxlist3d, NCOLS*NROWS, MPI_COMM_WORLD);
+	}
+
+	/***********************************/
+	/* Check results: compare the maps */
+	/***********************************/
+	int error = 0;
+	if (world_role == I_SRC) {
+
+		if ( p_map3d->exch_send->count != 2 )
+			error = 1;
+		if ( p_map3d->exch_send->buffer_size != NLEVS * npoints_local )
+			error = 1;
+		for (int i = 0; i < p_map3d->exch_send->count; i++)
+			if (p_map3d->exch_send->exch[i]->exch_rank != i + 2)
+				error = 1;
+#ifndef CUDA
+		for (int i = 0; i < p_map3d->exch_send->buffer_size; i++)
+			if (p_map3d->exch_send->buffer_idxlist[i] != p_map->exch_send->buffer_idxlist[i])
+				error = 1;
+#endif
+		for (int i = 0; i < p_map3d->exch_send->count; i++)
+			if (p_map3d->exch_send->buffer_offset[i]  != p_map->exch_send->buffer_offset[i])
+				error = 1;
+	} else {
+
+		if ( p_map3d->exch_recv->count != 2 )
+			error = 1;
+		if ( p_map3d->exch_recv->buffer_size != NLEVS * npoints_local )
+			error = 1;
+		for (int i = 0; i < p_map3d->exch_recv->count; i++)
+			if (p_map3d->exch_recv->exch[i]->exch_rank != i)
+				error = 1;
+#ifndef CUDA
+		for (int i = 0; i < p_map3d->exch_recv->buffer_size; i++)
+			if (p_map3d->exch_recv->buffer_idxlist[i] != p_map->exch_recv->buffer_idxlist[i])
+				error = 1;
+#endif
+		for (int i = 0; i < p_map3d->exch_recv->count; i++)
+			if (p_map3d->exch_recv->buffer_offset[i]  != p_map->exch_recv->buffer_offset[i])
+				error = 1;
+	}
+
+	delete_idxlist(p_idxlist);
+	delete_idxlist(p_idxlist3d);
+	delete_idxlist(p_idxlist_empty);
+	delete_map(p_map);
+	delete_map(p_map2d);
+	delete_map(p_map3d);
+
+	return error;
+}
+
 int main() {
 
 	distdir_initialize();
@@ -398,6 +537,7 @@ int main() {
 	error += map_test01(MPI_COMM_WORLD);
 	error += map_test02(MPI_COMM_WORLD);
 	error += map_test03(MPI_COMM_WORLD);
+	error += map_test04(MPI_COMM_WORLD);
 
 	distdir_finalize();
 	return error;
