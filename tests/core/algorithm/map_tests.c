@@ -160,7 +160,22 @@ static int map_test01(MPI_Comm comm) {
 /**
  * @brief test02 for map module
  * 
- * @details 
+ * @details The test uses a total of 4 MPI processes over a 4x4 global 2D domain.
+ *          Processes 0,1 have the following domain decomposition:
+ * 
+ *          Rank: 0
+ *          Indices: 15, 14, 11, 10, 7, 6, 3, 2
+ *          Rank: 1
+ *          Indices: 13, 12, 9, 8, 5, 4, 1, 0
+ * 
+ *          Processes 2,3 have the following domain decomposition:
+ * 
+ *          Rank: 2
+ *          Indices: 15, 14, 13, 12, 11, 10, 9, 8
+ *          Rank: 3
+ *          Indices: 7, 6, 5, 4, 3, 2, 1, 0
+ * 
+ *          Ranks 0,1 send data to ranks 2,3
  * 
  * @ingroup map_tests
  */
