@@ -270,6 +270,124 @@ static int map_test02(MPI_Comm comm) {
 	return error;
 }
 
+/**
+ * @brief test03 for map module
+ * 
+ * @details The test uses a total of 4 MPI processes over a 4x4x2 global 3D domain.
+ *          Processes 0,1 have the following domain decomposition:
+ * 
+ *          Rank: 0
+ *          Indices: 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30
+ *          Rank: 1
+ *          Indices: 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31
+ * 
+ *          Processes 2,3 have the following domain decomposition:
+ * 
+ *          Rank: 2
+ *          Indices: 0, 1, 2, 3, 4, 5, 6, 7, 16, 17, 18, 19, 20, 21, 22, 23
+ *          Rank: 3
+ *          Indices: 8, 9, 10, 11, 12, 13, 14, 15, 24, 25, 26, 27, 28, 29, 30, 31
+ * 
+ *          Ranks 0,1 send data to ranks 2,3
+ * 
+ *          The map is generated extending a 2d map.
+ * 
+ * @ingroup map_tests
+ */
+static int map_test03(MPI_Comm comm) {
+
+	const int I_SRC = 0;
+	const int I_DST = 1;
+	const int NCOLS = 4;
+	const int NROWS = 4;
+	const int NLEVS = 2;
+
+	int world_rank;
+	MPI_Comm_rank(comm, &world_rank);
+	int world_size;
+	MPI_Comm_size(comm, &world_size);
+	int world_role;
+	int npoints_local = NCOLS * NROWS / (world_size / 2);
+	int idxlist[npoints_local];
+	t_idxlist *p_idxlist;
+	t_idxlist *p_idxlist_empty;
+	t_map *p_map;
+	t_map *p_map2d;
+
+	if (world_size != 4) return 1;
+
+	// index list with global indices
+	if (world_rank < 2) {
+		world_role = I_SRC;
+		for (int i=0; i<npoints_local; i++)
+			idxlist[i] = world_rank + i*2;
+	} else {
+		world_role = I_DST;
+		int nrows_local = NROWS / (world_size / 2);
+		for (int i=0; i < nrows_local; i++)
+			for (int j=0; j < NCOLS; j++)
+				idxlist[j+i*NCOLS] = j + i * NCOLS + (world_rank - (world_size / 2)) * (NROWS - nrows_local) * NCOLS;
+	}
+
+	p_idxlist = new_idxlist(idxlist, npoints_local);
+	p_idxlist_empty = new_idxlist_empty();
+
+	if (world_role == I_SRC) {
+		p_map2d = new_map(p_idxlist, p_idxlist_empty, -1, MPI_COMM_WORLD);
+	} else {
+		p_map2d = new_map(p_idxlist_empty, p_idxlist, -1, MPI_COMM_WORLD);
+	}
+	p_map = extend_map_3d(p_map2d, NLEVS);
+
+	// Check test results
+	int error = 0;
+	if (world_role == I_SRC) {
+
+		if ( p_map->exch_send->count != 2 )
+			error = 1;
+		if ( p_map->exch_send->buffer_size != NLEVS * npoints_local )
+			error = 1;
+		for (int i = 0; i < p_map->exch_send->count; i++)
+			if (p_map->exch_send->exch[i]->exch_rank != i + 2)
+				error = 1;
+#ifndef CUDA
+		int solution[2*LSIZE] = {0, 1, 2, 3, 8, 9, 10, 11,
+		                         4, 5, 6, 7, 12, 13, 14, 15};
+		for (int i = 0; i < p_map->exch_send->buffer_size; i++)
+			if (p_map->exch_send->buffer_idxlist[i] != solution[i])
+				error = 1;
+#endif
+		for (int i = 0; i < p_map->exch_send->count; i++)
+			if (p_map->exch_send->buffer_offset[i] != i * 8)
+				error = 1;
+	} else {
+
+		if ( p_map->exch_recv->count != 2 )
+			error = 1;
+		if ( p_map->exch_recv->buffer_size != NLEVS * npoints_local )
+			error = 1;
+		for (int i = 0; i < p_map->exch_recv->count; i++)
+			if (p_map->exch_recv->exch[i]->exch_rank != i)
+				error = 1;
+#ifndef CUDA
+		int solution[2*LSIZE] = {0, 2, 4, 6, 8, 10, 12, 14,
+		                         1, 3, 5, 7, 9, 11, 13, 15};
+		for (int i = 0; i < p_map->exch_recv->buffer_size; i++)
+			if (p_map->exch_recv->buffer_idxlist[i] != solution[i])
+				error = 1;
+#endif
+		for (int i = 0; i < p_map->exch_recv->count; i++)
+			if (p_map->exch_recv->buffer_offset[i] != i * 8)
+				error = 1;
+	}
+
+	delete_idxlist(p_idxlist);
+	delete_idxlist(p_idxlist_empty);
+	delete_map(p_map);
+	delete_map(p_map2d);
+
+	return error;
+}
 
 int main() {
 
@@ -279,6 +397,7 @@ int main() {
 
 	error += map_test01(MPI_COMM_WORLD);
 	error += map_test02(MPI_COMM_WORLD);
+	error += map_test03(MPI_COMM_WORLD);
 
 	distdir_finalize();
 	return error;
