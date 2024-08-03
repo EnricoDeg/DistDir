@@ -33,6 +33,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "src/utils/timer.h"
 
 static int timer_count = 0;
@@ -99,4 +100,52 @@ int new_timer(const char * timer_name) {
 			timer_id = new_timer_node(&list_iterator, timer_name);
 	}
 	return timer_id;
+}
+
+void timer_start(timer_id) {
+
+#ifdef ERROR_CHECK
+	assert(list_head != NULL);
+#endif
+
+	t_list_node *list_iterator = list_head;
+	t_timer_data *timer_data = NULL;
+	while (timer_data == NULL && list_iterator != NULL) {
+
+		if (timer_id == list_iterator->data->id)
+			timer_data = list_iterator->data;
+		list_iterator = list_iterator->next;
+	}
+
+#ifdef ERROR_CHECK
+	assert(timer_data != NULL);
+	assert(timer_data->start_time == -1.0);
+#endif
+
+	timer_data->start_time = MPI_Wtime();
+
+}
+
+void timer_stop(timer_id) {
+
+#ifdef ERROR_CHECK
+	assert(list_head != NULL);
+#endif
+
+	t_list_node *list_iterator = list_head;
+	t_timer_data *timer_data = NULL;
+	while (timer_data == NULL && list_iterator != NULL) {
+
+		if (timer_id == list_iterator->data->id)
+			timer_data = list_iterator->data;
+		list_iterator = list_iterator->next;
+	}
+
+#ifdef ERROR_CHECK
+	assert(timer_data != NULL);
+	assert(timer_data->start_time != -1.0);
+#endif
+
+	timer_data->total_time += (MPI_Wtime() - timer_data->start_time) ;
+	timer_data->start_time = -1.0;
 }

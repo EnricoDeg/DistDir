@@ -56,4 +56,8 @@ typedef struct t_list_node t_list_node;
 
 int new_timer(const char * timer_name) ;
 
+void timer_start(timer_id) ;
+
+void timer_stop(timer_id) ;
+
 #endif
