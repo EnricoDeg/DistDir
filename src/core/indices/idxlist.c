@@ -43,7 +43,10 @@ int timer_delete_idxlist_id    = -1;
 t_idxlist * new_idxlist(int *idx_array  ,
                         int  num_indices) {
 
-	timer_new_idxlist_id = new_timer(__func__);
+	if (timer_new_idxlist_id == -1)
+		timer_new_idxlist_id = new_timer(__func__);
+
+	timer_start(timer_new_idxlist_id);
 
 	t_idxlist *idxlist;
 	idxlist = (t_idxlist *)malloc(sizeof(t_idxlist));
@@ -52,23 +55,39 @@ t_idxlist * new_idxlist(int *idx_array  ,
 		idxlist->list = (int *)malloc(idxlist->count * sizeof(int));
 	for (int i = 0; i < idxlist->count; i++)
 		idxlist->list[i] = idx_array[i];
+
+	timer_stop(timer_new_idxlist_id);
+
 	return idxlist;
 }
 
 t_idxlist * new_idxlist_empty() {
 
-	timer_new_idxlist_empty_id = new_timer(__func__);
+	if (timer_new_idxlist_empty_id == -1)
+		timer_new_idxlist_empty_id = new_timer(__func__);
+
+	timer_start(timer_new_idxlist_empty_id);
 
 	t_idxlist *idxlist;
 	idxlist = (t_idxlist *)malloc(sizeof(t_idxlist));
 	idxlist->count = 0;
 	idxlist->list = NULL;
+
+	timer_stop(timer_new_idxlist_empty_id);
+
 	return idxlist;
 }
 
 void delete_idxlist(t_idxlist *idxlist) {
 
+	if (timer_delete_idxlist_id == -1)
+		timer_delete_idxlist_id = new_timer(__func__);
+
+	timer_start(timer_delete_idxlist_id);
+
 	if (idxlist->count > 0)
 		free(idxlist->list);
 	free(idxlist);
+
+	timer_stop(timer_delete_idxlist_id);
 }
