@@ -34,9 +34,16 @@
 #include <stdlib.h>
 
 #include "src/core/indices/idxlist.h"
+#include "src/utils/timer.h"
+
+int timer_new_idxlist_id       = -1;
+int timer_new_idxlist_empty_id = -1;
+int timer_delete_idxlist_id    = -1;
 
 t_idxlist * new_idxlist(int *idx_array  ,
                         int  num_indices) {
+
+	timer_new_idxlist_id = new_timer(__func__);
 
 	t_idxlist *idxlist;
 	idxlist = (t_idxlist *)malloc(sizeof(t_idxlist));
@@ -49,6 +56,8 @@ t_idxlist * new_idxlist(int *idx_array  ,
 }
 
 t_idxlist * new_idxlist_empty() {
+
+	timer_new_idxlist_empty_id = new_timer(__func__);
 
 	t_idxlist *idxlist;
 	idxlist = (t_idxlist *)malloc(sizeof(t_idxlist));
