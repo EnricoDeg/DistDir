@@ -158,8 +158,9 @@ void timer_stop(int timer_id) {
 	timer_data->start_time = -1.0;
 }
 
-int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
+static int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
 {
+
 	int rv = remove(fpath);
 
 	if (rv)
@@ -168,8 +169,9 @@ int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW
 	return rv;
 }
 
-int rmrf(char *path)
+static int rmrf(char *path)
 {
+
 	return nftw(path, unlink_cb, 64, FTW_DEPTH | FTW_PHYS);
 }
 
@@ -287,6 +289,17 @@ void timers_report() {
 	// Close the file
 	if (comm_rank == 0)
 		fclose(fptr);
+}
+
+void timers_reset() {
+
+	t_list_node *list_iterator = list_head;
+	while (list_iterator != NULL) {
+
+		list_iterator->data->start_time = -1.0;
+		list_iterator->data->total_time =  0.0;
+		list_iterator = list_iterator->next;
+	}
 }
 
 void delete_timers() {

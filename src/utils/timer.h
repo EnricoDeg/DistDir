@@ -62,6 +62,8 @@ void timer_stop(int timer_id) ;
 
 void timers_report() ;
 
+void timers_reset() ;
+
 void delete_timers() ;
 
 #endif
