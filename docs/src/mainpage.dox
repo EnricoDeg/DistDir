@@ -51,6 +51,9 @@ Enrico Degregori
 @defgroup check
           Functions used by Distdir library for internall checks
 
+@defgroup timer
+          Functions used for internal profiling
+
 @defgroup examples
           Standalone example of applications using DistDir library
 
@@ -89,6 +92,9 @@ Enrico Degregori
 
 @defgroup check_tests
           Tests of the check module
+
+@defgroup timer_tests
+          Tests of the timer module
 
 */
 
