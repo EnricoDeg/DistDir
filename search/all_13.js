@@ -10,7 +10,7 @@ var searchData=
   ['new_5fidxlist_5ftest_214',['new_idxlist_test',['../group__idxlist__tests.html#ga6c6dcaddca34f3c05cdb9d702644cdc3',1,'idxlist_tests.c']]],
   ['new_5fmap_215',['new_map',['../group__map.html#ga717fc32277b647a6cb241aca178af099',1,'map.h']]],
   ['new_5fmpi_5fexchanger_216',['new_mpi_exchanger',['../group__backend__mpi.html#ga7d8096b5715b332f2cc1b4e808a532d6',1,'backend_mpi.h']]],
-  ['new_5ftimer_217',['new_timer',['../timer_8h.html#ae4bf911f234e6a55160842da3c202476',1,'timer.h']]],
+  ['new_5ftimer_217',['new_timer',['../group__timer.html#gae4bf911f234e6a55160842da3c202476',1,'timer.h']]],
   ['new_5fvtable_5fcpu_218',['new_vtable_cpu',['../group__backend__cpu.html#gaa43e51b1f362963804df1a3c4e37973b',1,'backend_cpu.h']]],
   ['new_5fvtable_5fcuda_219',['new_vtable_cuda',['../group__backend__cuda.html#gadec148b6fa9221870a11d78923a6574d',1,'backend_cuda.h']]],
   ['next_220',['next',['../structt__list__node.html#a32aeb3a165272b02c60a7b5ac679fe24',1,'t_list_node']]],
