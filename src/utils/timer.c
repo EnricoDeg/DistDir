@@ -234,13 +234,13 @@ void timers_report() {
 	fptr = fopen(filenamepath, "w");
 
 	// header
-	fprintf(fptr, "%-20s | %-11s |\n", "Name", "Time [s]");
-	fprintf(fptr, "------------------------------------\n");
+	fprintf(fptr, "%-30s | %-11s |\n", "Name", "Time [s]");
+	fprintf(fptr, "----------------------------------------------\n");
 
 	// Write some text to the file
 	t_list_node *list_iterator = list_head;
 	while (list_iterator != NULL) {
-		fprintf(fptr, "%-20s | %.5e |\n", list_iterator->data->name, list_iterator->data->total_time);
+		fprintf(fptr, "%-30s | %.5e |\n", list_iterator->data->name, list_iterator->data->total_time);
 		list_iterator = list_iterator->next;
 	}
 
@@ -256,11 +256,11 @@ void timers_report() {
 		fptr = fopen(filenamesummarypath, "w");
 
 		// header
-		fprintf(fptr, "%-20s | %-13s | %-13s | %-13s |\n", "Name",
+		fprintf(fptr, "%-30s | %-13s | %-13s | %-13s |\n", "Name",
 		                                                   "Mean Time [s]",
 		                                                   "Max  Time [s]",
 		                                                   "Min  Time [s]");
-		fprintf(fptr, "----------------------"
+		fprintf(fptr, "--------------------------------"
 		              "----------------"
 		              "----------------"
 		              "----------------\n");
@@ -278,7 +278,7 @@ void timers_report() {
 		check_mpi(MPI_Reduce(&list_iterator->data->total_time, &value_max , 1,
 		                      MPI_DOUBLE, MPI_MAX, 0, comm));
 		if (comm_rank == 0)
-			fprintf(fptr, "%-20s |   %.5e |   %.5e |   %.5e |\n",
+			fprintf(fptr, "%-30s |   %.5e |   %.5e |   %.5e |\n",
 			                                                list_iterator->data->name,
 			                                                value_mean / comm_size   ,
 			                                                value_max                ,

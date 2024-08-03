@@ -39,12 +39,21 @@
 #include "src/core/algorithm/backend/backend.h"
 #include "src/sort/mergesort.h"
 #include "src/utils/check.h"
+#include "src/utils/timer.h"
+
+timer_map_idxlist_to_RD_decomp_id = -1;
+timer_map_RD_decomp_to_idxlist_id = -1;
 
 void map_idxlist_to_RD_decomp(t_bucket  *bucket       ,
                               t_idxlist *idxlist      ,
                               int       *idxlist_local,
                               int        nbuckets     ,
                               MPI_Comm comm           ) {
+
+	if (timer_map_idxlist_to_RD_decomp_id==-1)
+		timer_map_idxlist_to_RD_decomp_id = new_timer(__func__);
+
+	timer_start(timer_map_idxlist_to_RD_decomp_id);
 
 	int world_size;
 	check_mpi( MPI_Comm_size(comm, &world_size) );
@@ -109,6 +118,8 @@ void map_idxlist_to_RD_decomp(t_bucket  *bucket       ,
 	                        bucket->count_recv, bucket->max_size,
 	                        idxlist->count, comm);
 
+	timer_stop(timer_map_idxlist_to_RD_decomp_id);
+
 }
 
 void map_RD_decomp_to_idxlist(t_bucket *src_bucket   ,
@@ -117,6 +128,11 @@ void map_RD_decomp_to_idxlist(t_bucket *src_bucket   ,
                               int       idxlist_size ,
                               int       nbuckets     ,
                               MPI_Comm  comm         ) {
+
+	if (timer_map_RD_decomp_to_idxlist_id == -1)
+		timer_map_RD_decomp_to_idxlist_id = new_timer(__func__);
+
+	timer_start(timer_map_RD_decomp_to_idxlist_id);
 
 	int world_size;
 	check_mpi( MPI_Comm_size(comm, &world_size) );
@@ -158,4 +174,6 @@ void map_RD_decomp_to_idxlist(t_bucket *src_bucket   ,
 	}
 
 	if (idxlist_size > 0) sort_with_idx(src_bucket->rank_exch, idxlist_local, 0, idxlist_size - 1);
+
+	timer_stop(timer_map_RD_decomp_to_idxlist_id);
 }
