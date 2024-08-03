@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include "src/setup/setting.h"
 #include "src/utils/check.h"
+#include "src/utils/timer.h"
 
 static t_config *config;
 
@@ -131,6 +132,8 @@ void distdir_initialize() {
 }
 
 void distdir_finalize() {
+
+	timers_report();
 
 	int mpi_finalized;
 	int mpi_initialized = config->initialized;
