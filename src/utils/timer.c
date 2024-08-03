@@ -72,8 +72,6 @@ static int new_timer_node(t_list_node **list_tail, const char * timer_name) {
 		(*list_tail)->next = new_node;
 	}
 
-	printf("New timer node: %d, %s\n", timer_count, timer_name);
-
 	return timer_count;
 }
 
@@ -193,6 +191,9 @@ void timers_report() {
 	int comm_rank;
 	check_mpi( MPI_Comm_rank(comm, &comm_rank) );
 
+	int comm_size;
+	check_mpi( MPI_Comm_size(comm, &comm_size) );
+
 	char directory_name[STRING_MAX] = "reports";
 
 	// Create reports directory and delete it first if already exists
@@ -243,4 +244,47 @@ void timers_report() {
 
 	// Close the file
 	fclose(fptr);
+
+	// Create report summary
+	char filenamesummarypath[STRING_MAX] = "";
+	strcat(filenamesummarypath, directory_name);
+	strcat(filenamesummarypath, "/distdir_report_summary.dat");
+	// Open a file in writing mode
+	if (comm_rank == 0) {
+		fptr = fopen(filenamesummarypath, "w");
+
+		// header
+		fprintf(fptr, "%-20s | %-13s | %-13s | %-13s |\n", "Name",
+		                                                   "Mean Time [s]",
+		                                                   "Max  Time [s]",
+		                                                   "Min  Time [s]");
+		fprintf(fptr, "----------------------"
+		              "----------------"
+		              "----------------"
+		              "----------------\n");
+	}
+
+	// Write some text to the file
+	list_iterator = list_head;
+	while (list_iterator != NULL) {
+
+		double value_mean, value_max, value_min;
+		check_mpi(MPI_Reduce(&list_iterator->data->total_time, &value_mean, 1,
+		                      MPI_DOUBLE, MPI_SUM, 0, comm));
+		check_mpi(MPI_Reduce(&list_iterator->data->total_time, &value_min , 1,
+		                      MPI_DOUBLE, MPI_MIN, 0, comm));
+		check_mpi(MPI_Reduce(&list_iterator->data->total_time, &value_max , 1,
+		                      MPI_DOUBLE, MPI_MAX, 0, comm));
+		if (comm_rank == 0)
+			fprintf(fptr, "%-20s |   %.5e |   %.5e |   %.5e |\n",
+			                                                list_iterator->data->name,
+			                                                value_mean / comm_size   ,
+			                                                value_max                ,
+			                                                value_min                );
+		list_iterator = list_iterator->next;
+	}
+
+	// Close the file
+	if (comm_rank == 0)
+		fclose(fptr);
 }
