@@ -20,17 +20,18 @@ set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DERROR_CHECK")
 
 set(SOURCE_EXE  ${SOURCE_CUDA}
                 utils/check.c
-	        setup/setting.c
-	        sort/quicksort.c
+                utils/timer.c
+            setup/setting.c
+            sort/quicksort.c
                 sort/mergesort.c
                 sort/timsort.c
                 setup/group.c
                 core/indices/idxlist.c
-		core/algorithm/backend/backend.c
+        core/algorithm/backend/backend.c
                 core/algorithm/bucket.c
                 core/algorithm/map.c
-		core/exchange/backend_hardware/backend_cpu.c
-		core/exchange/backend_communication/backend_mpi.c
+        core/exchange/backend_hardware/backend_cpu.c
+        core/exchange/backend_communication/backend_mpi.c
                 core/exchange/exchange.c
                 utils/distdir_f2c.c
                 ${SOURCE_FORTRAN})
