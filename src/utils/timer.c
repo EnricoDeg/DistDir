@@ -31,10 +31,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <dirent.h>
+
+#define __USE_XOPEN_EXTENDED
+#include <ftw.h>
+
 #include "src/utils/timer.h"
+#include "src/utils/check.h"
 
 static int timer_count = 0;
 static t_list_node *list_head = NULL;
@@ -102,7 +112,7 @@ int new_timer(const char * timer_name) {
 	return timer_id;
 }
 
-void timer_start(timer_id) {
+void timer_start(int timer_id) {
 
 #ifdef ERROR_CHECK
 	assert(list_head != NULL);
@@ -126,7 +136,7 @@ void timer_start(timer_id) {
 
 }
 
-void timer_stop(timer_id) {
+void timer_stop(int timer_id) {
 
 #ifdef ERROR_CHECK
 	assert(list_head != NULL);
@@ -148,4 +158,89 @@ void timer_stop(timer_id) {
 
 	timer_data->total_time += (MPI_Wtime() - timer_data->start_time) ;
 	timer_data->start_time = -1.0;
+}
+
+int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
+{
+	int rv = remove(fpath);
+
+	if (rv)
+		perror(fpath);
+
+	return rv;
+}
+
+int rmrf(char *path)
+{
+	return nftw(path, unlink_cb, 64, FTW_DEPTH | FTW_PHYS);
+}
+
+void timers_report() {
+
+	int world_rank;
+	check_mpi( MPI_Comm_rank(MPI_COMM_WORLD, &world_rank) );
+
+	MPI_Comm comm;
+
+	// Create communicator with ranks having timers
+	// This is needed for collective communication later on
+	int comm_id = list_head != NULL ? 0 : 1;
+	check_mpi( MPI_Comm_split(MPI_COMM_WORLD, comm_id, 0, &comm) );
+
+	if (list_head == NULL)
+		return;
+
+	int comm_rank;
+	check_mpi( MPI_Comm_rank(comm, &comm_rank) );
+
+	char directory_name[STRING_MAX] = "reports";
+
+	// Create reports directory and delete it first if already exists
+	if (comm_rank == 0) {
+		DIR* dir = opendir(directory_name);
+		if (dir) {
+
+			closedir(dir);
+			if (rmrf(directory_name) != 0 ) {
+
+				printf("Error deleting reports directory\n");
+				exit(EXIT_FAILURE);
+			}
+		}
+
+		if (mkdir("reports", S_IRWXU | S_IRWXG | S_IRWXO) == -1) {
+
+			printf("Error creating reports directory\n");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	check_mpi( MPI_Barrier(comm) );
+
+	// Create full path to report files
+	char filename[STRING_MAX];
+	snprintf(filename, sizeof(filename), "/distdir_report_%d.dat", comm_rank);
+
+	char filenamepath[STRING_MAX] = "";
+	strcat(filenamepath, directory_name);
+	strcat(filenamepath, filename);
+
+	FILE *fptr;
+
+	// Open a file in writing mode
+	fptr = fopen(filenamepath, "w");
+
+	// header
+	fprintf(fptr, "%-20s | %-11s |\n", "Name", "Time [s]");
+	fprintf(fptr, "------------------------------------\n");
+
+	// Write some text to the file
+	t_list_node *list_iterator = list_head;
+	while (list_iterator != NULL) {
+		fprintf(fptr, "%-20s | %.5e |\n", list_iterator->data->name, list_iterator->data->total_time);
+		list_iterator = list_iterator->next;
+	}
+
+	// Close the file
+	fclose(fptr);
 }
