@@ -45,6 +45,8 @@
 #endif
 
 static int timer_new_map_id = -1;
+static int timer_extend_map_3d_id = -1;
+static int timer_delete_map_id = -1;
 
 t_map * new_map(t_idxlist *src_idxlist ,
                 t_idxlist *dst_idxlist ,
@@ -392,6 +394,10 @@ t_map * new_map(t_idxlist *src_idxlist ,
 t_map * extend_map_3d(t_map *map2d  ,
                       int    nlevels) {
 
+	if (timer_extend_map_3d_id == -1)
+		timer_extend_map_3d_id = new_timer(__func__);
+
+	timer_start(timer_extend_map_3d_id);
 	// group all info into data structure
 	t_map *map;
 
@@ -509,10 +515,17 @@ t_map * extend_map_3d(t_map *map2d  ,
 		}
 	}
 
+	timer_stop(timer_extend_map_3d_id);
+
 	return map;
 }
 
 void delete_map(t_map *map) {
+
+	if (timer_delete_map_id == -1)
+		timer_delete_map_id = new_timer(__func__);
+
+	timer_start(timer_delete_map_id);
 
 	// map send info
 	if (map->exch_send->count > 0) {
@@ -539,4 +552,6 @@ void delete_map(t_map *map) {
 	free(map->exch_recv);
 
 	free(map);
+
+	timer_stop(timer_delete_map_id);
 }
