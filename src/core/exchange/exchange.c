@@ -36,6 +36,7 @@
 
 #include "src/core/exchange/exchange.h"
 #include "src/utils/check.h"
+#include "src/utils/timer.h"
 #include "src/setup/setting.h"
 #include "src/core/exchange/backend_hardware/backend_cpu.h"
 #ifdef CUDA
@@ -43,6 +44,15 @@
 #endif
 #include "src/core/exchange/backend_communication/backend_mpi.h"
 #include <stdio.h>
+
+static int timer_new_exchanger_id = -1;
+static int timer_delete_exchanger_id = -1;
+static int timer_exchanger_go_id = -1;
+static int timer_exchanger_go_with_transform_id = -1;
+static int timer_exchanger_IsendIrecv1_id = -1;
+static int timer_exchanger_IsendIrecv2_id = -1;
+static int timer_exchanger_IsendRecv1_id = -1;
+static int timer_exchanger_IsendRecv2_id = -1;
 
 static void exchanger_waitall(t_mpi_exchange* mpi_exchange) {
 
@@ -75,6 +85,11 @@ static void exchanger_IsendIrecv1(t_exchange *exch_send, t_exchange *exch_recv,
                                  t_wait *vtable_wait,
                                  void *src_data, void *dst_data,
                                  int *transform_src, int *transform_dst) {
+
+	if (timer_exchanger_IsendIrecv1_id == -1)
+		timer_exchanger_IsendIrecv1_id = new_timer(__func__);
+
+	timer_start(timer_exchanger_IsendIrecv1_id);
 
 	int world_size;
 	check_mpi( MPI_Comm_size(map->comm, &world_size) );
@@ -149,6 +164,8 @@ static void exchanger_IsendIrecv1(t_exchange *exch_send, t_exchange *exch_recv,
 	               map->exch_recv->buffer_size,
 	               0,
 	               transform_dst);
+
+	timer_stop(timer_exchanger_IsendIrecv1_id);
 }
 
 static void exchanger_IsendIrecv2(t_exchange *exch_send, t_exchange *exch_recv,
@@ -156,6 +173,11 @@ static void exchanger_IsendIrecv2(t_exchange *exch_send, t_exchange *exch_recv,
                                  t_wait *vtable_wait,
                                  void *src_data, void *dst_data,
                                  int *transform_src, int *transform_dst) {
+
+	if (timer_exchanger_IsendIrecv2_id == -1)
+		timer_exchanger_IsendIrecv2_id = new_timer(__func__);
+
+	timer_start(timer_exchanger_IsendIrecv2_id);
 
 	int world_size;
 	check_mpi( MPI_Comm_size(map->comm, &world_size) );
@@ -230,6 +252,8 @@ static void exchanger_IsendIrecv2(t_exchange *exch_send, t_exchange *exch_recv,
 	               map->exch_recv->buffer_size,
 	               0,
 	               transform_dst);
+
+	timer_stop(timer_exchanger_IsendIrecv2_id);
 }
 
 static void exchanger_IsendRecv1(t_exchange *exch_send, t_exchange *exch_recv,
@@ -237,6 +261,11 @@ static void exchanger_IsendRecv1(t_exchange *exch_send, t_exchange *exch_recv,
                                  t_wait *vtable_wait,
                                  void *src_data, void *dst_data,
                                  int *transform_src, int *transform_dst) {
+
+	if (timer_exchanger_IsendRecv1_id == -1)
+		timer_exchanger_IsendRecv1_id = new_timer(__func__);
+
+	timer_start(timer_exchanger_IsendRecv1_id);
 
 	int world_size;
 	check_mpi( MPI_Comm_size(map->comm, &world_size) );
@@ -303,6 +332,8 @@ static void exchanger_IsendRecv1(t_exchange *exch_send, t_exchange *exch_recv,
 	               exch_recv->buffer_idxlist,
 	               map->exch_recv->buffer_size,
 	               0, transform_dst);
+
+	timer_stop(timer_exchanger_IsendRecv1_id);
 }
 
 static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
@@ -310,6 +341,11 @@ static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
                                  t_wait *vtable_wait,
                                  void *src_data, void *dst_data,
                                  int *transform_src, int *transform_dst) {
+
+	if (timer_exchanger_IsendRecv2_id == -1)
+		timer_exchanger_IsendRecv2_id = new_timer(__func__);
+
+	timer_start(timer_exchanger_IsendRecv2_id);
 
 	int world_size;
 	check_mpi( MPI_Comm_size(map->comm, &world_size) );
@@ -374,6 +410,8 @@ static void exchanger_IsendRecv2(t_exchange *exch_send, t_exchange *exch_recv,
 		               exch_recv->buffer_idxlist,
 		               size, offset, transform_dst);
 	}
+
+	timer_stop(timer_exchanger_IsendRecv2_id);
 }
 
 t_exchanger* new_exchanger(t_map        *map  ,
@@ -385,6 +423,11 @@ t_exchanger* new_exchanger(t_map        *map  ,
 	       type == MPI_INTEGER || type == MPI_FLOAT || type == MPI_DOUBLE_PRECISION);
 	assert(hw == CPU           || hw == GPU_NVIDIA  || hw == GPU_AMD               );
 #endif
+
+	if (timer_new_exchanger_id == -1)
+		timer_new_exchanger_id = new_timer(__func__);
+
+	timer_start(timer_new_exchanger_id);
 
 	// group all info into data structure
 	t_exchanger *exchanger;
@@ -496,12 +539,19 @@ t_exchanger* new_exchanger(t_map        *map  ,
 		exchanger->exch_recv->buffer = exchanger->vtable->allocator(exchanger->exch_recv->buffer_size *
 		                                                            exchanger->mpi_exchange->type_size);
 
+	timer_stop(timer_new_exchanger_id);
+
 	return exchanger;
 }
 
 void exchanger_go(t_exchanger  *exchanger    ,
                   void         *src_data     ,
                   void         *dst_data     ) {
+
+	if (timer_exchanger_go_id == -1)
+		timer_exchanger_go_id = new_timer(__func__);
+
+	timer_start(timer_exchanger_go_id);
 
 	exchanger->go(exchanger->exch_send,
 	              exchanger->exch_recv,
@@ -511,6 +561,8 @@ void exchanger_go(t_exchanger  *exchanger    ,
 	              exchanger->vtable_wait,
 	              src_data, dst_data,
 	              NULL, NULL);
+
+	timer_stop(timer_exchanger_go_id);
 }
 
 void exchanger_go_with_transform(t_exchanger  *exchanger    ,
@@ -518,6 +570,11 @@ void exchanger_go_with_transform(t_exchanger  *exchanger    ,
                                  void         *dst_data     ,
                                  int          *transform_src,
                                  int          *transform_dst) {
+
+	if (timer_exchanger_go_with_transform_id == -1)
+		timer_exchanger_go_with_transform_id = new_timer(__func__);
+
+	timer_start(timer_exchanger_go_with_transform_id);
 
 	exchanger->go(exchanger->exch_send,
 	              exchanger->exch_recv,
@@ -527,9 +584,16 @@ void exchanger_go_with_transform(t_exchanger  *exchanger    ,
 	              exchanger->vtable_wait,
 	              src_data, dst_data,
 	              transform_src, transform_dst);
+
+	timer_stop(timer_exchanger_go_with_transform_id);
 }
 
 void delete_exchanger(t_exchanger *exchanger) {
+
+	if (timer_delete_exchanger_id == -1)
+		timer_delete_exchanger_id = new_timer(__func__);
+
+	timer_start(timer_delete_exchanger_id);
 
 	/* Wait for possible send messages (because of no wait in final step) */
 	exchanger->vtable_wait->pre_wait(exchanger->mpi_exchange);
@@ -556,5 +620,7 @@ void delete_exchanger(t_exchanger *exchanger) {
 	delete_mpi_exchanger(exchanger->mpi_exchange);
 
 	free(exchanger);
+
+	timer_stop(timer_delete_exchanger_id);
 
 }
