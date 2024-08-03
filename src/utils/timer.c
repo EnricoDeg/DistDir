@@ -288,3 +288,17 @@ void timers_report() {
 	if (comm_rank == 0)
 		fclose(fptr);
 }
+
+void delete_timers() {
+
+	t_list_node *list_iterator = list_head;
+
+	while (list_iterator != NULL) {
+
+		free(list_iterator->data->name);
+		free(list_iterator->data);
+		t_list_node *list_node_empty = list_iterator;
+		list_iterator = list_iterator->next;
+		free(list_node_empty);
+	}
+}

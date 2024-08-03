@@ -134,6 +134,7 @@ void distdir_initialize() {
 void distdir_finalize() {
 
 	timers_report();
+	delete_timers();
 
 	int mpi_finalized;
 	int mpi_initialized = config->initialized;
