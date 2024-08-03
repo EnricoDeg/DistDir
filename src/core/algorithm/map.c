@@ -39,14 +39,22 @@
 #include "src/core/algorithm/bucket.h"
 #include "src/core/algorithm/backend/backend.h"
 #include "src/utils/check.h"
+#include "src/utils/timer.h"
 #ifdef CUDA
 #include "src/core/exchange/backend_hardware/backend_cuda.h"
 #endif
+
+static int timer_new_map_id = -1;
 
 t_map * new_map(t_idxlist *src_idxlist ,
                 t_idxlist *dst_idxlist ,
                 int        stride      ,
                 MPI_Comm   comm        ) {
+
+	if (timer_new_map_id == -1)
+		timer_new_map_id = new_timer(__func__);
+
+	timer_start(timer_new_map_id);
 
 	int world_size;
 	check_mpi( MPI_Comm_size(comm, &world_size) );
@@ -375,6 +383,8 @@ t_map * new_map(t_idxlist *src_idxlist ,
 	free(dst_bucket->size_ranks);
 	free(dst_bucket->rank_exch);
 	free(dst_bucket);
+
+	timer_stop(timer_new_map_id);
 
 	return map;
 }
